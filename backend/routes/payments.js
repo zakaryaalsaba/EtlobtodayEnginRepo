@@ -6,10 +6,10 @@ dotenv.config();
 
 const router = express.Router();
 
-// Initialize Stripe with secret key from environment
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2024-11-20.acacia',
-});
+// Initialize Stripe only when key is set (allows server to start without Stripe, e.g. when using PayTabs only)
+const stripe = process.env.STRIPE_SECRET_KEY
+  ? new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2024-11-20.acacia' })
+  : null;
 
 /**
  * POST /api/payments/create-intent
@@ -23,8 +23,8 @@ router.post('/create-intent', async (req, res) => {
       return res.status(400).json({ error: 'Missing required fields: website_id and amount' });
     }
 
-    if (!process.env.STRIPE_SECRET_KEY) {
-      return res.status(500).json({ error: 'Stripe is not configured. Please set STRIPE_SECRET_KEY in environment variables.' });
+    if (!stripe) {
+      return res.status(503).json({ error: 'Stripe is not configured. Please set STRIPE_SECRET_KEY in environment variables.' });
     }
 
     // Create payment intent with only card payment methods
@@ -63,6 +63,9 @@ router.post('/confirm', async (req, res) => {
 
     if (!payment_intent_id) {
       return res.status(400).json({ error: 'Missing payment_intent_id' });
+    }
+    if (!stripe) {
+      return res.status(503).json({ error: 'Stripe is not configured.' });
     }
 
     const paymentIntent = await stripe.paymentIntents.retrieve(payment_intent_id);
