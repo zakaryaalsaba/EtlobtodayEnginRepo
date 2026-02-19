@@ -1,0 +1,14 @@
+{
+  "rules": {
+    "orders": {
+      ".read": true,
+      ".write": "auth != null && auth.uid == 'ERr61aQKyOSMqjbkl8SFy5EpBxD2'"
+    },
+    "orders_delivery": {
+      ".read": true,
+      ".write": "auth != null && auth.uid == 'ERr61aQKyOSMqjbkl8SFy5EpBxD2'"
+    },
+    ".read": false,
+    ".write": false
+  }
+}

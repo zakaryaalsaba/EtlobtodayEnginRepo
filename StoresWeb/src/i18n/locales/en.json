@@ -1,0 +1,95 @@
+{
+  "nav": {
+    "stores": "Stores",
+    "cart": "Cart",
+    "orders": "My Orders",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout"
+  },
+  "home": {
+    "title": "Stores",
+    "subtitle": "Browse and order from our stores",
+    "openNow": "Open now"
+  },
+  "store": {
+    "products": "Products",
+    "viewStore": "View Store"
+  },
+  "product": {
+    "addToCart": "Add to Cart",
+    "description": "Description",
+    "price": "Price"
+  },
+  "cart": {
+    "title": "Shopping Cart",
+    "empty": "Your cart is empty",
+    "continueShopping": "Continue Shopping",
+    "subtotal": "Subtotal",
+    "checkout": "Proceed to Checkout",
+    "remove": "Remove",
+    "addedToCart": "Added to cart"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "guestCheckout": "Guest Checkout",
+    "customerDetails": "Customer Details",
+    "name": "Full Name",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address (optional)",
+    "orderNotes": "Order Notes",
+    "placeOrder": "Place Order",
+    "proceedToReview": "Proceed to Review",
+    "orderType": "Order Type",
+    "pickup": "Pickup",
+    "delivery": "Delivery",
+    "deliveryInstructions": "Delivery instructions",
+    "paymentMethod": "Payment method",
+    "paymentSummary": "Payment summary",
+    "payWith": "Pay with",
+    "useMyLocation": "Use my location",
+    "locationRequired": "Location is required for delivery"
+  },
+  "orders": {
+    "title": "My Orders",
+    "empty": "No orders yet",
+    "orderNumber": "Order",
+    "status": "Status",
+    "total": "Total",
+    "date": "Date",
+    "viewTrack": "View / Track"
+  },
+  "orderTrack": {
+    "title": "Order Tracking",
+    "orderNumber": "Order number",
+    "status": "Status"
+  },
+  "auth": {
+    "loginTitle": "Login",
+    "registerTitle": "Register",
+    "email": "Email",
+    "password": "Password",
+    "name": "Full Name",
+    "submitLogin": "Login",
+    "submitRegister": "Create Account",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "back": "Back",
+    "quantity": "Quantity",
+    "total": "Total"
+  },
+  "status": {
+    "pending": "Pending",
+    "confirmed": "Confirmed",
+    "preparing": "Preparing",
+    "ready": "Ready",
+    "completed": "Completed",
+    "cancelled": "Cancelled",
+    "delivered": "Delivered"
+  }
+}

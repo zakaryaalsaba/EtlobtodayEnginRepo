@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">مدير الطلبات</string>
+    
+    <!-- Authentication -->
+    <string name="email">البريد الإلكتروني</string>
+    <string name="password">كلمة المرور</string>
+    <string name="login">تسجيل الدخول</string>
+    <string name="logout">تسجيل الخروج</string>
+    <string name="logout_confirmation">هل أنت متأكد من تسجيل الخروج؟</string>
+    <string name="error_email_required">البريد الإلكتروني مطلوب</string>
+    <string name="error_password_required">كلمة المرور مطلوبة</string>
+    
+    <!-- Dashboard -->
+    <string name="dashboard">لوحة التحكم</string>
+    <string name="current_orders">الطلبات الحالية</string>
+    <string name="no_orders">لا توجد طلبات</string>
+    <string name="no_orders_description">ليس لديك أي طلبات نشطة في الوقت الحالي.</string>
+    
+    <!-- Order Status -->
+    <string name="status_pending">قيد الانتظار</string>
+    <string name="status_confirmed">مؤكد</string>
+    <string name="status_preparing">قيد التحضير</string>
+    <string name="status_ready">جاهز</string>
+    <string name="status_completed">مكتمل</string>
+    <string name="status_cancelled">ملغي</string>
+    
+    <!-- Order Actions -->
+    <string name="accept_order">قبول الطلب</string>
+    <string name="reject_order">رفض الطلب</string>
+    <string name="reject_order_confirmation">هل أنت متأكد من رفض هذا الطلب؟</string>
+    <string name="update_status">تحديث الحالة</string>
+    <string name="print_order">طباعة الطلب</string>
+    
+    <!-- Order Details -->
+    <string name="order_details">تفاصيل الطلب</string>
+    <string name="order_number">رقم الطلب</string>
+    <string name="customer_name">اسم العميل</string>
+    <string name="customer_phone">هاتف العميل</string>
+    <string name="customer_address">عنوان العميل</string>
+    <string name="order_type">نوع الطلب</string>
+    <string name="total_amount">المبلغ الإجمالي</string>
+    <string name="subtotal">المجموع الفرعي</string>
+    <string name="tax">الضريبة</string>
+    <string name="delivery_fee">رسوم التوصيل</string>
+    <string name="delivery_fees">رسوم التوصيل</string>
+    <string name="total">الإجمالي</string>
+    <string name="order_items">عناصر الطلب</string>
+    <string name="notes">ملاحظات</string>
+    <string name="no_notes">لا توجد ملاحظات</string>
+    
+    <!-- Settings -->
+    <string name="settings">الإعدادات</string>
+    <string name="profile">الملف الشخصي</string>
+    <string name="restaurant">المطعم</string>
+    <string name="restaurant_profile">ملف المطعم</string>
+    <string name="restaurant_name">اسم المطعم</string>
+    <string name="restaurant_address">العنوان</string>
+    <string name="restaurant_phone">الهاتف</string>
+    <string name="restaurant_email">البريد الإلكتروني</string>
+    <string name="publish_restaurant">نشر المطعم</string>
+    <string name="publish_restaurant_description">عند النشر، يمكن للعملاء تقديم الطلبات. عند عدم النشر، يتم تعطيل الطلبات.</string>
+    <string name="published">منشور</string>
+    <string name="unpublished">غير منشور</string>
+    <string name="update_profile">تحديث الملف الشخصي</string>
+    <string name="profile_updated">تم تحديث الملف الشخصي بنجاح</string>
+    <string name="language">اللغة</string>
+    <string name="location">الموقع</string>
+    <string name="latitude">خط العرض</string>
+    <string name="longitude">خط الطول</string>
+    <string name="get_current_location">الحصول على الموقع الحالي</string>
+    <string name="location_permission_required">إذن الموقع مطلوب للحصول على موقعك الحالي</string>
+    <string name="location_permission_denied">تم رفض إذن الموقع. يرجى تفعيله في الإعدادات.</string>
+    <string name="location_not_available">الموقع غير متاح. يرجى المحاولة مرة أخرى.</string>
+    <string name="location_updated">تم تحديث الموقع بنجاح</string>
+    <string name="order_notifications">إشعارات الطلبات</string>
+    <string name="order_notifications_description">فعّل لتلقي تنبيهات الطلبات الجديدة على هذا الجهاز. سيتم حفظ رمز الجهاز لإرسال إشعارات الدفع لك.</string>
+    <string name="enable_notifications">تفعيل الإشعارات</string>
+    <string name="notifications_enabled">تم تفعيل الإشعارات. ستتلقى تنبيهات الطلبات الجديدة.</string>
+    <string name="notifications_enabled_failed">تعذر تفعيل الإشعارات. يرجى المحاولة مرة أخرى.</string>
+    <string name="firebase_not_configured">Firebase غير مُعد. أضف ملف google-services.json من Firebase Console (راجع README).</string>
+    <string name="fcm_service_not_available">FCM غير متاح. فعّل Cloud Messaging API في Google Cloud Console، أو استخدم جهازاً به Google Play، أو جرّب لاحقاً.</string>
+    <string name="notification_permission_required">إذن الإشعارات مطلوب لتلقي تنبيهات الطلبات الجديدة.</string>
+    <string name="auto_print">الطباعة التلقائية</string>
+    <string name="auto_print_description">طباعة الطلبات تلقائياً عند قبولها</string>
+    
+    <!-- General -->
+    <string name="cancel">إلغاء</string>
+    <string name="save">حفظ</string>
+    <string name="refresh">تحديث</string>
+    <string name="loading">جاري التحميل…</string>
+    <string name="error">خطأ</string>
+    <string name="success">نجح</string>
+    <string name="status">الحالة</string>
+    <string name="status_updated">تم تحديث الحالة بنجاح</string>
+    <string name="not_available">غير متاح</string>
+    <string name="default_notification_channel_id">إشعارات_الطلبات</string>
+    
+    <!-- Navigation (for unused navigation files) -->
+    <string name="title_home">الرئيسية</string>
+    <string name="title_dashboard">لوحة التحكم</string>
+    <string name="title_notifications">الإشعارات</string>
+    
+    <!-- Statistics -->
+    <string name="statistics">الإحصائيات</string>
+    <string name="total_orders">إجمالي الطلبات</string>
+    <string name="total_revenue">إجمالي الإيرادات</string>
+    <string name="filter_by_date">تصفية حسب التاريخ</string>
+    <string name="select_date_range">اختر نطاق التاريخ</string>
+    <string name="from_date">من تاريخ</string>
+    <string name="to_date">إلى تاريخ</string>
+    <string name="apply_filter">تطبيق التصفية</string>
+    <string name="clear_filter">مسح التصفية</string>
+    <string name="orders_by_status">الطلبات حسب الحالة</string>
+    <string name="english">الإنجليزية</string>
+    <string name="arabic">العربية</string>
+    <string name="select_language">اختر اللغة</string>
+    <string name="navigation_drawer_open">فتح القائمة الجانبية</string>
+    <string name="navigation_drawer_close">إغلاق القائمة الجانبية</string>
+    <string name="request_delivery">طلب توصيل</string>
+    <string name="request_driver">طلب سائق</string>
+    <string name="cancel_countdown">إلغاء (%d)</string>
+    <string name="processing">جاري المعالجة…</string>
+</resources>
+

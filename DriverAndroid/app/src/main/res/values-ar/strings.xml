@@ -1,0 +1,120 @@
+<resources>
+    <string name="app_name">كابتن</string>
+    
+    <!-- Auth -->
+    <string name="login">تسجيل الدخول</string>
+    <string name="email">البريد الإلكتروني</string>
+    <string name="password">كلمة المرور</string>
+    <string name="logout">تسجيل الخروج</string>
+    
+    <!-- Driver Status -->
+    <string name="online">متصل</string>
+    <string name="offline">غير متصل</string>
+    <string name="go_online">الاتصال</string>
+    <string name="go_offline">قطع الاتصال</string>
+    
+    <!-- Orders -->
+    <string name="available_orders">الطلبات المتاحة</string>
+    <string name="active_delivery">التوصيل النشط</string>
+    <string name="order_history">سجل الطلبات</string>
+    <string name="no_orders">لا توجد طلبات متاحة</string>
+    <string name="accept">قبول</string>
+    <string name="reject">رفض</string>
+    <string name="order_number">طلب رقم %1$s</string>
+    <string name="pickup_address">الاستلام</string>
+    <string name="delivery_address">التوصيل</string>
+    <string name="distance">المسافة: %1$s</string>
+    <string name="estimated_time">الوقت المقدر: %1$s</string>
+    <string name="total_amount">المجموع: %1$s</string>
+    
+    <!-- Order Status -->
+    <string name="status_accepted">مقبول</string>
+    <string name="status_arrived">وصل إلى نقطة الاستلام</string>
+    <string name="status_picked_up">تم الاستلام</string>
+    <string name="status_on_the_way">في الطريق</string>
+    <string name="status_delivered">تم التوصيل</string>
+    
+    <!-- Actions -->
+    <string name="navigate_to_pickup">التنقل إلى نقطة الاستلام</string>
+    <string name="navigate_to_delivery">التنقل إلى نقطة التوصيل</string>
+    <string name="navigate_to_restaurant">التنقل إلى المطعم</string>
+    <string name="navigate_to_customer">التنقل إلى العميل</string>
+    <string name="mark_arrived">تحديد الوصول</string>
+    <string name="mark_picked_up">تحديد الاستلام</string>
+    <string name="mark_delivered">تحديد التوصيل</string>
+    <string name="update_status">تحديث الحالة</string>
+    
+    <!-- Available Orders -->
+    <string name="restaurant">مطعم</string>
+    <string name="restaurant_location">موقع المطعم</string>
+    <string name="delivery_location">موقع التوصيل</string>
+    <string name="no_phone_available">لا يوجد رقم هاتف متاح</string>
+    <string name="calculating">جاري الحساب…</string>
+    <string name="total">المجموع</string>
+    <string name="total_amount_label">المبلغ الإجمالي</string>
+    <string name="delivery_fee">رسوم التوصيل</string>
+    <string name="your_earnings">أرباحك</string>
+    <string name="tip">البقشيش</string>
+    <string name="rider_tip">بقشيش السائق: %1$s</string>
+    <string name="tip_thank_captain">شكراً أيها القبطان! 🎉</string>
+    <string name="payment_label">الدفع: %1$s</string>
+    <string name="delivery_fee_label">رسوم التوصيل: %1$s</string>
+    <string name="payment_method">طريقة الدفع</string>
+    <string name="mark_arrived_at_pickup">تحديد الوصول إلى نقطة الاستلام</string>
+    <string name="status_updated">تم تحديث الحالة!</string>
+    
+    <!-- Navigation -->
+    <string name="navigation_drawer_open">فتح قائمة التنقل</string>
+    <string name="navigation_drawer_close">إغلاق قائمة التنقل</string>
+    <string name="nav_header_desc">رأس التنقل</string>
+    <string name="action_settings">الإعدادات</string>
+    <string name="profile">الملف الشخصي</string>
+    <string name="edit_profile">تعديل الملف الشخصي</string>
+    <string name="save">حفظ</string>
+    <string name="phone">الهاتف</string>
+    <string name="name">الاسم</string>
+    <string name="profile_updated">تم تحديث الملف الشخصي بنجاح</string>
+    <string name="profile_update_failed">فشل تحديث الملف الشخصي</string>
+    <string name="loading_profile">جاري تحميل الملف الشخصي…</string>
+    <string name="is_required">مطلوب</string>
+    <string name="select_image">اختر صورة</string>
+    <string name="image_uploaded">تم رفع الصورة بنجاح</string>
+    <string name="image_upload_failed">فشل رفع الصورة</string>
+    <string name="failed_to_load_image">فشل تحميل الصورة</string>
+    
+    <!-- General -->
+    <string name="loading">جاري التحميل…</string>
+    <string name="error">خطأ</string>
+    <string name="retry">إعادة المحاولة</string>
+    <string name="cancel">إلغاء</string>
+    <string name="ok">موافق</string>
+    <string name="language">اللغة</string>
+    <string name="select_language">اختر اللغة</string>
+    <string name="english">English</string>
+    <string name="arabic">العربية</string>
+    
+    <!-- Empty States -->
+    <string name="no_active_delivery">لا يوجد توصيل نشط</string>
+    <string name="no_active_delivery_message">ليس لديك أي توصيلات نشطة في الوقت الحالي</string>
+    <string name="no_available_orders">لا توجد طلبات متاحة</string>
+    <string name="no_available_orders_message">فرص توصيل جديدة في الطريق.</string>
+    <string name="looking_for_new_order">البحث عن طلب جديد</string>
+    <string name="go_online_to_receive_orders">قم بالاتصال لتلقي الطلبات وكسب المال!</string>
+    <string name="no_order_history">لا يوجد سجل طلبات</string>
+    
+    <!-- Status Messages -->
+    <string name="you_are_now_online">أنت الآن متصل</string>
+    <string name="you_are_now_offline">أنت الآن غير متصل</string>
+    <string name="error_connection">تعذر الاتصال بالخادم. تأكد من تشغيل الخادم وأن الهاتف على نفس شبكة الواي فاي (مثلاً افتح http://YOUR_IP:3000 في المتصفح).</string>
+    <string name="delivery_completed_title">تم التوصيل بنجاح! 🎉</string>
+    <string name="delivery_completed_message">شكراً لك على خدمتك الممتازة! تم توصيل الطلب بنجاح. استمر في العمل الرائع!</string>
+    
+    <!-- Dialog -->
+    <string name="logout_title">تسجيل الخروج</string>
+    <string name="logout_message">هل أنت متأكد أنك تريد تسجيل الخروج؟</string>
+    
+    <!-- Notifications -->
+    <string name="default_notification_channel_id">إشعارات_طلبات_السائق</string>
+    <string name="fcm_fallback_notification_channel_label">إشعارات الطلبات</string>
+</resources>
+

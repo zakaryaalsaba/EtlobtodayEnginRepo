@@ -1,0 +1,67 @@
+{
+  "project_info": {
+    "project_number": "429406868835",
+    "project_id": "tashkeela-8cab1",
+    "storage_bucket": "tashkeela-8cab1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:429406868835:android:526604a16774b2254d6f56",
+        "android_client_info": {
+          "package_name": "com.driver.resturantandroid"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBdyLofYmACYToUO6Gern7tAHBXPdlAxGA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:429406868835:android:0d64f07b21e40ffe4d6f56",
+        "android_client_info": {
+          "package_name": "com.mnsf.resturantandroid"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBdyLofYmACYToUO6Gern7tAHBXPdlAxGA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:429406868835:android:ad7c5b42f9cb68574d6f56",
+        "android_client_info": {
+          "package_name": "com.order.resturantandroid"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBdyLofYmACYToUO6Gern7tAHBXPdlAxGA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

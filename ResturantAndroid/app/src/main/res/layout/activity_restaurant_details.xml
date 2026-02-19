@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Premium Menu / Restaurant Details: Material 3, food-delivery style.
+     Structure: Cover image + gradient → Floating card (logo, name, subtitle) → Sticky tabs → RecyclerView (Trending + Main) → Bottom cart bar. -->
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/surface"
+    android:fitsSystemWindows="true">
+
+    <!-- ========== HEADER: Full-width cover image + gradient ========== -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:theme="@style/ThemeOverlay.Material3.Dark"
+        app:elevation="0dp">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            app:contentScrim="@color/primary_color"
+            app:expandedTitleMarginBottom="100dp"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+            app:scrimAnimationDuration="300"
+            app:titleEnabled="false">
+
+            <!-- Full-width restaurant cover -->
+            <ImageView
+                android:id="@+id/ivCoverImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:contentDescription="Restaurant cover"
+                android:background="@color/surface_variant"
+                app:layout_collapseMode="parallax" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/gradient_overlay"
+                app:layout_collapseMode="parallax" />
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                app:navigationIcon="@drawable/ic_arrow_back"
+                app:navigationIconTint="@color/white"
+                app:titleTextColor="@color/white" />
+
+            <!-- Floating action buttons: Search, Share, Favorite (top-right corner) -->
+            <LinearLayout
+                android:id="@+id/layoutFloatingActions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|end"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:gravity="center_vertical"
+                android:padding="0dp"
+                app:layout_collapseMode="pin">
+
+                <!-- Search button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnSearch"
+                    style="@style/Widget.Material3.Button.IconButton"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:backgroundTint="@color/white"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:insetLeft="0dp"
+                    android:insetRight="0dp"
+                    app:icon="@drawable/ic_search"
+                    app:iconTint="@color/on_surface"
+                    app:iconSize="24dp"
+                    app:cornerRadius="24dp"
+                    app:elevation="4dp"
+                    android:contentDescription="@string/search_restaurants" />
+
+                <!-- Share button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnShare"
+                    style="@style/Widget.Material3.Button.IconButton"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="8dp"
+                    android:backgroundTint="@color/white"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:insetLeft="0dp"
+                    android:insetRight="0dp"
+                    app:icon="@drawable/ic_share"
+                    app:iconTint="@color/on_surface"
+                    app:iconSize="24dp"
+                    app:cornerRadius="24dp"
+                    app:elevation="4dp"
+                    android:contentDescription="Share" />
+
+                <!-- Favorite button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnFavorite"
+                    style="@style/Widget.Material3.Button.IconButton"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="8dp"
+                    android:backgroundTint="@color/white"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:insetLeft="0dp"
+                    android:insetRight="0dp"
+                    app:icon="@drawable/ic_favorite_border"
+                    app:iconTint="@color/on_surface"
+                    app:iconSize="24dp"
+                    app:cornerRadius="24dp"
+                    app:elevation="4dp"
+                    android:contentDescription="Favorite" />
+            </LinearLayout>
+
+            <!-- Floating card: drawn ABOVE cover image, anchored to bottom of header -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardRestaurantInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="28dp"
+                app:cardElevation="12dp"
+                app:strokeWidth="0dp"
+                app:cardBackgroundColor="@color/surface"
+                app:layout_collapseMode="parallax">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="20dp">
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/ivRestaurantLogo"
+                        android:layout_width="72dp"
+                        android:layout_height="72dp"
+                        android:scaleType="centerCrop"
+                        android:contentDescription="Restaurant logo"
+                        app:shapeAppearanceOverlay="@style/roundedCircle"
+                        app:srcCompat="@mipmap/ic_launcher" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginStart="20dp">
+
+                        <TextView
+                            android:id="@+id/tvRestaurantName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="24sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/on_surface"
+                            android:letterSpacing="-0.02"
+                            android:maxLines="2"
+                            android:ellipsize="end"
+                            tools:text="Restaurant Name" />
+
+                        <!-- Restaurant address or branch: under name, with Location icon. If branches exist, show selected branch with arrow. -->
+                        <LinearLayout
+                            android:id="@+id/layoutRestaurantAddress"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:visibility="gone"
+                            android:layout_marginTop="6dp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:background="?attr/selectableItemBackground"
+                            tools:visibility="visible">
+
+                            <ImageView
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:src="@drawable/ic_location"
+                                android:contentDescription="@string/delivery_address"
+                                android:layout_marginEnd="6dp" />
+
+                            <TextView
+                                android:id="@+id/tvRestaurantAddress"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:textSize="14sp"
+                                android:textColor="@color/on_surface_variant"
+                                android:maxLines="2"
+                                android:ellipsize="end"
+                                tools:text="Amman Abu Nseir" />
+
+                            <ImageView
+                                android:id="@+id/imgBranchArrow"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/ic_chevron_right"
+                                android:layout_marginStart="8dp"
+                                android:visibility="gone"
+                                android:tint="@color/on_surface_variant"
+                                android:contentDescription="Select branch" />
+                        </LinearLayout>
+
+                        <!-- Time under address: clock icon + delivery time (no delivery fee text) -->
+                        <LinearLayout
+                            android:id="@+id/layoutRestaurantTime"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginTop="6dp">
+
+                            <ImageView
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:src="@drawable/ic_baseline_schedule_24"
+                                android:contentDescription="@string/delivery_time_placeholder"
+                                android:layout_marginEnd="6dp"
+                                app:tint="@color/on_surface_variant" />
+
+                            <TextView
+                                android:id="@+id/tvSubtitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="14sp"
+                                android:textColor="@color/on_surface_variant"
+                                android:maxLines="1"
+                                android:ellipsize="end"
+                                tools:text="15–20 mins" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- ========== CONTENT: Sticky tabs + Menu list ========== -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <!-- Category tabs: scrollable, highlight selected, smooth scroll to section on click -->
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayoutCategories"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="4dp"
+            android:background="@color/surface"
+            app:tabMode="scrollable"
+            app:tabGravity="start"
+            app:tabIndicatorColor="@color/primary_color"
+            app:tabSelectedTextColor="@color/primary_color"
+            app:tabTextColor="@color/on_surface_variant"
+            app:tabTextAppearance="@style/TextAppearance.Material3.TitleSmall"
+            app:tabPaddingStart="20dp"
+            app:tabPaddingEnd="20dp"
+            app:tabMinWidth="0dp"
+            tools:visibility="visible" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="32dp"
+            android:visibility="gone"
+            android:indeterminateTint="@color/primary_color" />
+
+        <!-- Main body: single RecyclerView (Trending grid + Main list sections) -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewMenu"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="100dp"
+            android:visibility="gone"
+            android:nestedScrollingEnabled="true"
+            tools:visibility="visible" />
+
+        <LinearLayout
+            android:id="@+id/textEmptyMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="48dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/ic_launcher_foreground"
+                android:alpha="0.3"
+                android:tint="@color/on_surface_variant"
+                android:contentDescription="Empty menu" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/no_menu_items_available"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/on_surface"
+                android:layout_marginTop="24dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Check back later for menu items"
+                android:textSize="14sp"
+                android:textColor="@color/on_surface_variant"
+                android:alpha="0.8"
+                android:layout_marginTop="8dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- ========== BOTTOM CART BAR: [Count] (Cart icon) View cart    JOD 0.00 ========== -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/bottomBarCart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="4dp"
+        app:strokeWidth="0dp"
+        app:cardBackgroundColor="#F5F5F5">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="16dp">
+
+            <TextView
+                android:id="@+id/tvCartCount"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:gravity="center"
+                android:background="@drawable/bg_cart_count_circle"
+                android:text="0"
+                android:textSize="14sp"
+                android:textColor="@color/on_surface"
+                tools:text="0" />
+
+            <ImageView
+                android:id="@+id/ivCartIcon"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_marginStart="10dp"
+                android:src="@drawable/ic_cart"
+                android:tint="@color/on_surface"
+                android:contentDescription="@string/view_cart" />
+
+            <TextView
+                android:id="@+id/tvViewCartLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="@string/view_cart"
+                android:textSize="14sp"
+                android:textColor="@color/on_surface"
+                tools:text="View cart" />
+
+            <TextView
+                android:id="@+id/tvCartTotal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="@color/on_surface"
+                tools:text="JOD 0.00" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Meal detail: hero image, close button, white card (title, description, choose from, addons, ordered together, notes), bottom bar -->
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="320dp"
+        android:fitsSystemWindows="true"
+        android:theme="@style/ThemeOverlay.Material3.Dark">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:contentScrim="?attr/colorSurface"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+            app:scrimAnimationDuration="300"
+            app:titleEnabled="false">
+
+            <!-- Hero image -->
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/ivMealImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:contentDescription="@null"
+                app:layout_collapseMode="parallax" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/gradient_overlay"
+                app:layout_collapseMode="parallax" />
+
+            <!-- Close (X) button - circular, top-end -->
+            <FrameLayout
+                android:id="@+id/layoutCloseButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="top|end"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/circle_dark"
+                android:clickable="true"
+                android:focusable="true"
+                app:layout_collapseMode="pin">
+
+                <ImageView
+                    android:id="@+id/btnClose"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_close"
+                    android:contentDescription="@string/cancel"
+                    app:tint="@color/white" />
+            </FrameLayout>
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:fillViewport="true"
+        android:clipToPadding="false">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="100dp">
+
+            <!-- White content card (bottom sheet style) -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="0dp"
+                android:layout_marginTop="-24dp"
+                app:cardCornerRadius="28dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp"
+                app:cardBackgroundColor="@android:color/transparent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="24dp">
+
+                    <!-- Meal name -->
+                    <TextView
+                        android:id="@+id/tvMealName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="28sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:letterSpacing="-0.01"
+                        android:lineSpacingExtra="4dp"
+                        tools:text="4 pieces broasted chicken" />
+
+                    <!-- Description / included items -->
+                    <TextView
+                        android:id="@+id/tvMealDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:textSize="14sp"
+                        android:textColor="@color/black"
+                        android:lineSpacingExtra="2dp"
+                        android:maxLines="4"
+                        android:ellipsize="end"
+                        tools:text="200g fries + garlic sauce + coleslaw + bread + 3 ketchup" />
+
+                    <!-- Meal base price: original (strikethrough red) when discounted, then display price -->
+                    <LinearLayout
+                        android:id="@+id/layoutMealPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvMealOriginalPrice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="14sp"
+                            android:textColor="@color/offer_red"
+                            android:visibility="gone"
+                            android:layout_marginBottom="2dp"
+                            tools:text="12.50 JOD"
+                            tools:visibility="visible" />
+
+                        <TextView
+                            android:id="@+id/tvMealPrice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="22sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/primary_color"
+                            tools:text="12.50 JOD" />
+                    </LinearLayout>
+
+                    <!-- Required add-ons: "Choose from" + "Choose N" + Required chip -->
+                    <LinearLayout
+                        android:id="@+id/sectionRequiredAddons"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="24dp"
+                        android:visibility="gone">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:id="@+id/tvChooseFrom"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/choose_from"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/black" />
+
+                            <com.google.android.material.chip.Chip
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/required"
+                                android:textColor="@color/white"
+                                android:textSize="11sp"
+                                app:chipBackgroundColor="@color/black"
+                                app:chipStrokeWidth="0dp"
+                                app:chipCornerRadius="12dp"
+                                app:chipMinHeight="26dp" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tvChooseN"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:textSize="14sp"
+                            android:textColor="@color/black"
+                            tools:text="Choose 1" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerRequiredAddons"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="0dp"
+                            android:paddingTop="0dp"
+                            android:paddingBottom="0dp"
+                            android:clipToPadding="false"
+                            android:nestedScrollingEnabled="false"
+                            tools:listitem="@layout/item_addon_required"
+                            tools:itemCount="2" />
+                    </LinearLayout>
+
+                    <!-- Ordered Together (optional add-ons) - horizontal list -->
+                    <LinearLayout
+                        android:id="@+id/sectionOptionalAddons"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="24dp"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/ordered_together"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/black" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="@string/ordered_together_subtitle"
+                            android:textSize="13sp"
+                            android:textColor="@color/black" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerOptionalAddons"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:nestedScrollingEnabled="false"
+                            android:clipToPadding="false"
+                            android:paddingEnd="0dp"
+                            android:paddingStart="0dp"
+                            tools:listitem="@layout/item_addon_optional"
+                            tools:itemCount="3" />
+                    </LinearLayout>
+
+                    <!-- Notes -->
+                    <LinearLayout
+                        android:id="@+id/sectionNotes"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="24dp"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/do_you_have_notes"
+                            android:textSize="16sp"
+                            android:textColor="@color/black" />
+
+                        <TextView
+                            android:id="@+id/tvAddNote"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="@string/add_note"
+                            android:textSize="14sp"
+                            android:textColor="?attr/colorPrimary"
+                            android:textStyle="bold"
+                            android:drawablePadding="6dp"
+                            android:paddingStart="0dp"
+                            android:paddingEnd="0dp"
+                            android:background="?attr/selectableItemBackground"
+                            android:clickable="true"
+                            android:focusable="true" />
+                    </LinearLayout>
+
+                    <!-- Complete selections hint -->
+                    <TextView
+                        android:id="@+id/tvCompleteSelections"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/complete_selections_to_add"
+                        android:textSize="14sp"
+                        android:textColor="@color/black"
+                        android:visibility="gone"
+                        tools:visibility="visible" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Bottom bar: hint (when required), quantity + Add item. No special requests in footer. -->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="4dp"
+        app:strokeWidth="0dp"
+        app:cardBackgroundColor="#F5F5F5">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="20dp">
+
+            <!-- Hint when required options not selected -->
+            <TextView
+                android:id="@+id/tvSelectRequiredHint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/select_required_to_add_item"
+                android:textSize="13sp"
+                android:textColor="@color/black"
+                android:visibility="gone"
+                android:layout_marginBottom="8dp"
+                tools:visibility="visible"
+                tools:text="Select required to add item" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <!-- Quantity stepper: light purple by default; +/- become purple when can add -->
+                <LinearLayout
+                    android:id="@+id/layoutQuantityStepper"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/rounded_quantity_light_purple"
+                    android:padding="6dp"
+                    android:layout_marginEnd="16dp">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnDecrease"
+                        style="@style/Widget.Material3.Button.IconButton"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        app:icon="@drawable/ic_remove_24"
+                        app:iconTint="@color/on_primary_container"
+                        app:iconSize="20dp"
+                        app:cornerRadius="20dp"
+                        app:backgroundTint="@color/primary_container" />
+
+                    <TextView
+                        android:id="@+id/tvQuantity"
+                        android:layout_width="44dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:background="@color/primary_container"
+                        android:paddingVertical="4dp"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/on_primary_container"
+                        android:text="1" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnIncrease"
+                        style="@style/Widget.Material3.Button.IconButton"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        app:icon="@drawable/ic_add_24"
+                        app:iconTint="@color/on_primary_container"
+                        app:iconSize="20dp"
+                        app:cornerRadius="20dp"
+                        app:backgroundTint="@color/primary_container" />
+                </LinearLayout>
+
+                <!-- Add item: label left, price right; smaller font so "Add item   JOD price" in one line -->
+                <LinearLayout
+                    android:id="@+id/layoutAddItem"
+                    android:layout_width="0dp"
+                    android:layout_height="52dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:background="@drawable/bg_add_item_light_purple"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <TextView
+                        android:id="@+id/tvAddItemLabel"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="start|center_vertical"
+                        android:text="@string/add_item"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/on_primary_container"
+                        android:maxLines="1"
+                        android:ellipsize="end" />
+
+                    <TextView
+                        android:id="@+id/tvAddItemPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="end|center_vertical"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/on_primary_container"
+                        android:maxLines="1" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

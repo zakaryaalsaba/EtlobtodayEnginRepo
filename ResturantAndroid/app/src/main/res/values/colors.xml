@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Material Design 3 Color Palette -->
+    <color name="primary_color">#6750A4</color>
+    <color name="on_primary">#FFFFFF</color>
+    <color name="primary_text">#21005D</color>
+    <color name="primary_container">#EADDFF</color>
+    <color name="on_primary_container">#21005D</color>
+    
+    <color name="secondary_color">#625B71</color>
+    <color name="on_secondary">#FFFFFF</color>
+    <color name="secondary_text">#1C1B1F</color>
+    <color name="secondary_container">#E8DEF8</color>
+    <color name="on_secondary_container">#1D192B</color>
+    
+    <color name="surface">#FFFBFE</color>
+    <color name="on_surface">#1C1B1F</color>
+    <color name="surface_variant">#E7E0EC</color>
+    <color name="on_surface_variant">#49454F</color>
+
+    <!-- Cart / banners (light beige for stamp & savings) -->
+    <color name="cart_banner_background">#F8F3EC</color>
+    <color name="on_cart_banner">#1C1B1F</color>
+    
+    <!-- Accent colors -->
+    <color name="accent">#FF6B35</color>
+    <color name="success">#4CAF50</color>
+    <color name="error">#B3261E</color>
+    <color name="offer_red">#D32F2F</color>
+    <color name="warning">#F57C00</color>
+    
+    <!-- Legacy colors -->
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+</resources>

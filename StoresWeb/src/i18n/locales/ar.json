@@ -1,0 +1,95 @@
+{
+  "nav": {
+    "stores": "المتاجر",
+    "cart": "السلة",
+    "orders": "طلباتي",
+    "login": "تسجيل الدخول",
+    "register": "إنشاء حساب",
+    "logout": "تسجيل الخروج"
+  },
+  "home": {
+    "title": "المتاجر",
+    "subtitle": "تصفح واطلب من متاجرنا",
+    "openNow": "مفتوح الآن"
+  },
+  "store": {
+    "products": "المنتجات",
+    "viewStore": "عرض المتجر"
+  },
+  "product": {
+    "addToCart": "أضف إلى السلة",
+    "description": "الوصف",
+    "price": "السعر"
+  },
+  "cart": {
+    "title": "سلة التسوق",
+    "empty": "سلتك فارغة",
+    "continueShopping": "متابعة التسوق",
+    "subtotal": "المجموع الفرعي",
+    "checkout": "إتمام الطلب",
+    "remove": "إزالة",
+    "addedToCart": "تمت الإضافة إلى السلة"
+  },
+  "checkout": {
+    "title": "إتمام الطلب",
+    "guestCheckout": "الطلب كزائر",
+    "customerDetails": "بيانات العميل",
+    "name": "الاسم الكامل",
+    "email": "البريد الإلكتروني",
+    "phone": "الهاتف",
+    "address": "العنوان (اختياري)",
+    "orderNotes": "ملاحظات الطلب",
+    "placeOrder": "تأكيد الطلب",
+    "proceedToReview": "المتابعة إلى المراجعة",
+    "orderType": "نوع الطلب",
+    "pickup": "استلام",
+    "delivery": "توصيل",
+    "deliveryInstructions": "تعليمات التوصيل",
+    "paymentMethod": "طريقة الدفع",
+    "paymentSummary": "ملخص الدفع",
+    "payWith": "الدفع بـ",
+    "useMyLocation": "استخدام موقعي",
+    "locationRequired": "الموقع مطلوب للتوصيل"
+  },
+  "orders": {
+    "title": "طلباتي",
+    "empty": "لا توجد طلبات بعد",
+    "orderNumber": "طلب",
+    "status": "الحالة",
+    "total": "المجموع",
+    "date": "التاريخ",
+    "viewTrack": "عرض / تتبع"
+  },
+  "orderTrack": {
+    "title": "تتبع الطلب",
+    "orderNumber": "رقم الطلب",
+    "status": "الحالة"
+  },
+  "auth": {
+    "loginTitle": "تسجيل الدخول",
+    "registerTitle": "إنشاء حساب",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "name": "الاسم الكامل",
+    "submitLogin": "دخول",
+    "submitRegister": "إنشاء الحساب",
+    "noAccount": "ليس لديك حساب؟",
+    "hasAccount": "لديك حساب بالفعل؟"
+  },
+  "common": {
+    "loading": "جاري التحميل...",
+    "error": "حدث خطأ",
+    "back": "رجوع",
+    "quantity": "الكمية",
+    "total": "المجموع"
+  },
+  "status": {
+    "pending": "قيد الانتظار",
+    "confirmed": "مؤكد",
+    "preparing": "قيد التحضير",
+    "ready": "جاهز",
+    "completed": "مكتمل",
+    "cancelled": "ملغي",
+    "delivered": "تم التوصيل"
+  }
+}

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- PayTabs: allow cleartext and trust anchors so SDK can reach PayTabs servers (fixes code=-1 Network error on some networks/emulators). -->
+<network-security-config>
+
+    <!-- Allow PayTabs domains (cleartext if needed; PayTabs may use HTTPS) -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">paytabs.com</domain>
+        <domain includeSubdomains="true">secure.paytabs.com</domain>
+    </domain-config>
+
+    <!-- Fallback: trust system certs -->
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+
+</network-security-config>

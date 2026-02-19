@@ -1,0 +1,41 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    
+    <!-- Material Design 3 Spacing Scale -->
+    <dimen name="spacing_4">4dp</dimen>
+    <dimen name="spacing_6">6dp</dimen>
+    <dimen name="spacing_8">8dp</dimen>
+    <dimen name="spacing_12">12dp</dimen>
+    <dimen name="spacing_16">16dp</dimen>
+    <dimen name="spacing_20">20dp</dimen>
+    <dimen name="spacing_24">24dp</dimen>
+    <dimen name="spacing_32">32dp</dimen>
+    
+    <!-- Card dimensions -->
+    <dimen name="card_corner_radius_small">8dp</dimen>
+    <dimen name="card_corner_radius_medium">12dp</dimen>
+    <dimen name="card_corner_radius_large">16dp</dimen>
+    <dimen name="card_corner_radius_xlarge">20dp</dimen>
+    
+    <!-- Card elevations -->
+    <dimen name="card_elevation_low">2dp</dimen>
+    <dimen name="card_elevation_medium">4dp</dimen>
+    <dimen name="card_elevation_high">6dp</dimen>
+    <dimen name="card_elevation_xhigh">8dp</dimen>
+    
+    <!-- Button dimensions -->
+    <dimen name="button_height_standard">48dp</dimen>
+    <dimen name="button_height_large">56dp</dimen>
+    
+    <!-- Icon sizes -->
+    <dimen name="icon_size_small">16dp</dimen>
+    <dimen name="icon_size_medium">24dp</dimen>
+    <dimen name="icon_size_large">32dp</dimen>
+    
+    <!-- Avatar sizes -->
+    <dimen name="avatar_size_small">32dp</dimen>
+    <dimen name="avatar_size_medium">48dp</dimen>
+    <dimen name="avatar_size_large">64dp</dimen>
+</resources>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Rounded ImageView Style -->
+    <style name="roundedImageView">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
+
+    <!-- Circular (for restaurant logo) -->
+    <style name="roundedCircle">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+    
+    <!-- Standard Button Style (matching View All Orders button) -->
+    <style name="StandardButton" parent="Widget.Material3.Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">16dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="cornerRadius">8dp</item>
+    </style>
+    
+    <!-- Standard Button Style for inline buttons (like Add to Cart) -->
+    <style name="StandardButtonInline" parent="Widget.Material3.Button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:paddingStart">20dp</item>
+        <item name="android:paddingEnd">20dp</item>
+        <item name="cornerRadius">8dp</item>
+    </style>
+    
+    <!-- Legacy Button Styles (kept for compatibility) -->
+    <style name="PrimaryButton" parent="StandardButton">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    
+    <style name="SecondaryButton" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="cornerRadius">8dp</item>
+        <item name="android:paddingStart">32dp</item>
+        <item name="android:paddingEnd">32dp</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+    
+    <!-- Card Styles -->
+    <style name="ElevatedCard">
+        <item name="cardCornerRadius">20dp</item>
+        <item name="cardElevation">4dp</item>
+        <item name="strokeWidth">0dp</item>
+    </style>
+    
+    <style name="FilledCard">
+        <item name="cardCornerRadius">20dp</item>
+        <item name="cardElevation">0dp</item>
+        <item name="cardBackgroundColor">@color/surface_variant</item>
+        <item name="strokeWidth">0dp</item>
+    </style>
+
+    <!-- Bottom nav: no visible active indicator (was black). -->
+    <style name="BottomNavActiveIndicatorTransparent" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@android:color/transparent</item>
+    </style>
+
+    <!-- Checkout: Tip and Instructions chips - purple (not black). -->
+    <style name="CheckoutChipPurple" parent="Widget.Material3.Chip.Filter">
+        <item name="chipBackgroundColor">@color/chip_checkout_background</item>
+        <item name="android:textColor">@color/chip_checkout_text</item>
+        <item name="chipStrokeColor">@color/chip_checkout_stroke</item>
+    </style>
+</resources>
+

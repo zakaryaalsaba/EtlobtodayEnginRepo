@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Material Design 3 Color System -->
+    <!-- Primary colors -->
+    <color name="primary">#6366F1</color>
+    <color name="primary_color">#6366F1</color>
+    <color name="on_primary">#FFFFFF</color>
+    <color name="primary_container">#E0E7FF</color>
+    <color name="on_primary_container">#1E1B4B</color>
+    
+    <color name="primary_dark">#4F46E5</color>
+    <color name="primary_light">#818CF8</color>
+    
+    <!-- Secondary colors -->
+    <color name="secondary">#625B71</color>
+    <color name="on_secondary">#FFFFFF</color>
+    <color name="secondary_container">#E8DEF8</color>
+    <color name="on_secondary_container">#1C1B1F</color>
+    
+    <!-- Tertiary colors -->
+    <color name="tertiary">#7D5260</color>
+    <color name="on_tertiary">#FFFFFF</color>
+    <color name="tertiary_container">#FFD8E4</color>
+    <color name="on_tertiary_container">#31111D</color>
+    
+    <!-- Error colors -->
+    <color name="error">#BA1A1A</color>
+    <color name="on_error">#FFFFFF</color>
+    <color name="error_container">#FFDAD6</color>
+    <color name="on_error_container">#410002</color>
+    
+    <!-- Semantic colors -->
+    <color name="success">#10B981</color>
+    <color name="success_light">#D1FAE5</color>
+    <color name="success_container">#D1FAE5</color>
+    <color name="on_success_container">#064E3B</color>
+    <color name="warning">#F59E0B</color>
+    <color name="warning_container">#FEF3C7</color>
+    <color name="on_warning_container">#78350F</color>
+    <color name="info">#3B82F6</color>
+    <color name="info_container">#DBEAFE</color>
+    <color name="on_info_container">#1E3A8A</color>
+    
+    <!-- Surface colors -->
+    <color name="surface">#FFFBFE</color>
+    <color name="on_surface">#1C1B1F</color>
+    <color name="surface_variant">#E7E0EC</color>
+    <color name="on_surface_variant">#49454F</color>
+    <color name="surface_dim">#DDD8E1</color>
+    <color name="surface_bright">#FFFBFE</color>
+    <color name="surface_container">#F3EDF7</color>
+    <color name="surface_container_high">#ECE6F0</color>
+    <color name="surface_container_highest">#E6E0E9</color>
+    
+    <!-- Background -->
+    <color name="background">#FFFBFE</color>
+    <color name="on_background">#1C1B1F</color>
+    
+    <!-- Outline -->
+    <color name="outline">#79747E</color>
+    <color name="outline_variant">#CAC4D0</color>
+    
+    <!-- Inverse colors -->
+    <color name="inverse_surface">#313033</color>
+    <color name="inverse_on_surface">#F4EFF4</color>
+    <color name="inverse_primary">#C5C0FF</color>
+    
+    <!-- Scrim -->
+    <color name="scrim">#000000</color>
+    
+    <!-- Shadow -->
+    <color name="shadow">#000000</color>
+    
+    <!-- Tip / thank you (fancy, positive) -->
+    <color name="tip_gold">#E8B923</color>
+    <color name="tip_gold_container">#FFF8E7</color>
+    <color name="on_tip_gold_container">#5C4A1A</color>
+
+    <!-- Legacy support -->
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+</resources>

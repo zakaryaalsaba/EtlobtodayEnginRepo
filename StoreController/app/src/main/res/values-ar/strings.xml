@@ -1,0 +1,46 @@
+<resources>
+    <string name="app_name">مركز التحكم</string>
+    
+    <string name="title_home">الطلبات</string>
+    <string name="title_dashboard">لوحة التحكم</string>
+    <string name="title_notifications">الإشعارات</string>
+    
+    <string name="orders_live">الطلبات المباشرة</string>
+    <string name="filter_all_websites">كل المواقع</string>
+    <string name="filter_website">موقع %1$d</string>
+    <string name="filter_all_statuses">كل الحالات</string>
+    <string name="status_pending">قيد الانتظار</string>
+    <string name="status_confirmed">مؤكد</string>
+    <string name="status_preparing">قيد التحضير</string>
+    <string name="status_ready">جاهز</string>
+    <string name="status_completed">مكتمل</string>
+    <string name="status_delivered">تم التوصيل</string>
+    <string name="status_cancelled">ملغي</string>
+    <string name="order_number">طلب #%1$s</string>
+    <string name="website_id">الموقع %1$d</string>
+    <string name="customer">العميل</string>
+    <string name="total">المجموع</string>
+    <string name="order_type_delivery">توصيل</string>
+    <string name="order_type_pickup">استلام</string>
+    <string name="order_type_dine_in">داخلي</string>
+    <string name="no_orders">لا توجد طلبات</string>
+    <string name="no_orders_subtitle">ستظهر الطلبات هنا عند وصولها</string>
+    <string name="loading">جاري التحميل…</string>
+    <string name="error">خطأ</string>
+    <string name="retry">إعادة المحاولة</string>
+    <string name="language">اللغة</string>
+    <string name="english">English</string>
+    <string name="arabic">العربية</string>
+    <string name="settings">الإعدادات</string>
+    <string name="store_name">المتجر</string>
+    <string name="phone">الهاتف</string>
+    <string name="address">العنوان</string>
+    <string name="payment_method">الدفع</string>
+    <string name="payment_status">حالة الدفع</string>
+    <string name="created_at">الوقت</string>
+    <string name="items_count">%1$d صنف</string>
+    <string name="order_items">الأصناف</string>
+    <string name="order_item_line">%1$d × %2$s — %3$s</string>
+    <string name="delivery_fees">رسوم التوصيل</string>
+    <string name="tip">البقشيش</string>
+</resources>

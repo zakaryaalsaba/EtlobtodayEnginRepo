@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <group android:id="@+id/main_group">
+        <item
+            android:id="@+id/nav_account"
+            android:icon="@android:drawable/ic_menu_myplaces"
+            android:title="@string/account" />
+        <item
+            android:id="@+id/nav_language"
+            android:icon="@android:drawable/ic_menu_sort_by_size"
+            android:title="@string/language" />
+    </group>
+
+    <group android:id="@+id/logout_group">
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@android:drawable/ic_menu_close_clear_cancel"
+            android:title="@string/logout" />
+    </group>
+
+</menu>
+

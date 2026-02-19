@@ -1,0 +1,18 @@
+node_modules/
+.env
+.env.local
+.DS_Store
+dist/
+build/
+*.log
+uploads/
+.vscode/
+.idea/
+# Android local config (SDK path, API_BASE_URL, keys)
+**/local.properties
+# Firebase / Google server-side secrets (never commit)
+**/firebase-service-account.json
+*.p8
+*.p12
+*-credentials.json
+

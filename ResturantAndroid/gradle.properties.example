@@ -1,0 +1,6 @@
+# API Base URL Configuration
+# For Android Emulator: http://10.0.2.2:3000/api/
+# For Physical Device: http://YOUR_IP_ADDRESS:3000/api/
+# For Production: https://your-domain.com/api/
+API_BASE_URL=http://10.0.2.2:3000/api/
+

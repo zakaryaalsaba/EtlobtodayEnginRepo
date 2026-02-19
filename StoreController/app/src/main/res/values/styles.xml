@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Filter chip for status buttons -->
+    <style name="Widget.StoreController.FilterChip" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="chipBackgroundColor">@color/chip_background_selector</item>
+        <item name="android:textColor">@color/chip_text_selector</item>
+        <item name="chipMinHeight">40dp</item>
+        <item name="chipMinTouchTargetSize">48dp</item>
+        <item name="chipCornerRadius">20dp</item>
+        <item name="chipStrokeWidth">2dp</item>
+        <item name="chipStrokeColor">@color/chip_stroke_selector</item>
+        <item name="rippleColor">@color/primary</item>
+    </style>
+</resources>

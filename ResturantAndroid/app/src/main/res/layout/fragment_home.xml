@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/surface"
+    tools:context=".ui.home.HomeFragment">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.MaterialComponents.Light"
+        app:elevation="0dp"
+        app:liftOnScroll="false"
+        android:background="@color/surface">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="16dp">
+
+            <!-- Delivery / Pick-Up toggle -->
+            <LinearLayout
+                android:id="@+id/layoutOrderTypeToggle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:baselineAligned="false"
+                android:layout_marginBottom="20dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnDelivery"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:text="@string/delivery"
+                    android:textSize="15sp"
+                    android:textColor="@color/on_surface"
+                    app:icon="@drawable/ic_baseline_delivery_dining_24"
+                    app:iconTint="@color/on_surface"
+                    app:iconSize="22dp"
+                    app:iconGravity="textStart"
+                    app:iconPadding="8dp"
+                    app:cornerRadius="24dp"
+                    app:strokeWidth="0dp"
+                    android:backgroundTint="@color/surface_variant"
+                    app:strokeColor="@color/surface_variant"
+                    android:layout_marginEnd="6dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnPickup"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:text="@string/pick_up"
+                    android:textSize="15sp"
+                    android:textColor="@color/on_surface"
+                    app:icon="@drawable/ic_baseline_shopping_bag_24"
+                    app:iconTint="@color/on_surface"
+                    app:iconSize="22dp"
+                    app:iconGravity="textStart"
+                    app:iconPadding="8dp"
+                    app:cornerRadius="24dp"
+                    app:strokeWidth="0dp"
+                    android:backgroundTint="@color/surface_variant"
+                    app:strokeColor="@color/surface_variant"
+                    android:layout_marginStart="6dp" />
+            </LinearLayout>
+
+            <!-- Search (no card wrapper) -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/search_restaurants"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                app:boxBackgroundMode="outline"
+                app:startIconDrawable="@drawable/ic_search"
+                app:startIconTint="@color/primary_color"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/searchView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:imeOptions="actionSearch"
+                    android:maxLines="1"
+                    android:textColor="@color/on_surface"
+                    android:textColorHint="@color/on_surface_variant" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:clipToPadding="false"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="24dp">
+
+            <!-- Horizontal Order Tracking Card -->
+            <include
+                android:id="@+id/cardOrderTracking"
+                layout="@layout/card_order_tracking_horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:visibility="gone" />
+
+            <!-- Horizontal sections container -->
+            <LinearLayout
+                android:id="@+id/layoutCategories"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Free Delivery Section -->
+                <LinearLayout
+                    android:id="@+id/sectionFreeDelivery"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="28dp"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingHorizontal="20dp"
+                        android:paddingBottom="14dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/free_delivery"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/on_surface"
+                            android:drawablePadding="10dp"
+                            android:drawableStart="@drawable/ic_baseline_delivery_dining_24"
+                            android:gravity="center_vertical" />
+
+                        <TextView
+                            android:id="@+id/tvViewAllFreeDelivery"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/view_all"
+                            android:textSize="14sp"
+                            android:textColor="@color/primary_color"
+                            android:textStyle="bold"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="4dp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?attr/selectableItemBackground" />
+                    </LinearLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerViewFreeDelivery"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:clipToPadding="false"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="12dp"
+                        android:overScrollMode="never"
+                        tools:listitem="@layout/item_restaurant_horizontal" />
+
+                </LinearLayout>
+
+                <!-- Offers Section (horizontal, same style as Free Delivery) -->
+                <LinearLayout
+                    android:id="@+id/sectionOffers"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="28dp"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingHorizontal="20dp"
+                        android:paddingBottom="14dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/offers"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/on_surface"
+                            android:drawablePadding="10dp"
+                            android:drawableStart="@drawable/ic_baseline_local_offer_24"
+                            android:gravity="center_vertical" />
+
+                        <TextView
+                            android:id="@+id/tvViewAllOffers"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/view_all"
+                            android:textSize="14sp"
+                            android:textColor="@color/primary_color"
+                            android:textStyle="bold"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="4dp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?attr/selectableItemBackground" />
+                    </LinearLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerViewOffers"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:clipToPadding="false"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="12dp"
+                        android:overScrollMode="never"
+                        tools:listitem="@layout/item_offer_horizontal" />
+                </LinearLayout>
+
+                <!-- Popular Restaurants Section -->
+                <LinearLayout
+                    android:id="@+id/sectionPopular"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="28dp"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingHorizontal="20dp"
+                        android:paddingBottom="14dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/popular_restaurants"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/on_surface"
+                            android:drawablePadding="10dp"
+                            android:drawableStart="@drawable/ic_baseline_restaurant_24"
+                            android:gravity="center_vertical" />
+
+                        <TextView
+                            android:id="@+id/tvViewAllPopular"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/view_all"
+                            android:textSize="14sp"
+                            android:textColor="@color/primary_color"
+                            android:textStyle="bold"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="4dp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?attr/selectableItemBackground" />
+                    </LinearLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerViewPopular"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:clipToPadding="false"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="12dp"
+                        android:overScrollMode="never"
+                        tools:listitem="@layout/item_restaurant_horizontal" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- All Restaurants Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="8dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/all_restaurants"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/on_surface"
+                    android:paddingHorizontal="20dp"
+                    android:paddingBottom="14dp"
+                    android:drawablePadding="10dp"
+                    android:drawableStart="@drawable/ic_baseline_restaurant_24"
+                    android:gravity="center_vertical" />
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="64dp"
+                    android:visibility="gone"
+                    android:indeterminateTint="@color/primary_color" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewRestaurants"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:paddingHorizontal="20dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="16dp"
+                    tools:listitem="@layout/item_restaurant" />
+
+                <LinearLayout
+                    android:id="@+id/textEmpty"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:padding="48dp"
+                    android:visibility="gone"
+                    android:layout_marginTop="64dp">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="24dp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="@color/surface_variant"
+                        app:strokeWidth="0dp"
+                        android:padding="24dp">
+
+                        <ImageView
+                            android:layout_width="120dp"
+                            android:layout_height="120dp"
+                            android:src="@drawable/ic_search"
+                            android:alpha="0.3"
+                            android:tint="@color/on_surface_variant"
+                            android:contentDescription="Empty state" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/no_restaurants_found"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/on_surface"
+                        android:layout_marginTop="24dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/try_search_different"
+                        android:textSize="14sp"
+                        android:textColor="@color/on_surface_variant"
+                        android:alpha="0.8"
+                        android:layout_marginTop="12dp"
+                        android:gravity="center" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

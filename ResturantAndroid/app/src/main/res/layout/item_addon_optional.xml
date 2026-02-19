@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Optional add-on: horizontal card with image, name, + button. No price. -->
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="140dp"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="12dp"
+    android:background="@android:color/transparent"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp"
+    app:strokeWidth="0dp"
+    app:cardBackgroundColor="@android:color/transparent"
+    android:clickable="true"
+    android:focusable="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/ivAddonImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:contentDescription="@null"
+                app:shapeAppearanceOverlay="@style/roundedImageView"
+                app:srcCompat="@mipmap/ic_launcher" />
+
+            <!-- Free qty 0: + button; Free qty 1: "1" (tappable to remove); Paid: - qty + stepper -->
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end">
+
+                <ImageView
+                    android:id="@+id/ivPlus"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:background="@drawable/circle_primary"
+                    android:src="@drawable/ic_add_24"
+                    android:contentDescription="@string/add_to_cart"
+                    app:tint="@color/white"
+                    android:padding="6dp"
+                    android:clickable="true"
+                    android:focusable="true" />
+
+                <TextView
+                    android:id="@+id/tvFreeQuantityOne"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:gravity="center"
+                    android:background="@drawable/circle_primary"
+                    android:text="1"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    android:clickable="true"
+                    android:focusable="true"
+                    tools:visibility="visible" />
+
+                <LinearLayout
+                    android:id="@+id/layoutStepper"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/rounded_quantity_light_purple"
+                    android:padding="4dp"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <ImageView
+                        android:id="@+id/btnDecrease"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:background="@drawable/circle_primary"
+                        android:src="@drawable/ic_remove_24"
+                        android:contentDescription="Decrease"
+                        app:tint="@color/white"
+                        android:padding="4dp"
+                        android:clickable="true"
+                        android:focusable="true" />
+
+                    <TextView
+                        android:id="@+id/tvQuantity"
+                        android:layout_width="24dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:background="@color/primary_container"
+                        android:paddingVertical="2dp"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/on_primary_container"
+                        android:text="1" />
+
+                    <ImageView
+                        android:id="@+id/btnIncrease"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:background="@drawable/circle_primary"
+                        android:src="@drawable/ic_add_24"
+                        android:contentDescription="Increase"
+                        app:tint="@color/white"
+                        android:padding="4dp"
+                        android:clickable="true"
+                        android:focusable="true" />
+                </LinearLayout>
+            </FrameLayout>
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tvAddonName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:maxLines="2"
+            android:ellipsize="end"
+            tools:text="Coleslaw salad box" />
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

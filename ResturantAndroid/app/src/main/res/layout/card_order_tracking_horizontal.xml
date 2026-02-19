@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="4dp"
+    app:strokeWidth="0dp"
+    app:cardBackgroundColor="@color/primary_container">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="16dp">
+
+        <!-- Order Icon -->
+        <ImageView
+            android:id="@+id/ivOrderIcon"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_cart"
+            android:contentDescription="@string/order_status"
+            app:tint="@color/primary_color"
+            android:layout_marginEnd="16dp" />
+
+        <!-- Order Info -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tracking_your_order"
+                android:textSize="12sp"
+                android:textColor="@color/on_primary_container"
+                android:alpha="0.7"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:id="@+id/tvOrderNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ORD-XXXXX-XXXX"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/on_primary_container"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:id="@+id/tvOrderStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pending"
+                android:textSize="14sp"
+                android:textColor="@color/on_primary_container"
+                android:alpha="0.8" />
+        </LinearLayout>
+
+        <!-- Track Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnTrackOrder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/track_order"
+            android:textSize="14sp"
+            style="@style/Widget.Material3.Button"
+            app:cornerRadius="12dp"
+            android:minWidth="0dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>
+

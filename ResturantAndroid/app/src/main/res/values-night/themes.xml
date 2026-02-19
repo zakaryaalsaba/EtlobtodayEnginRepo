@@ -1,0 +1,15 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme (night). Must be NoActionBar so MainActivity can use setSupportActionBar(toolbar). -->
+    <style name="Theme.ResturantAndroid" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowActionBar">false</item>
+        <item name="windowActionBar">false</item>
+        <!-- Primary brand color - same purple as Delivery button and light theme header. -->
+        <item name="colorPrimary">@color/primary_color</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/secondary_color</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <!-- Status bar color - match header. -->
+        <item name="android:statusBarColor">@color/primary_color</item>
+    </style>
+</resources>

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Order Manager</string>
+    
+    <!-- Authentication -->
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="logout">Logout</string>
+    <string name="logout_confirmation">Are you sure you want to logout?</string>
+    <string name="error_email_required">Email is required</string>
+    <string name="error_password_required">Password is required</string>
+    
+    <!-- Dashboard -->
+    <string name="dashboard">Dashboard</string>
+    <string name="current_orders">Current Orders</string>
+    <string name="no_orders">No Orders</string>
+    <string name="no_orders_description">You don\'t have any active orders at the moment.</string>
+    
+    <!-- Order Status -->
+    <string name="status_pending">Pending</string>
+    <string name="status_confirmed">Confirmed</string>
+    <string name="status_preparing">Preparing</string>
+    <string name="status_ready">Ready</string>
+    <string name="status_completed">Completed</string>
+    <string name="status_cancelled">Cancelled</string>
+    
+    <!-- Order Actions -->
+    <string name="accept_order">Accept Order</string>
+    <string name="reject_order">Reject Order</string>
+    <string name="reject_order_confirmation">Are you sure you want to reject this order?</string>
+    <string name="update_status">Update Status</string>
+    <string name="print_order">Print Order</string>
+    
+    <!-- Order Details -->
+    <string name="order_details">Order Details</string>
+    <string name="order_number">Order Number</string>
+    <string name="customer_name">Customer Name</string>
+    <string name="customer_phone">Customer Phone</string>
+    <string name="customer_address">Customer Address</string>
+    <string name="order_type">Order Type</string>
+    <string name="payment_method">Payment Method</string>
+    <string name="total_amount">Total Amount</string>
+    <string name="subtotal">Subtotal</string>
+    <string name="tax">Tax</string>
+    <string name="delivery_fee">Delivery Fee</string>
+    <string name="delivery_fees">Delivery fees</string>
+    <string name="total">Total</string>
+    <string name="order_items">Order Items</string>
+    <string name="notes">Notes</string>
+    <string name="no_notes">No notes</string>
+    
+    <!-- Settings -->
+    <string name="settings">Settings</string>
+    <string name="profile">Profile</string>
+    <string name="restaurant">Restaurant</string>
+    <string name="restaurant_profile">Restaurant Profile</string>
+    <string name="restaurant_name">Restaurant Name</string>
+    <string name="restaurant_address">Address</string>
+    <string name="restaurant_phone">Phone</string>
+    <string name="restaurant_email">Email</string>
+    <string name="publish_restaurant">Publish Restaurant</string>
+    <string name="publish_restaurant_description">When published, customers can place orders. When unpublished, orders are disabled.</string>
+    <string name="published">Published</string>
+    <string name="unpublished">Unpublished</string>
+    <string name="update_profile">Update Profile</string>
+    <string name="profile_updated">Profile updated successfully</string>
+    <string name="language">Language</string>
+    <string name="location">Location</string>
+    <string name="latitude">Latitude</string>
+    <string name="longitude">Longitude</string>
+    <string name="get_current_location">Get Current Location</string>
+    <string name="location_permission_required">Location permission is required to get your current location</string>
+    <string name="location_permission_denied">Location permission denied. Please enable it in settings.</string>
+    <string name="location_not_available">Location not available. Please try again.</string>
+    <string name="location_updated">Location updated successfully</string>
+    <string name="order_notifications">Order Notifications</string>
+    <string name="order_notifications_description">Enable to receive new order alerts on this device. Your device token will be saved so the server can send you push notifications.</string>
+    <string name="enable_notifications">Enable Notifications</string>
+    <string name="notifications_enabled">Notifications enabled. You will receive new order alerts.</string>
+    <string name="notifications_enabled_failed">Could not enable notifications. Please try again.</string>
+    <string name="firebase_not_configured">Firebase is not configured. Add your google-services.json from Firebase Console (see README).</string>
+    <string name="fcm_service_not_available">FCM unavailable. Enable Cloud Messaging API in Google Cloud Console, use a device with Google Play, or try again later.</string>
+    <string name="notification_permission_required">Notification permission is needed to receive new order alerts.</string>
+    <string name="auto_print">Auto Print</string>
+    <string name="auto_print_description">Automatically print orders when accepted</string>
+    
+    <!-- General -->
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="refresh">Refresh</string>
+    <string name="loading">Loading…</string>
+    <string name="error">Error</string>
+    <string name="success">Success</string>
+    <string name="status">Status</string>
+    <string name="status_updated">Status updated successfully</string>
+    <string name="not_available">Not available</string>
+    <string name="default_notification_channel_id">order_notifications</string>
+    
+    <!-- Navigation (for unused navigation files) -->
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    
+    <!-- Statistics -->
+    <string name="statistics">Statistics</string>
+    <string name="total_orders">Total Orders</string>
+    <string name="total_revenue">Total Revenue</string>
+    <string name="filter_by_date">Filter by Date</string>
+    <string name="select_date_range">Select Date Range</string>
+    <string name="from_date">From Date</string>
+    <string name="to_date">To Date</string>
+    <string name="apply_filter">Apply Filter</string>
+    <string name="clear_filter">Clear Filter</string>
+    <string name="orders_by_status">Orders by Status</string>
+    <string name="english">English</string>
+    <string name="arabic">Arabic</string>
+    <string name="select_language">Select Language</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="request_delivery">Request a delivery</string>
+    <string name="request_driver">Request Driver</string>
+    <string name="cancel_countdown">Cancel(%d)</string>
+    <string name="processing">Processing…</string>
+</resources>
