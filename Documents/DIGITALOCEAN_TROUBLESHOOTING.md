@@ -44,6 +44,38 @@ MYSQL_SSL_MODE=REQUIRED
 
 ---
 
+## Connecting from your computer (MySQL Workbench, TablePlus, DBeaver, etc.)
+
+If you see **"Cannot Connect to Database Server"** or **"Unable to connect ... :3306"** when using a desktop client:
+
+### 1. Use port **25060** (not 3306)
+DigitalOcean Managed MySQL uses a **custom port**, not the default 3306. In your client:
+- **Host:** `restaurantwebsites-do-user-33254093-0.g.db.ondigitalocean.com`
+- **Port:** **25060** ← set this explicitly (many clients default to 3306)
+
+### 2. Add your IP to Trusted Sources
+The database only accepts connections from allowed IPs.
+1. Go to [DigitalOcean](https://cloud.digitalocean.com) → **Databases** → your MySQL cluster
+2. **Settings** → **Trusted Sources**
+3. Click **Edit** and add your current IP (e.g. get it from [whatismyip.com](https://www.whatismyip.com))
+4. Or temporarily add **0.0.0.0/0** to allow any IP (only for testing; restrict later)
+
+### 3. Enable SSL
+- In your client, enable **SSL/TLS** for the connection (e.g. "Require" or "Verify CA").
+- In DigitalOcean’s connection details, use the **Connection parameters** or **Connection string** from the database overview; they include port and SSL.
+
+### Summary for desktop clients
+| Field   | Value |
+|--------|--------|
+| Host   | `restaurantwebsites-do-user-33254093-0.g.db.ondigitalocean.com` |
+| Port   | **25060** |
+| User   | `doadmin` |
+| Password | (from DigitalOcean → Databases → your cluster → Connection details) |
+| Database | `defaultdb` |
+| SSL    | Required / Enable |
+
+---
+
 ## Issue 2: Schema File Not Found
 
 ### Symptoms

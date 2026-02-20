@@ -1,0 +1,16 @@
+# robots.txt for RestaurantAI Platform
+
+User-agent: *
+Allow: /
+Disallow: /builder
+Disallow: /admin/
+Disallow: /restaurant/dashboard
+Disallow: /super-admin/
+
+# Allow search engines to index restaurant websites
+Allow: /website/
+Allow: /barcode/
+
+# Sitemap location (update with your actual domain)
+Sitemap: https://restaurantaai.com/sitemap.xml
+

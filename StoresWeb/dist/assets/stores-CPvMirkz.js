@@ -1,0 +1,1 @@
+import{n as s}from"./index-ChIn5XDW.js";function r(e=!1){return s(`/api/websites${e?"?open_now=true":""}`).then(n=>n.websites||[])}function i(e){return s(`/api/websites/${e}`).then(t=>t.website)}export{i as a,r as f};

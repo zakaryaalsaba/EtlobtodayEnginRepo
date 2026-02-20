@@ -1,0 +1,1 @@
+import{n as o}from"./index-ChIn5XDW.js";function c(t){return o(`/api/products/website/${t}`).then(r=>r.products||[])}function u(t){return o(`/api/products/${t}`).then(r=>r.product)}export{u as a,c as f};

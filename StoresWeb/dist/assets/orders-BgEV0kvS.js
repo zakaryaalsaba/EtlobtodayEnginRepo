@@ -1,0 +1,1 @@
+import{n as t,C as o}from"./index-ChIn5XDW.js";function n(r){return o("/api/orders",r).then(e=>e.order)}function a(r){return t(`/api/orders/${r}`).then(e=>e.order)}function d(r){return t(`/api/customers/${r}/orders`).then(e=>e.orders||[])}export{a,n as c,d as f};

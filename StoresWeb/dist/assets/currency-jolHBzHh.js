@@ -1,0 +1,1 @@
+const D={USD:"$",EUR:"€",GBP:"£",JOD:"JOD",SAR:"SAR",AED:"AED",EGP:"EGP"};function S(r,e="USD",s="before"){const t=Number(r),o=typeof t=="number"&&!Number.isNaN(t)?t.toFixed(2):"0.00",n=D[e]||e||"USD";return s==="after"?`${o} ${n}`:`${n} ${o}`}export{S as f};
