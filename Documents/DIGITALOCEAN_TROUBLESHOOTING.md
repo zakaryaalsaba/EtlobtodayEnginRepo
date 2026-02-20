@@ -35,7 +35,8 @@ MYSQL_SSL_MODE=REQUIRED
 #### B. Check Database Trusted Sources
 1. Go to DigitalOcean → **Databases** → Your MySQL cluster
 2. Click **Settings** → **Trusted Sources**
-3. Ensure your App Platform app's outbound IPs are listed, OR temporarily allow `0.0.0.0/0` for testing (restrict later)
+3. Add your app’s allowed IPs. If your app has **public static ingress IPs** (e.g. `162.159.140.98`, `172.66.0.96`), add these as trusted sources so the app can reach MySQL.
+4. Alternatively, use “Allow inbound from same region” if available, or temporarily allow `0.0.0.0/0` for testing (restrict later).
 
 #### C. Verify Database Credentials
 - Double-check username, password, host, and port from the MySQL control panel

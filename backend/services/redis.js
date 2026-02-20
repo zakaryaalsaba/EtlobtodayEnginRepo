@@ -32,13 +32,15 @@ redisClient.on('ready', () => {
 let isConnected = false;
 
 export async function connectRedis() {
+  if (!process.env.REDIS_URL?.trim()) {
+    return; // No Redis URL: skip connecting (avoids localhost:6379 in production)
+  }
   if (!isConnected) {
     try {
       await redisClient.connect();
       isConnected = true;
     } catch (error) {
-      console.error('Failed to connect to Redis:', error);
-      console.warn('⚠️  Continuing without Redis cache (fallback to DB)');
+      console.warn('⚠️  Redis unavailable (continuing without cache):', error.message);
     }
   }
 }

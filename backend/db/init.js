@@ -1304,14 +1304,15 @@ export async function initDatabase() {
     }
 
     // Triggers: when a row is set to 'active', all other rows become 'inactive' (one and only one active row)
+    // Use query() not execute() — CREATE TRIGGER is not supported in prepared statement protocol
     try {
-      await pool.execute(`DROP TRIGGER IF EXISTS settings_only_one_active_ins`);
-      await pool.execute(`
+      await pool.query(`DROP TRIGGER IF EXISTS settings_only_one_active_ins`);
+      await pool.query(`
         CREATE TRIGGER settings_only_one_active_ins AFTER INSERT ON settings FOR EACH ROW
         UPDATE settings SET status = 'inactive' WHERE id != NEW.id AND NEW.status = 'active'
       `);
-      await pool.execute(`DROP TRIGGER IF EXISTS settings_only_one_active_upd`);
-      await pool.execute(`
+      await pool.query(`DROP TRIGGER IF EXISTS settings_only_one_active_upd`);
+      await pool.query(`
         CREATE TRIGGER settings_only_one_active_upd AFTER UPDATE ON settings FOR EACH ROW
         UPDATE settings SET status = 'inactive' WHERE id != NEW.id AND NEW.status = 'active'
       `);
