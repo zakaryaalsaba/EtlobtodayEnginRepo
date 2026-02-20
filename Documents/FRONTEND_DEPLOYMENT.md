@@ -16,7 +16,8 @@ Your frontend is a **Vue.js + Vite** app that builds to static files. Deploy it 
 - **Source Directory**: `frontend` ← **Important!**
 
 ### Build
-- **Build Command**: `npm install && npm run build`
+- **Build Command**: `npm install --include=dev && npm run build`  
+  (Use `--include=dev` so Vite and other devDependencies are installed; the Node buildpack prunes them before the custom command runs.)
 - **Output Directory**: `dist` (Vite outputs to `dist/`)
 
 ### Environment Variables (Build-time)
@@ -25,8 +26,11 @@ Add these **Build-time Environment Variables**:
 | Variable | Value |
 |----------|-------|
 | `VITE_API_URL` | `https://restaurantwebsitebuilder-q58fe.ondigitalocean.app` |
+| `VITE_BASE_PATH` | `/etlobtodayenginrepo-frontend/` |
 
-**Important:** This sets the API base URL at build time. The frontend will call your backend at this URL.
+**Important:**  
+- `VITE_API_URL` sets the API base URL.  
+- `VITE_BASE_PATH` must match the path where the static site is routed (e.g. `/etlobtodayenginrepo-frontend/`). If the frontend is served at the app root (`/`), omit this or set to `/`.
 
 ### HTTP Routes
 - **HTTP Routes**: Leave default (serves all routes from `index.html` for Vue Router)
