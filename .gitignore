@@ -15,4 +15,6 @@ uploads/
 *.p8
 *.p12
 *-credentials.json
+# iOS project (separate repository)
+RestaurantIOS/
 

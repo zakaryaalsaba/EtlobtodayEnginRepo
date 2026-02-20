@@ -18,7 +18,11 @@ export const pool = mysql.createPool({
   password: process.env.MYSQL_PASSWORD || '',
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0
+  queueLimit: 0,
+  // SSL support for DigitalOcean Managed MySQL
+  ssl: process.env.MYSQL_SSL_MODE === 'REQUIRED' || process.env.MYSQL_HOST?.includes('db.ondigitalocean.com')
+    ? { rejectUnauthorized: false } // DO Managed DB uses self-signed certs
+    : false
 });
 
 /**
@@ -33,6 +37,10 @@ export async function initDatabase() {
       port: parseInt(process.env.MYSQL_PORT) || 3306,
       user: process.env.MYSQL_USER || 'root',
       password: process.env.MYSQL_PASSWORD || '',
+      // SSL support for DigitalOcean Managed MySQL
+      ssl: process.env.MYSQL_SSL_MODE === 'REQUIRED' || process.env.MYSQL_HOST?.includes('db.ondigitalocean.com')
+        ? { rejectUnauthorized: false }
+        : false
     });
 
     const dbName = process.env.MYSQL_DB || 'restaurant_websites';
@@ -41,7 +49,13 @@ export async function initDatabase() {
 
     // Read and execute schema SQL
     const schemaPath = path.join(__dirname, 'schema.sql');
+    if (!fs.existsSync(schemaPath)) {
+      throw new Error(`Schema file not found: ${schemaPath}`);
+    }
     const schema = fs.readFileSync(schemaPath, 'utf8');
+    if (!schema || schema.trim().length === 0) {
+      throw new Error(`Schema file is empty: ${schemaPath}`);
+    }
     
     // Split by semicolons and execute each statement (strip leading comment lines, skip empty)
     const statements = schema.split(';').map(stmt => stmt.trim()).filter(stmt => stmt.length > 0);
@@ -1899,11 +1913,22 @@ export async function initDatabase() {
 export async function testConnection() {
   try {
     const [rows] = await pool.execute('SELECT NOW() as now');
-    console.log('MySQL database connected:', rows[0].now);
+    console.log('✅ MySQL database connected:', rows[0].now);
     return true;
   } catch (error) {
-    console.error('MySQL database connection failed:', error);
-    return false;
+    console.error('❌ MySQL database connection failed:', error);
+    console.error('Connection details:', {
+      host: process.env.MYSQL_HOST || 'localhost',
+      port: process.env.MYSQL_PORT || 3306,
+      database: process.env.MYSQL_DB || 'restaurant_websites',
+      user: process.env.MYSQL_USER || 'root',
+      sslMode: process.env.MYSQL_SSL_MODE || 'not set',
+      errorCode: error.code,
+      errno: error.errno,
+      sqlState: error.sqlState,
+      message: error.message
+    });
+    throw error; // Throw to stop startup if DB connection fails
   }
 }
 

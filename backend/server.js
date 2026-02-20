@@ -93,21 +93,49 @@ app.get('/health', (req, res) => {
 
 // Initialize database and start server
 initDatabase()
-  .then(() => testConnection())
-  .then(() => connectRedis()) // Initialize Redis connection
+  .then(() => {
+    console.log('✅ Database schema initialized');
+    return testConnection();
+  })
+  .then(() => {
+    console.log('✅ Database connection test passed');
+    // Redis is optional - don't fail startup if it's unavailable
+    return connectRedis().catch((err) => {
+      console.warn('⚠️  Redis connection failed (continuing without cache):', err.message);
+      return Promise.resolve(); // Continue even if Redis fails
+    });
+  })
   .then(() => {
     const apiBaseUrl = process.env.API_BASE_URL || `http://localhost:${PORT}`;
     const androidEmulatorUrl = process.env.ANDROID_EMULATOR_URL || `http://10.0.2.2:${PORT}`;
     
     app.listen(PORT, '0.0.0.0', () => {
-      console.log(`Server running on port ${PORT}`);
+      console.log(`✅ Server running on port ${PORT}`);
       console.log(`Health check: ${apiBaseUrl}/health`);
       console.log(`API Base URL: ${apiBaseUrl}`);
-      console.log(`Server accessible from emulator at: ${androidEmulatorUrl}`);
+      if (androidEmulatorUrl !== apiBaseUrl) {
+        console.log(`Server accessible from emulator at: ${androidEmulatorUrl}`);
+      }
     });
   })
   .catch((error) => {
-    console.error('Failed to initialize database:', error);
+    console.error('❌ Failed to start server:', error);
+    console.error('Error details:', {
+      message: error.message,
+      stack: error.stack,
+      code: error.code,
+      errno: error.errno,
+      sqlState: error.sqlState
+    });
+    console.error('Environment check:', {
+      MYSQL_HOST: process.env.MYSQL_HOST ? '✅ Set' : '❌ Missing',
+      MYSQL_PORT: process.env.MYSQL_PORT || 'Using default 3306',
+      MYSQL_DB: process.env.MYSQL_DB || 'Using default restaurant_websites',
+      MYSQL_USER: process.env.MYSQL_USER ? '✅ Set' : '❌ Missing',
+      MYSQL_PASSWORD: process.env.MYSQL_PASSWORD ? '✅ Set' : '❌ Missing',
+      MYSQL_SSL_MODE: process.env.MYSQL_SSL_MODE || 'Not set',
+      PORT: process.env.PORT || PORT
+    });
     process.exit(1);
   });
 
