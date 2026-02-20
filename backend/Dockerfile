@@ -17,9 +17,9 @@ COPY . .
 # Create uploads dir (backend serves /uploads and writes here)
 RUN mkdir -p uploads uploads/menu-extractor uploads/delivery-zones uploads/delivery-companies
 
-# App Platform and most clouds set PORT
-ENV PORT=3000
-EXPOSE 3000
+# App Platform sets PORT=8080 at runtime; default 8080 for production
+ENV PORT=8080
+EXPOSE 8080
 
 # Listen on all interfaces (required in containers)
 CMD ["node", "server.js"]

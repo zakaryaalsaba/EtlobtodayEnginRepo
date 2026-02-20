@@ -30,11 +30,14 @@ export const pool = mysql.createPool({
  * Creates all necessary tables if they don't exist
  */
 export async function initDatabase() {
+  const host = process.env.MYSQL_HOST || 'localhost';
+  const port = parseInt(process.env.MYSQL_PORT) || 3306;
+  console.log(`Connecting to MySQL at ${host}:${port} (database: ${process.env.MYSQL_DB || 'restaurant_websites'})`);
   try {
     // First, ensure database exists
     const connection = await mysql.createConnection({
-      host: process.env.MYSQL_HOST || 'localhost',
-      port: parseInt(process.env.MYSQL_PORT) || 3306,
+      host,
+      port,
       user: process.env.MYSQL_USER || 'root',
       password: process.env.MYSQL_PASSWORD || '',
       // SSL support for DigitalOcean Managed MySQL

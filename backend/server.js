@@ -36,7 +36,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+// Default to 8080 in production (DigitalOcean App Platform); 3000 for local dev
+const PORT = process.env.PORT || (process.env.NODE_ENV === 'production' ? 8080 : 3000);
 
 // Middleware
 app.use(cors());

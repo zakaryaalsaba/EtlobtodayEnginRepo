@@ -27,6 +27,7 @@ MYSQL_SSL_MODE=REQUIRED
 ```
 
 **Important:** 
+- In Runtime Logs you should see a line like: `Connecting to MySQL at <host>:<port>`. If it says `localhost:3306`, your app-level env vars are not set or not applied.
 - `MYSQL_DB` must be `defaultdb` (not `restaurant_websites`)
 - `MYSQL_PASSWORD` should be **encrypted** (check the "Encrypt" box)
 - `MYSQL_SSL_MODE=REQUIRED` is mandatory for DigitalOcean Managed MySQL
@@ -74,12 +75,23 @@ MYSQL_SSL_MODE=REQUIRED
 
 ### Solution
 - DigitalOcean App Platform sets `PORT` automatically (usually `8080`)
-- Ensure you're not hardcoding port `3000` in your code
-- The Dockerfile sets `ENV PORT=3000` but App Platform overrides it - this is fine
+- The app listens on `process.env.PORT` (default 8080 in production). Do not hardcode port 3000.
+- If you see **Readiness probe failed: dial tcp ... 3000**, set your component’s **HTTP Port** to `8080` in App Platform (Settings → the component → HTTP Port / Health check port).
 
 ---
 
-## Issue 5: Missing Environment Variables
+## Issue 5: Redis ECONNREFUSED localhost:6379
+
+### Symptoms
+- Logs show: `Redis Client Error: ECONNREFUSED ::1:6379` or `127.0.0.1:6379`
+
+### Solution
+- **This is expected** if you have not set `REDIS_URL`. The app does not connect to Redis when `REDIS_URL` is unset, so you will not see a connection attempt in the latest code.
+- Redis is optional. If you do not use Managed Redis, ignore any Redis messages. If you do, set `REDIS_URL` to your Managed Redis URL.
+
+---
+
+## Issue 6: Missing Environment Variables
 
 ### Symptoms
 - Logs show: `❌ Missing` for required env vars
@@ -100,7 +112,7 @@ Add any missing variables in App Platform → **Settings** → **App-Level Envir
 
 ---
 
-## Issue 6: Database Name Mismatch
+## Issue 7: Database Name Mismatch
 
 ### Symptoms
 - Connection succeeds but tables aren't created

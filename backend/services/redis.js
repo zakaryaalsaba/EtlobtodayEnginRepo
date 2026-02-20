@@ -43,9 +43,9 @@ export async function connectRedis() {
   }
 }
 
-// Auto-connect on import (optional - you can call connectRedis() manually)
-if (process.env.REDIS_AUTO_CONNECT !== 'false') {
-  connectRedis().catch(console.error);
+// Auto-connect only when REDIS_URL is set (avoid connecting to localhost in production)
+if (process.env.REDIS_URL && process.env.REDIS_AUTO_CONNECT !== 'false') {
+  connectRedis().catch(() => {});
 }
 
 export default redisClient;
