@@ -32,6 +32,18 @@ import { connectRedis } from './services/redis.js';
 
 dotenv.config();
 
+// Fail fast in production if DB env vars are missing (e.g. not set in App Platform)
+if (process.env.NODE_ENV === 'production') {
+  const required = ['MYSQL_HOST', 'MYSQL_USER', 'MYSQL_PASSWORD'];
+  const missing = required.filter((k) => !process.env[k]?.trim());
+  if (missing.length > 0) {
+    console.error('❌ Missing required environment variables:', missing.join(', '));
+    console.error('   Set them in DigitalOcean App Platform → Your App → Settings → App-Level Environment Variables.');
+    console.error('   See Documents/DIGITALOCEAN_ENV_SETUP.md for values.');
+    process.exit(1);
+  }
+}
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
