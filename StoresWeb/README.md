@@ -40,6 +40,10 @@ npm run build
 npm run preview
 ```
 
+## Deploy (DigitalOcean)
+
+See **[Documents/STORESWEB_DEPLOYMENT.md](../Documents/STORESWEB_DEPLOYMENT.md)** for Static Site setup, build command, env vars (`VITE_API_BASE_URL`, `VITE_BASE_PATH`), and routing.
+
 ## Features
 
 - **Stores** – List all stores from API
