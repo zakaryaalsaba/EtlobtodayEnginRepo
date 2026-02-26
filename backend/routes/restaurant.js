@@ -55,6 +55,44 @@ router.get('/website', verifyAdminToken, async (req, res) => {
 });
 
 /**
+ * PUT /api/restaurant/menu-category-order
+ * Update menu category order for this restaurant's website.
+ * Body: { order: { "Main Dishes": 1, "Drinks": 2, ... } }
+ */
+router.put('/menu-category-order', verifyAdminToken, async (req, res) => {
+  try {
+    const websiteId = req.websiteId;
+    const { order } = req.body || {};
+
+    if (!order || typeof order !== 'object' || Array.isArray(order)) {
+      return res.status(400).json({ error: 'Invalid category order payload' });
+    }
+
+    // Normalize: keep only finite positive numbers
+    const normalized = {};
+    for (const [key, value] of Object.entries(order)) {
+      if (!key) continue;
+      const num = typeof value === 'number' ? value : parseInt(value, 10);
+      if (!Number.isFinite(num) || num <= 0) continue;
+      normalized[key] = num;
+    }
+
+    await pool.execute(
+      'UPDATE restaurant_websites SET menu_category_order = ? WHERE id = ?',
+      [JSON.stringify(normalized), websiteId]
+    );
+
+    // Invalidate cache so WebsiteViewer sees the new order
+    await CacheService.invalidateRestaurant(websiteId);
+
+    res.json({ success: true, order: normalized });
+  } catch (error) {
+    console.error('Error updating menu category order:', error);
+    res.status(500).json({ error: 'Failed to update category order', message: error.message });
+  }
+});
+
+/**
  * GET /api/restaurant/delivery-companies
  * List delivery companies for dropdown (id, company_name only)
  */

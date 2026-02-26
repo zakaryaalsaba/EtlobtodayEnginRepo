@@ -461,7 +461,34 @@
           </div>
 
           <div v-else>
-            <div v-for="group in groupedProducts" :key="group.key" class="mb-6">
+            <div class="mb-6">
+              <p class="text-sm font-semibold text-gray-700 mb-2">
+                {{ $t('restaurantDashboard.categoryOrder') || 'Category order' }}
+              </p>
+              <p class="text-xs text-gray-500 mb-3">
+                {{ $t('restaurantDashboard.categoryOrderHint') || 'Set order numbers (1, 2, 3...) to control the category order on your website.' }}
+              </p>
+              <div class="flex flex-wrap gap-3">
+                <div
+                  v-for="group in groupedProducts"
+                  :key="group.key"
+                  class="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-lg border border-gray-200 text-xs"
+                  :class="$i18n.locale === 'ar' ? 'flex-row-reverse' : ''"
+                >
+                  <span class="text-gray-700 font-medium">{{ group.label }}</span>
+                  <span class="text-gray-400">#</span>
+                  <input
+                    v-model.number="categoryOrder[group.key]"
+                    type="number"
+                    min="1"
+                    class="w-16 px-2 py-1 border border-gray-300 rounded text-xs text-center"
+                    @change="handleCategoryOrderChange"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div v-for="group in orderedGroupedProducts" :key="group.key" class="mb-6">
               <h3
                 class="text-lg font-bold text-gray-800 mb-3"
                 :class="$i18n.locale === 'ar' ? 'text-right' : ''"
@@ -2869,7 +2896,8 @@ import {
   getRestaurantBranches,
   createRestaurantBranch,
   updateRestaurantBranch,
-  deleteRestaurantBranch
+  deleteRestaurantBranch,
+  updateRestaurantMenuCategoryOrder
 } from '../services/api.js';
 
 const { t, locale } = useI18n();
@@ -2885,6 +2913,7 @@ const saving = ref(false);
 const saveError = ref('');
 const saveSuccess = ref('');
 const products = ref([]);
+const categoryOrder = ref({});
 const groupedProducts = computed(() => {
   const groups = new Map();
 
@@ -2905,6 +2934,22 @@ const groupedProducts = computed(() => {
   });
 
   return Array.from(groups.values());
+});
+
+const orderedGroupedProducts = computed(() => {
+  const groups = groupedProducts.value.slice();
+  return groups.sort((a, b) => {
+    const va = categoryOrder.value[a.key];
+    const vb = categoryOrder.value[b.key];
+    const oa = Number.isFinite(va) && va > 0 ? va : 9999;
+    const ob = Number.isFinite(vb) && vb > 0 ? vb : 9999;
+    if (oa !== ob) return oa - ob;
+    const la = (a.label || '').toLowerCase();
+    const lb = (b.label || '').toLowerCase();
+    if (la < lb) return -1;
+    if (la > lb) return 1;
+    return 0;
+  });
 });
 const orders = ref([]);
 const showAllOrders = ref(false);
@@ -2952,6 +2997,16 @@ const notificationSettings = ref({
 const savingNotifications = ref(false);
 const notificationError = ref('');
 const notificationSuccess = ref('');
+
+const handleCategoryOrderChange = async () => {
+  try {
+    const updated = await updateRestaurantMenuCategoryOrder(categoryOrder.value);
+    categoryOrder.value = { ...updated };
+  } catch (error) {
+    console.error('Failed to update category order:', error);
+    alert(t('restaurantDashboard.categoryOrderError') || 'Failed to update category order. Please try again.');
+  }
+};
 
 // Branches
 const branches = ref([]);
@@ -3422,6 +3477,18 @@ const loadProducts = async () => {
   try {
     loadingProducts.value = true;
     products.value = await getRestaurantProducts();
+    // Initialize category order from website settings, if available
+    if (website.value && website.value.menu_category_order) {
+      try {
+        const raw = website.value.menu_category_order;
+        const parsed = typeof raw === 'string' ? JSON.parse(raw) : raw;
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+          categoryOrder.value = { ...parsed };
+        }
+      } catch (e) {
+        categoryOrder.value = {};
+      }
+    }
   } catch (error) {
     console.error('Failed to load products:', error);
     productError.value = 'Failed to load products';

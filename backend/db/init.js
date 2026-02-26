@@ -162,6 +162,19 @@ export async function initDatabase() {
           console.warn('Error adding menu_image_path column:', err.message);
         }
       }
+
+      // Add menu_category_order JSON column for category ordering if it doesn't exist
+      if (!existingColumns.includes('menu_category_order')) {
+        try {
+          await pool.execute(`
+            ALTER TABLE restaurant_websites
+            ADD COLUMN menu_category_order JSON NULL AFTER menu_items
+          `);
+          console.log('Added menu_category_order column');
+        } catch (err) {
+          console.warn('Error adding menu_category_order column:', err.message);
+        }
+      }
       
       // Add barcode_code if it doesn't exist
       if (!existingColumns.includes('barcode_code')) {

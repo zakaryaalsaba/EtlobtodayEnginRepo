@@ -284,7 +284,7 @@
         
         <!-- Products by Category -->
         <div v-if="products.length > 0">
-          <div v-for="(categoryProducts, category) in productsByCategory" :key="category" class="mb-20">
+          <div v-for="(categoryProducts, category) in orderedProductsByCategory" :key="category" class="mb-20">
             <div class="flex items-center gap-4 mb-10">
               <div class="h-1 flex-1 rounded-full" :style="{ backgroundColor: `${website.primary_color}30` }"></div>
               <h4 class="text-4xl md:text-5xl font-black whitespace-nowrap" :style="{ color: website.primary_color }">
@@ -921,6 +921,47 @@ const productsByCategory = computed(() => {
     }
   });
   return grouped;
+});
+
+const categoryOrderMap = computed(() => {
+  if (!website.value || !website.value.menu_category_order) return {};
+  const raw = website.value.menu_category_order;
+  try {
+    if (typeof raw === 'string') {
+      const parsed = JSON.parse(raw);
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    }
+    if (typeof raw === 'object' && raw !== null && !Array.isArray(raw)) {
+      return raw;
+    }
+  } catch {
+    return {};
+  }
+  return {};
+});
+
+const orderedProductsByCategory = computed(() => {
+  const entries = Object.entries(productsByCategory.value || {});
+  const order = categoryOrderMap.value || {};
+
+  entries.sort(([catA], [catB]) => {
+    const va = order[catA];
+    const vb = order[catB];
+    const oa = Number.isFinite(va) && va > 0 ? va : 9999;
+    const ob = Number.isFinite(vb) && vb > 0 ? vb : 9999;
+    if (oa !== ob) return oa - ob;
+    const la = (catA || '').toLowerCase();
+    const lb = (catB || '').toLowerCase();
+    if (la < lb) return -1;
+    if (la > lb) return 1;
+    return 0;
+  });
+
+  const ordered = {};
+  for (const [cat, items] of entries) {
+    ordered[cat] = items;
+  }
+  return ordered;
 });
 
 const galleryImages = computed(() => {

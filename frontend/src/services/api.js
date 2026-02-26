@@ -612,6 +612,33 @@ export async function getRestaurantWebsite() {
 }
 
 /**
+ * Update menu category order for the logged-in restaurant
+ * payload example: { "Main Dishes": 1, "Drinks": 2 }
+ */
+export async function updateRestaurantMenuCategoryOrder(orderMap) {
+  try {
+    const token = localStorage.getItem('restaurantToken');
+    if (!token) {
+      throw new Error('No token found');
+    }
+
+    const response = await api.put(
+      '/api/restaurant/menu-category-order',
+      { order: orderMap || {} },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    return response.data.order;
+  } catch (error) {
+    throw new Error(error.response?.data?.error || 'Failed to update category order');
+  }
+}
+
+/**
  * Update restaurant's own website
  */
 export async function updateRestaurantWebsite(websiteData) {
