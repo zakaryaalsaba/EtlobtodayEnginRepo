@@ -462,7 +462,7 @@
 
           <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div
-              v-for="product in products"
+              v-for="product in sortedProducts"
               :key="product.id"
               class="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:shadow-md transition-shadow"
             >
@@ -3380,6 +3380,31 @@ const resetDeliveryCompany = async () => {
     resettingDeliveryCompany.value = false;
   }
 };
+
+const sortedProducts = computed(() => {
+  if (!products.value || products.value.length === 0) return [];
+
+  const localizedCategory = (p) => {
+    const cat = (locale.value === 'ar' ? p.category_ar : p.category) || p.category || p.category_ar || '';
+    return String(cat).toLowerCase().trim();
+  };
+
+  const nameForTieBreak = (p) => String(p.name || '').toLowerCase().trim();
+
+  return [...products.value].sort((a, b) => {
+    const ca = localizedCategory(a);
+    const cb = localizedCategory(b);
+    if (ca && !cb) return -1;
+    if (!ca && cb) return 1;
+    if (ca < cb) return -1;
+    if (ca > cb) return 1;
+    const na = nameForTieBreak(a);
+    const nb = nameForTieBreak(b);
+    if (na < nb) return -1;
+    if (na > nb) return 1;
+    return 0;
+  });
+});
 
 // Load products
 const loadProducts = async () => {
