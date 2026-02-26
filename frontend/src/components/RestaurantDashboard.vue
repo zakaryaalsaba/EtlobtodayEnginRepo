@@ -460,39 +460,40 @@
             <p class="text-sm text-gray-500 mt-2">{{ $t('websiteBuilder.noProductsHint') }}</p>
           </div>
 
-          <div v-else class="mb-4 p-4 bg-gray-50 rounded-lg border border-dashed border-gray-200">
-            <p class="text-sm font-semibold text-gray-700 mb-2">
-              {{ $t('restaurantDashboard.categoryOrder') || 'Category order' }}
-            </p>
-            <p class="text-xs text-gray-500 mb-3">
-              Set the order number for each category (1, 2, 3...). Categories with lower numbers appear first in the menu.
-            </p>
-            <div class="flex flex-wrap gap-3">
-              <div
-                v-for="cat in categoryList"
-                :key="cat.key"
-                class="flex items-center gap-2 bg-white px-3 py-2 rounded-lg border border-gray-200 text-xs"
-                :class="$i18n.locale === 'ar' ? 'flex-row-reverse' : ''"
-              >
-                <span class="text-gray-700 font-medium">{{ cat.label }}</span>
-                <span class="text-gray-400">#</span>
-                <input
-                  v-model.number="categoryOrder[cat.key]"
-                  type="number"
-                  min="1"
-                  class="w-16 px-2 py-1 border border-gray-300 rounded text-xs text-center"
-                  @change="saveCategoryOrder"
-                />
+          <div v-else>
+            <div class="mb-4 p-4 bg-gray-50 rounded-lg border border-dashed border-gray-200">
+              <p class="text-sm font-semibold text-gray-700 mb-2">
+                {{ $t('restaurantDashboard.categoryOrder') || 'Category order' }}
+              </p>
+              <p class="text-xs text-gray-500 mb-3">
+                Set the order number for each category (1, 2, 3...). Categories with lower numbers appear first in the menu.
+              </p>
+              <div class="flex flex-wrap gap-3">
+                <div
+                  v-for="cat in categoryList"
+                  :key="cat.key"
+                  class="flex items-center gap-2 bg-white px-3 py-2 rounded-lg border border-gray-200 text-xs"
+                  :class="$i18n.locale === 'ar' ? 'flex-row-reverse' : ''"
+                >
+                  <span class="text-gray-700 font-medium">{{ cat.label }}</span>
+                  <span class="text-gray-400">#</span>
+                  <input
+                    v-model.number="categoryOrder[cat.key]"
+                    type="number"
+                    min="1"
+                    class="w-16 px-2 py-1 border border-gray-300 rounded text-xs text-center"
+                    @change="saveCategoryOrder"
+                  />
+                </div>
               </div>
             </div>
-          </div>
 
-          <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div
-              v-for="product in sortedProducts"
-              :key="product.id"
-              class="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:shadow-md transition-shadow"
-            >
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div
+                v-for="product in sortedProducts"
+                :key="product.id"
+                class="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:shadow-md transition-shadow"
+              >
               <div v-if="product.image_url" class="mb-4">
                 <img :src="product.image_url" :alt="product.name" class="w-full h-40 object-cover rounded-lg" />
               </div>
