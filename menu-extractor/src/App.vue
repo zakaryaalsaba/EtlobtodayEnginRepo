@@ -43,15 +43,41 @@
         </div>
       </section>
 
-      <!-- Step 1: Upload Images -->
+      <!-- Step 1: Upload Images or Paste Text -->
       <section v-if="step === 'upload'" class="step-section">
         <p v-if="mode === 'add' && selectedRestaurantName" class="context-msg">
           Adding products to: <strong>{{ selectedRestaurantName }}</strong>
         </p>
-        <ImageUpload 
-          @images-uploaded="handleImagesUploaded"
-          :loading="processing"
-        />
+        <div class="upload-grid">
+          <div class="upload-card">
+            <h3 class="upload-title">Option 1: Upload menu images</h3>
+            <p class="upload-subtitle">Drag & drop or select images of your menu.</p>
+            <ImageUpload 
+              @images-uploaded="handleImagesUploaded"
+              :loading="processing"
+            />
+          </div>
+
+          <div class="upload-card">
+            <h3 class="upload-title">Option 2: Paste menu text</h3>
+            <p class="upload-subtitle">
+              Paste the full menu text here. The system will extract products and categories similar to image extraction.
+            </p>
+            <textarea
+              v-model="menuText"
+              class="menu-textarea"
+              rows="10"
+              placeholder="Paste your menu text here (for example, copy from a PDF or website)..."
+            ></textarea>
+            <button
+              class="btn btn-primary extract-text-btn"
+              :disabled="processing || !menuText.trim()"
+              @click="handleTextExtraction"
+            >
+              {{ processing ? 'Processing...' : 'Extract products from text' }}
+            </button>
+          </div>
+        </div>
         <button @click="step = 'mode'" class="btn btn-secondary back-mode-btn">← Change action</button>
       </section>
 
@@ -111,6 +137,7 @@ const mode = ref('create')
 const processing = ref(false)
 const creating = ref(false)
 const extractedProducts = ref([])
+const menuText = ref('')
 const restaurantInfo = ref({
   restaurant_name: '',
   restaurant_name_ar: '',
@@ -200,6 +227,115 @@ async function handleImagesUploaded(images) {
   } catch (error) {
     console.error('Error:', error)
     alert('Failed to process images: ' + error.message)
+  } finally {
+    processing.value = false
+  }
+}
+
+function guessRestaurantNameFromText(text) {
+  const lines = text
+    .split('\n')
+    .map(l => l.trim())
+    .filter(l => l.length > 0)
+
+  for (const line of lines) {
+    const hasPrice = /[\d]+\s*(?:\.|,)?\d*\s*(?:\$|USD|SAR|AED|JOD|EGP|ريال|درهم|دينار|جنيه)/i.test(line)
+    const hasPhone = /(\+?\d[\d\s-]{6,})/.test(line)
+    if (hasPrice || hasPhone) continue
+
+    if (line.toUpperCase() === line || /^[A-Z][A-Za-z\s&'-]+$/.test(line)) {
+      return line
+    }
+  }
+
+  return lines[0] || ''
+}
+
+function parseMenuText(text) {
+  const lines = text
+    .split('\n')
+    .map(l => l.trim())
+    .filter(l => l.length > 0)
+
+  const products = []
+  let currentCategory = 'General'
+
+  const knownCategories = [
+    'Main Dishes',
+    'Sides',
+    'Sides / Add-On',
+    'Add-On',
+    'Meals',
+    'Sandwiches',
+    'Drinks',
+    'Appetizers',
+    'Desserts',
+    'Starters'
+  ]
+
+  for (const rawLine of lines) {
+    const line = rawLine.replace(/^[🍽🥘🍴🥪🥤📌⭐\-•\s]+/, '').trim()
+    if (!line) continue
+
+    const looksLikeCategory =
+      knownCategories.some(c => line.toLowerCase().includes(c.toLowerCase())) ||
+      (!/[0-9]/.test(line) && line === line.toUpperCase() && line.length >= 3)
+
+    if (looksLikeCategory) {
+      currentCategory = line
+      continue
+    }
+
+    const priceMatch =
+      line.match(/^(.*?)[–-]\s*\$?\s*([\d]+(?:[.,]\d+)?)/) ||
+      line.match(/^(.+?)\s+\$?\s*([\d]+(?:[.,]\d+)?)/)
+
+    if (priceMatch) {
+      const name = priceMatch[1].trim()
+      const priceStr = priceMatch[2].replace(',', '.')
+      const price = parseFloat(priceStr) || 0
+
+      if (name) {
+        products.push({
+          name,
+          name_ar: name,
+          description: '',
+          description_ar: '',
+          price,
+          category: currentCategory || 'General',
+          category_ar: currentCategory || 'عام',
+          is_available: true
+        })
+      }
+    }
+  }
+
+  return products
+}
+
+async function handleTextExtraction() {
+  const raw = menuText.value || ''
+  if (!raw.trim()) return
+
+  processing.value = true
+  try {
+    const products = parseMenuText(raw)
+
+    if (!products.length) {
+      alert('Could not detect any products in the text. Please check the format or try with images.')
+      return
+    }
+
+    extractedProducts.value = products
+
+    if (!restaurantInfo.value.restaurant_name) {
+      restaurantInfo.value.restaurant_name = guessRestaurantNameFromText(raw)
+    }
+
+    step.value = 'review'
+  } catch (error) {
+    console.error('Error extracting from text:', error)
+    alert('Failed to extract products from text: ' + error.message)
   } finally {
     processing.value = false
   }
@@ -452,6 +588,55 @@ function reset() {
 .context-msg {
   margin-bottom: 1rem;
   color: #374151;
+}
+
+.upload-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.upload-card {
+  background: #f9fafb;
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid #e5e7eb;
+}
+
+.upload-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.upload-subtitle {
+  margin: 0 0 1rem;
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.menu-textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 0.95rem;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  resize: vertical;
+  min-height: 200px;
+  box-sizing: border-box;
+}
+
+.menu-textarea:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 1px rgba(102, 126, 234, 0.3);
+}
+
+.extract-text-btn {
+  margin-top: 0.75rem;
 }
 
 .back-mode-btn {
