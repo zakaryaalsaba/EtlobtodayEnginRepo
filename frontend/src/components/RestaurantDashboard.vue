@@ -60,7 +60,7 @@
                 >
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
-                <span>{{ loadingOrders ? $t('restaurantDashboard.refreshing') : $t('restaurantDashboard.refresh') }}</span>
+                <span>{{ loadingOrders ? $t('restaurantDashboard.refreshing') : $t('websiteBuilder.refresh') }}</span>
               </button>
             </div>
             <span class="text-sm text-gray-600">{{ $t('restaurantDashboard.welcome') }}, {{ restaurantInfo?.name }}</span>
@@ -88,7 +88,7 @@
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
             ]"
           >
-            {{ $t('restaurantDashboard.basicInformation') }}
+            {{ $t('websiteBuilder.basicInformation') }}
           </button>
           <button
             @click="activeTab = 'menu'"
@@ -99,7 +99,7 @@
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
             ]"
           >
-            {{ $t('restaurantDashboard.menu') }}
+            {{ $t('websiteBuilder.menu') }}
           </button>
           <button
             @click="activeTab = 'businessHours'"
@@ -132,7 +132,7 @@
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
             ]"
           >
-            {{ $t('restaurantDashboard.orderType') }}
+            {{ $t('websiteBuilder.orderType') }}
           </button>
           <button
             @click="activeTab = 'branches'"
@@ -231,7 +231,7 @@
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
             ]"
           >
-            {{ $t('restaurantDashboard.additional') }}
+            {{ $t('websiteBuilder.additional') }}
           </button>
           <button
             @click="activeTab = 'gallery'"
@@ -242,7 +242,7 @@
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
             ]"
           >
-            {{ $t('restaurantDashboard.gallery') }}
+            {{ $t('websiteBuilder.gallery') }}
           </button>
         </nav>
       </div>
@@ -266,7 +266,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">
-                  {{ $t('restaurantDashboard.restaurantNameEn') }} <span class="text-red-500">{{ $t('restaurantDashboard.required') }}</span>
+                  {{ $t('restaurantDashboard.restaurantNameEn') }} <span class="text-red-500">{{ $t('websiteBuilder.required') }}</span>
                 </label>
                 <input
                   v-model="websiteForm.restaurant_name"
@@ -289,7 +289,7 @@
 
             <!-- Logo Upload -->
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2">{{ $t('restaurantDashboard.logo') }}</label>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">{{ $t('websiteBuilder.logo') }}</label>
               <div class="flex items-center gap-4" :class="$i18n.locale === 'ar' ? 'flex-row-reverse' : ''">
                 <div v-if="websiteForm.logo_url || logoPreview" class="flex-shrink-0">
                   <img
@@ -305,7 +305,7 @@
                     @change="handleLogoUpload"
                     :class="['block w-full text-sm text-gray-500 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100', $i18n.locale === 'ar' ? 'file:ml-4' : 'file:mr-4']"
                   />
-                  <p class="text-xs text-gray-500 mt-1">{{ $t('restaurantDashboard.logoHint') }}</p>
+                  <p class="text-xs text-gray-500 mt-1">{{ $t('websiteBuilder.logoHint') }}</p>
                 </div>
               </div>
             </div>
@@ -353,30 +353,30 @@
                 />
               </div>
               <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">{{ $t('restaurantDashboard.phone') }}</label>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">{{ $t('websiteBuilder.phone') }}</label>
                 <input
                   v-model="websiteForm.phone"
                   type="tel"
                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                  :placeholder="$t('restaurantDashboard.phonePlaceholder')"
+                  :placeholder="$t('websiteBuilder.phonePlaceholder')"
                 />
               </div>
               <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">{{ $t('restaurantDashboard.email') }}</label>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">{{ $t('websiteBuilder.email') }}</label>
                 <input
                   v-model="websiteForm.email"
                   type="email"
                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                  :placeholder="$t('restaurantDashboard.emailPlaceholder')"
+                  :placeholder="$t('websiteBuilder.emailPlaceholder')"
                 />
               </div>
               <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">{{ $t('restaurantDashboard.websiteUrl') }}</label>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">{{ $t('websiteBuilder.websiteUrl') }}</label>
                 <input
                   v-model="websiteForm.website_url"
                   type="url"
                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                  :placeholder="$t('restaurantDashboard.websiteUrlPlaceholder')"
+                  :placeholder="$t('websiteBuilder.websiteUrlPlaceholder')"
                 />
               </div>
             </div>
@@ -384,7 +384,7 @@
             <!-- Color Scheme -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">{{ $t('restaurantDashboard.primaryColor') }}</label>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">{{ $t('websiteBuilder.primaryColor') }}</label>
                 <div class="flex items-center gap-3" :class="$i18n.locale === 'ar' ? 'flex-row-reverse' : ''">
                   <input
                     v-model="websiteForm.primary_color"
@@ -399,7 +399,7 @@
                 </div>
               </div>
               <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">{{ $t('restaurantDashboard.secondaryColor') }}</label>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">{{ $t('websiteBuilder.secondaryColor') }}</label>
                 <div class="flex items-center gap-3" :class="$i18n.locale === 'ar' ? 'flex-row-reverse' : ''">
                   <input
                     v-model="websiteForm.secondary_color"
@@ -429,8 +429,8 @@
               :disabled="saving"
               class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <span v-if="saving">{{ $t('restaurantDashboard.saving') }}</span>
-              <span v-else>{{ $t('restaurantDashboard.saveChanges') }}</span>
+              <span v-if="saving">{{ $t('websiteBuilder.saving') }}</span>
+              <span v-else>{{ $t('websiteBuilder.saveChanges') }}</span>
             </button>
           </form>
         </div>
@@ -440,12 +440,12 @@
       <div v-show="activeTab === 'menu'" class="space-y-6">
         <div class="bg-white rounded-xl shadow-md p-8">
           <div class="flex items-center justify-between mb-6" :class="$i18n.locale === 'ar' ? 'flex-row-reverse' : ''">
-            <h2 class="text-2xl font-bold text-gray-900">{{ $t('restaurantDashboard.products') }}</h2>
+            <h2 class="text-2xl font-bold text-gray-900">{{ $t('websiteBuilder.products') }}</h2>
             <button
               @click="showProductForm = true; editingProduct = null"
               class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-semibold"
             >
-              {{ $t('restaurantDashboard.addProduct') }}
+              {{ $t('websiteBuilder.addProduct') }}
             </button>
           </div>
 
@@ -456,8 +456,8 @@
 
           <div v-else-if="products.length === 0" class="text-center py-12">
             <div class="text-4xl mb-4">🍽️</div>
-            <p class="text-gray-600 font-semibold">{{ $t('restaurantDashboard.noProducts') }}</p>
-            <p class="text-sm text-gray-500 mt-2">{{ $t('restaurantDashboard.noProductsHint') }}</p>
+            <p class="text-gray-600 font-semibold">{{ $t('websiteBuilder.noProducts') }}</p>
+            <p class="text-sm text-gray-500 mt-2">{{ $t('websiteBuilder.noProductsHint') }}</p>
           </div>
 
           <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -479,7 +479,7 @@
                     product.is_available ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                   ]"
                 >
-                  {{ product.is_available ? $t('restaurantDashboard.available') : $t('restaurantDashboard.unavailable') }}
+                  {{ product.is_available ? $t('websiteBuilder.available') : $t('websiteBuilder.unavailable') }}
                 </span>
               </div>
               <div class="flex flex-wrap gap-2">
@@ -494,13 +494,13 @@
                   @click="editProduct(product)"
                   class="flex-1 min-w-0 px-3 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors text-sm font-semibold"
                 >
-                  {{ $t('restaurantDashboard.edit') }}
+                  {{ $t('websiteBuilder.edit') }}
                 </button>
                 <button
                   @click="deleteProduct(product.id)"
                   class="px-3 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm font-semibold"
                 >
-                  {{ $t('restaurantDashboard.delete') }}
+                  {{ $t('websiteBuilder.delete') }}
                 </button>
               </div>
             </div>
@@ -569,7 +569,7 @@
               </div>
 
               <div v-if="showAddonForm" class="mb-4 p-4 border border-gray-200 rounded-lg bg-gray-50">
-                <p class="text-sm font-semibold text-gray-700 mb-2">{{ editingAddon ? $t('restaurantDashboard.editProduct') : $t('restaurantDashboard.addAddon') }}</p>
+                <p class="text-sm font-semibold text-gray-700 mb-2">{{ editingAddon ? $t('websiteBuilder.editProduct') : $t('restaurantDashboard.addAddon') }}</p>
                 <div class="space-y-2">
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                     <div>
@@ -637,10 +637,10 @@
                     :disabled="savingAddon"
                     class="px-3 py-2 bg-indigo-600 text-white rounded-lg text-sm font-semibold disabled:opacity-50"
                   >
-                    {{ savingAddon ? $t('restaurantDashboard.saving') : (editingAddon ? $t('restaurantDashboard.updateProduct') : $t('restaurantDashboard.createProduct')) }}
+                    {{ savingAddon ? $t('websiteBuilder.saving') : (editingAddon ? $t('websiteBuilder.updateProduct') : $t('websiteBuilder.createProduct')) }}
                   </button>
                   <button type="button" @click="showAddonForm = false; editingAddon = null" class="px-3 py-2 bg-gray-200 rounded-lg text-sm font-semibold">
-                    {{ $t('restaurantDashboard.cancel') }}
+                    {{ $t('websiteBuilder.cancel') }}
                   </button>
                 </div>
               </div>
@@ -675,15 +675,15 @@
                     </div>
                   </div>
                   <div class="flex gap-1" :class="$i18n.locale === 'ar' ? 'flex-row-reverse' : ''">
-                    <button type="button" @click="editAddon(addon)" class="px-2 py-1 bg-gray-200 rounded text-sm font-medium hover:bg-gray-300">{{ $t('restaurantDashboard.edit') }}</button>
-                    <button type="button" @click="deleteAddon(addon.id)" class="px-2 py-1 bg-red-100 text-red-700 rounded text-sm font-medium hover:bg-red-200">{{ $t('restaurantDashboard.delete') }}</button>
+                    <button type="button" @click="editAddon(addon)" class="px-2 py-1 bg-gray-200 rounded text-sm font-medium hover:bg-gray-300">{{ $t('websiteBuilder.edit') }}</button>
+                    <button type="button" @click="deleteAddon(addon.id)" class="px-2 py-1 bg-red-100 text-red-700 rounded text-sm font-medium hover:bg-red-200">{{ $t('websiteBuilder.delete') }}</button>
                   </div>
                 </li>
               </ul>
             </div>
 
             <div class="flex justify-end">
-              <button type="button" @click="closeAddons" class="px-4 py-2 bg-gray-200 rounded-lg font-semibold hover:bg-gray-300">{{ $t('restaurantDashboard.cancel') }}</button>
+              <button type="button" @click="closeAddons" class="px-4 py-2 bg-gray-200 rounded-lg font-semibold hover:bg-gray-300">{{ $t('websiteBuilder.cancel') }}</button>
             </div>
           </div>
         </div>
@@ -694,15 +694,15 @@
         <div class="bg-white rounded-xl shadow-md p-8">
           <div class="flex items-center justify-between mb-4" :class="$i18n.locale === 'ar' ? 'flex-row-reverse' : ''">
             <div>
-              <h2 class="text-2xl font-bold text-gray-900 mb-2">{{ $t('restaurantDashboard.galleryImages') }}</h2>
-              <p class="text-sm text-gray-500">{{ $t('restaurantDashboard.galleryHint') }}</p>
+              <h2 class="text-2xl font-bold text-gray-900 mb-2">{{ $t('websiteBuilder.galleryImages') }}</h2>
+              <p class="text-sm text-gray-500">{{ $t('websiteBuilder.galleryHint') }}</p>
             </div>
             <div class="flex gap-2">
               <label
                 for="gallery-upload"
                 class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors cursor-pointer inline-block text-sm font-semibold"
               >
-                {{ $t('restaurantDashboard.addImages') }}
+                {{ $t('websiteBuilder.addImages') }}
               </label>
               <input
                 id="gallery-upload"
@@ -719,7 +719,7 @@
                 :disabled="uploadingGallery"
                 class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-semibold disabled:opacity-50"
               >
-                {{ uploadingGallery ? $t('restaurantDashboard.uploading') : $t('restaurantDashboard.uploadNow') }}
+                {{ uploadingGallery ? $t('websiteBuilder.uploading') : $t('websiteBuilder.uploadNow') }}
               </button>
             </div>
           </div>
@@ -748,8 +748,8 @@
           
           <div v-else class="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center">
             <div class="text-4xl mb-4">📷</div>
-            <p class="text-gray-500 mb-2">{{ $t('restaurantDashboard.noGalleryImages') }}</p>
-            <p class="text-sm text-gray-400">{{ $t('restaurantDashboard.noGalleryImagesHint') }}</p>
+            <p class="text-gray-500 mb-2">{{ $t('websiteBuilder.noGalleryImages') }}</p>
+            <p class="text-sm text-gray-400">{{ $t('websiteBuilder.noGalleryImagesHint') }}</p>
           </div>
         </div>
       </div>
@@ -808,7 +808,7 @@
               :disabled="savingBusinessHours"
               class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <span v-if="savingBusinessHours">{{ $t('restaurantDashboard.saving') }}</span>
+              <span v-if="savingBusinessHours">{{ $t('websiteBuilder.saving') }}</span>
               <span v-else>{{ $t('restaurantDashboard.businessHoursSave') }}</span>
             </button>
           </form>
@@ -997,21 +997,21 @@
 
                 <!-- Active -->
                 <div>
-                  <label class="block text-sm font-semibold text-gray-700 mb-2">{{ $t('restaurantDashboard.status') }}</label>
+                  <label class="block text-sm font-semibold text-gray-700 mb-2">{{ $t('websiteBuilder.status') }}</label>
                   <label class="flex items-center cursor-pointer" :class="$i18n.locale === 'ar' ? 'flex-row-reverse' : ''">
                     <input
                       v-model="offerForm.is_active"
                       type="checkbox"
                       class="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
                     />
-                    <span :class="['text-sm font-semibold text-gray-700', $i18n.locale === 'ar' ? 'mr-2' : 'ml-2']">{{ $t('restaurantDashboard.active') }}</span>
+                    <span :class="['text-sm font-semibold text-gray-700', $i18n.locale === 'ar' ? 'mr-2' : 'ml-2']">{{ $t('websiteBuilder.active') }}</span>
                   </label>
                 </div>
               </div>
 
               <!-- Description -->
               <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">{{ $t('restaurantDashboard.description') }}</label>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">{{ $t('websiteBuilder.description') }}</label>
                 <textarea
                   v-model="offerForm.description"
                   rows="2"
@@ -1033,14 +1033,14 @@
                   @click="showOfferForm = false; editingOffer = null; resetOfferForm()"
                   class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-semibold"
                 >
-                  {{ $t('restaurantDashboard.cancel') }}
+                  {{ $t('websiteBuilder.cancel') }}
                 </button>
                 <button
                   type="submit"
                   :disabled="savingOffer"
                   class="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <span v-if="savingOffer">{{ $t('restaurantDashboard.saving') }}</span>
+                  <span v-if="savingOffer">{{ $t('websiteBuilder.saving') }}</span>
                   <span v-else>{{ $t('restaurantDashboard.save') }}</span>
                 </button>
               </div>
@@ -1066,7 +1066,7 @@
                       class="px-3 py-1 rounded-full text-xs font-semibold"
                       :class="offer.is_active ? 'bg-amber-100 text-amber-800' : 'bg-gray-100 text-gray-800'"
                     >
-                      {{ offer.is_active ? $t('restaurantDashboard.active') : $t('restaurantDashboard.inactive') }}
+                      {{ offer.is_active ? $t('websiteBuilder.active') : $t('websiteBuilder.inactive') }}
                     </span>
                     <span class="text-sm text-gray-500">{{ formatOfferType(offer.offer_type) }}</span>
                   </div>
@@ -1093,13 +1093,13 @@
                     @click="editOffer(offer)"
                     class="px-4 py-2 text-indigo-600 border border-indigo-300 rounded-lg hover:bg-indigo-50 transition-colors font-semibold text-sm"
                   >
-                    {{ $t('restaurantDashboard.edit') }}
+                    {{ $t('websiteBuilder.edit') }}
                   </button>
                   <button
                     @click="deleteOffer(offer.id)"
                     class="px-4 py-2 text-red-600 border border-red-300 rounded-lg hover:bg-red-50 transition-colors font-semibold text-sm"
                   >
-                    {{ $t('restaurantDashboard.delete') }}
+                    {{ $t('websiteBuilder.delete') }}
                   </button>
                 </div>
               </div>
@@ -1116,25 +1116,25 @@
           <form @submit.prevent="saveWebsite" class="space-y-6">
             <!-- App Download URL -->
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2">{{ $t('restaurantDashboard.appDownloadUrl') }}</label>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">{{ $t('websiteBuilder.appDownloadUrl') }}</label>
               <input
                 v-model="websiteForm.app_download_url"
                 type="url"
                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                :placeholder="$t('restaurantDashboard.appDownloadUrlPlaceholder')"
+                :placeholder="$t('websiteBuilder.appDownloadUrlPlaceholder')"
               />
             </div>
 
             <!-- Locations (JSON format) -->
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2">{{ $t('restaurantDashboard.locations') }}</label>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">{{ $t('websiteBuilder.locations') }}</label>
               <textarea
                 v-model="locationsText"
                 rows="4"
                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 font-mono text-sm"
-                :placeholder="$t('restaurantDashboard.locationsPlaceholder')"
+                :placeholder="$t('websiteBuilder.locationsPlaceholder')"
               ></textarea>
-              <p class="text-xs text-gray-500 mt-1">{{ $t('restaurantDashboard.locationsHint') }}</p>
+              <p class="text-xs text-gray-500 mt-1">{{ $t('websiteBuilder.locationsHint') }}</p>
             </div>
 
             <!-- Newsletter Toggle -->
@@ -1145,7 +1145,7 @@
                   type="checkbox"
                   class="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
                 />
-                <span :class="['text-sm font-medium text-gray-700', $i18n.locale === 'ar' ? 'mr-2' : 'ml-2']">{{ $t('restaurantDashboard.enableNewsletter') }}</span>
+                <span :class="['text-sm font-medium text-gray-700', $i18n.locale === 'ar' ? 'mr-2' : 'ml-2']">{{ $t('websiteBuilder.enableNewsletter') }}</span>
               </label>
             </div>
 
@@ -1157,23 +1157,23 @@
                   type="checkbox"
                   class="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
                 />
-                <span :class="['text-sm font-medium text-gray-700', $i18n.locale === 'ar' ? 'mr-2' : 'ml-2']">{{ $t('restaurantDashboard.publishWebsite') }}</span>
+                <span :class="['text-sm font-medium text-gray-700', $i18n.locale === 'ar' ? 'mr-2' : 'ml-2']">{{ $t('websiteBuilder.publishWebsite') }}</span>
               </label>
             </div>
 
             <!-- Domain Configuration -->
             <div class="border-t border-gray-200 pt-6 mt-6">
-              <h3 class="text-lg font-semibold text-gray-800 mb-4">{{ $t('restaurantDashboard.domainConfiguration') }}</h3>
+              <h3 class="text-lg font-semibold text-gray-800 mb-4">{{ $t('websiteBuilder.domainConfiguration') }}</h3>
               <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200 space-y-6">
                 <!-- Subdomain -->
                 <div>
-                  <label class="block text-sm font-semibold text-gray-700 mb-2">{{ $t('restaurantDashboard.subdomain') }}</label>
+                  <label class="block text-sm font-semibold text-gray-700 mb-2">{{ $t('websiteBuilder.subdomain') }}</label>
                   <div class="flex items-center gap-2" :class="$i18n.locale === 'ar' ? 'flex-row-reverse' : ''">
                     <input
                       v-model="websiteForm.subdomain"
                       type="text"
                       class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                      :placeholder="$t('restaurantDashboard.subdomainPlaceholder')"
+                      :placeholder="$t('websiteBuilder.subdomainPlaceholder')"
                     />
                     <span class="text-gray-600 font-medium">.{{ baseDomain }}</span>
                   </div>
@@ -1181,12 +1181,12 @@
 
                 <!-- Custom Domain -->
                 <div>
-                  <label class="block text-sm font-semibold text-gray-700 mb-2">{{ $t('restaurantDashboard.customDomain') }}</label>
+                  <label class="block text-sm font-semibold text-gray-700 mb-2">{{ $t('websiteBuilder.customDomain') }}</label>
                   <input
                     v-model="websiteForm.custom_domain"
                     type="text"
                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                    :placeholder="$t('restaurantDashboard.customDomainPlaceholder')"
+                    :placeholder="$t('websiteBuilder.customDomainPlaceholder')"
                   />
                 </div>
               </div>
@@ -1205,8 +1205,8 @@
               :disabled="saving"
               class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <span v-if="saving">{{ $t('restaurantDashboard.saving') }}</span>
-              <span v-else>{{ $t('restaurantDashboard.saveChanges') }}</span>
+              <span v-if="saving">{{ $t('websiteBuilder.saving') }}</span>
+              <span v-else>{{ $t('websiteBuilder.saveChanges') }}</span>
             </button>
           </form>
         </div>
@@ -1340,7 +1340,7 @@
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
-                        {{ resettingDeliveryCompany ? $t('restaurantDashboard.removing') || 'Removing...' : $t('restaurantDashboard.remove') || 'Remove' }}
+                        {{ resettingDeliveryCompany ? $t('restaurantDashboard.removing') || 'Removing...' : $t('websiteBuilder.remove') || 'Remove' }}
                       </button>
                     </div>
                   </template>
@@ -1367,7 +1367,7 @@
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
-                        {{ resettingDeliveryCompany ? $t('restaurantDashboard.removing') || 'Removing...' : $t('restaurantDashboard.remove') || 'Remove' }}
+                        {{ resettingDeliveryCompany ? $t('restaurantDashboard.removing') || 'Removing...' : $t('websiteBuilder.remove') || 'Remove' }}
                       </button>
                     </div>
                     <div v-else-if="deliveryCompanyRequest.requests?.some(r => r.status === 'rejected')" class="p-4 bg-gray-50 border border-gray-200 rounded-lg">
@@ -1403,8 +1403,8 @@
                 :disabled="savingOrderTypes"
                 class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
-                <span v-if="savingOrderTypes">{{ $t('restaurantDashboard.saving') }}</span>
-                <span v-else>{{ $t('restaurantDashboard.saveChanges') }}</span>
+                <span v-if="savingOrderTypes">{{ $t('websiteBuilder.saving') }}</span>
+                <span v-else>{{ $t('websiteBuilder.saveChanges') }}</span>
               </button>
             </div>
           </form>
@@ -1556,8 +1556,8 @@
                 :disabled="savingTax"
                 class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
-                <span v-if="savingTax">{{ $t('restaurantDashboard.saving') }}</span>
-                <span v-else>{{ $t('restaurantDashboard.saveChanges') }}</span>
+                <span v-if="savingTax">{{ $t('websiteBuilder.saving') }}</span>
+                <span v-else>{{ $t('websiteBuilder.saveChanges') }}</span>
               </button>
             </div>
           </form>
@@ -1732,8 +1732,8 @@
                 :disabled="savingPaymentMethods"
                 class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
-                <span v-if="savingPaymentMethods">{{ $t('restaurantDashboard.saving') }}</span>
-                <span v-else>{{ $t('restaurantDashboard.saveChanges') }}</span>
+                <span v-if="savingPaymentMethods">{{ $t('websiteBuilder.saving') }}</span>
+                <span v-else>{{ $t('websiteBuilder.saveChanges') }}</span>
               </button>
             </div>
           </form>
@@ -1892,7 +1892,7 @@
                 <!-- Active Status -->
                 <div>
                   <label class="block text-sm font-semibold text-gray-700 mb-2">
-                    {{ $t('restaurantDashboard.status') }}
+                    {{ $t('websiteBuilder.status') }}
                   </label>
                   <div class="flex items-center gap-4 mt-2" :class="$i18n.locale === 'ar' ? 'flex-row-reverse' : ''">
                     <label class="flex items-center cursor-pointer" :class="$i18n.locale === 'ar' ? 'flex-row-reverse' : ''">
@@ -1902,7 +1902,7 @@
                         class="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
                       />
                       <span :class="['text-sm font-semibold text-gray-700', $i18n.locale === 'ar' ? 'mr-2' : 'ml-2']">
-                        {{ $t('restaurantDashboard.active') }}
+                        {{ $t('websiteBuilder.active') }}
                       </span>
                     </label>
                   </div>
@@ -1912,7 +1912,7 @@
               <!-- Description -->
               <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">
-                  {{ $t('restaurantDashboard.description') }}
+                  {{ $t('websiteBuilder.description') }}
                 </label>
                 <textarea
                   v-model="couponForm.description"
@@ -1939,14 +1939,14 @@
                   @click="showCouponForm = false; editingCoupon = null; resetCouponForm()"
                   class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-semibold"
                 >
-                  {{ $t('restaurantDashboard.cancel') }}
+                  {{ $t('websiteBuilder.cancel') }}
                 </button>
                 <button
                   type="submit"
                   :disabled="savingCoupon"
                   class="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <span v-if="savingCoupon">{{ $t('restaurantDashboard.saving') }}</span>
+                  <span v-if="savingCoupon">{{ $t('websiteBuilder.saving') }}</span>
                   <span v-else>{{ $t('restaurantDashboard.save') }}</span>
                 </button>
               </div>
@@ -1973,7 +1973,7 @@
                       class="px-3 py-1 rounded-full text-xs font-semibold"
                       :class="coupon.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'"
                     >
-                      {{ coupon.is_active ? $t('restaurantDashboard.active') : $t('restaurantDashboard.inactive') }}
+                      {{ coupon.is_active ? $t('websiteBuilder.active') : $t('websiteBuilder.inactive') }}
                     </span>
                   </div>
                   
@@ -2014,13 +2014,13 @@
                     @click="editCoupon(coupon)"
                     class="px-4 py-2 text-indigo-600 border border-indigo-300 rounded-lg hover:bg-indigo-50 transition-colors font-semibold text-sm"
                   >
-                    {{ $t('restaurantDashboard.edit') }}
+                    {{ $t('websiteBuilder.edit') }}
                   </button>
                   <button
                     @click="deleteCoupon(coupon.id)"
                     class="px-4 py-2 text-red-600 border border-red-300 rounded-lg hover:bg-red-50 transition-colors font-semibold text-sm"
                   >
-                    {{ $t('restaurantDashboard.delete') }}
+                    {{ $t('websiteBuilder.delete') }}
                   </button>
                 </div>
               </div>
@@ -2149,7 +2149,7 @@
               :disabled="savingNotifications"
               class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <span v-if="savingNotifications">{{ $t('restaurantDashboard.saving') }}</span>
+              <span v-if="savingNotifications">{{ $t('websiteBuilder.saving') }}</span>
               <span v-else>{{ $t('restaurantDashboard.saveNotificationSettings') }}</span>
             </button>
           </form>
@@ -2244,8 +2244,8 @@
                 :disabled="savingLanguage"
                 class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
-                <span v-if="savingLanguage">{{ $t('restaurantDashboard.saving') }}</span>
-                <span v-else>{{ $t('restaurantDashboard.saveChanges') }}</span>
+                <span v-if="savingLanguage">{{ $t('websiteBuilder.saving') }}</span>
+                <span v-else>{{ $t('websiteBuilder.saveChanges') }}</span>
               </button>
             </div>
           </form>
@@ -2346,8 +2346,8 @@
                 :disabled="savingCurrency"
                 class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
-                <span v-if="savingCurrency">{{ $t('restaurantDashboard.saving') }}</span>
-                <span v-else>{{ $t('restaurantDashboard.saveChanges') }}</span>
+                <span v-if="savingCurrency">{{ $t('websiteBuilder.saving') }}</span>
+                <span v-else>{{ $t('websiteBuilder.saveChanges') }}</span>
               </button>
             </div>
           </form>
@@ -2361,7 +2361,7 @@
           
           <!-- Barcode/QR Code -->
           <div v-if="website?.barcode_code" class="mb-8">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">{{ $t('restaurantDashboard.restaurantQrCode') }}</h3>
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">{{ $t('websiteBuilder.restaurantQrCode') }}</h3>
             <div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-6 border border-indigo-200">
               <div class="flex flex-col md:flex-row items-start md:items-center gap-6" :class="$i18n.locale === 'ar' ? 'flex-row-reverse' : ''">
                 <div class="flex-shrink-0">
@@ -2376,7 +2376,7 @@
                 </div>
                 <div class="flex-1">
                   <div class="mb-4">
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">{{ $t('restaurantDashboard.barcodeCode') }}</label>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">{{ $t('websiteBuilder.barcodeCode') }}</label>
                     <div class="flex items-center gap-3" :class="$i18n.locale === 'ar' ? 'flex-row-reverse' : ''">
                       <input
                         :value="website.barcode_code"
@@ -2387,12 +2387,12 @@
                         @click="copyBarcodeCode"
                         class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-semibold"
                       >
-                        {{ $t('restaurantDashboard.copy') }}
+                        {{ $t('websiteBuilder.copy') }}
                       </button>
                     </div>
                   </div>
                   <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">{{ $t('restaurantDashboard.qrCodeUrl') }}</label>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">{{ $t('websiteBuilder.qrCodeUrl') }}</label>
                     <div class="flex items-center gap-3" :class="$i18n.locale === 'ar' ? 'flex-row-reverse' : ''">
                       <input
                         :value="getBarcodeUrl()"
@@ -2403,7 +2403,7 @@
                         @click="copyBarcodeUrl"
                         class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-semibold"
                       >
-                        {{ $t('restaurantDashboard.copyUrl') }}
+                        {{ $t('websiteBuilder.copyUrl') }}
                       </button>
                     </div>
                   </div>
@@ -2470,7 +2470,7 @@
         <div class="p-6">
           <div class="flex items-center justify-between mb-6" :class="$i18n.locale === 'ar' ? 'flex-row-reverse' : ''">
             <h3 class="text-2xl font-bold text-gray-900">
-              {{ editingProduct ? $t('restaurantDashboard.editProduct') : $t('restaurantDashboard.addNewProduct') }}
+              {{ editingProduct ? $t('websiteBuilder.editProduct') : $t('websiteBuilder.addNewProduct') }}
             </h3>
             <button
               @click="closeProductForm"
@@ -2487,7 +2487,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">
-                  {{ $t('restaurantDashboard.productNameEn') }} <span class="text-red-500">{{ $t('restaurantDashboard.required') }}</span>
+                  {{ $t('restaurantDashboard.productNameEn') }} <span class="text-red-500">{{ $t('websiteBuilder.required') }}</span>
                 </label>
                 <input
                   v-model="productForm.name"
@@ -2531,7 +2531,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">
-                  {{ $t('restaurantDashboard.price') }} <span class="text-red-500">{{ $t('restaurantDashboard.required') }}</span>
+                  {{ $t('websiteBuilder.price') }} <span class="text-red-500">{{ $t('websiteBuilder.required') }}</span>
                 </label>
                 <input
                   v-model="productForm.price"
@@ -2548,7 +2548,7 @@
                   v-model="productForm.category"
                   type="text"
                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                  :placeholder="$t('restaurantDashboard.categoryPlaceholder')"
+                  :placeholder="$t('websiteBuilder.categoryPlaceholder')"
                 />
               </div>
               <div>
@@ -2563,7 +2563,7 @@
             </div>
 
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2">{{ $t('restaurantDashboard.productImage') }}</label>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">{{ $t('websiteBuilder.productImage') }}</label>
               <input
                 type="file"
                 accept="image/*"
@@ -2573,7 +2573,7 @@
               <div v-if="productForm.imagePreview" class="mt-3">
                 <img :src="productForm.imagePreview" alt="Product preview" class="h-32 w-32 object-cover rounded-lg border-2 border-gray-200" />
               </div>
-              <p class="text-xs text-gray-500 mt-1">{{ $t('restaurantDashboard.productImageHint') }}</p>
+              <p class="text-xs text-gray-500 mt-1">{{ $t('websiteBuilder.productImageHint') }}</p>
             </div>
 
             <div class="flex items-center gap-4">
@@ -2583,7 +2583,7 @@
                   type="checkbox"
                   class="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
                 />
-                <span :class="['text-sm font-medium text-gray-700', $i18n.locale === 'ar' ? 'mr-2' : 'ml-2']">{{ $t('restaurantDashboard.availableForOrder') }}</span>
+                <span :class="['text-sm font-medium text-gray-700', $i18n.locale === 'ar' ? 'mr-2' : 'ml-2']">{{ $t('websiteBuilder.availableForOrder') }}</span>
               </label>
             </div>
 
@@ -2597,15 +2597,15 @@
                 :disabled="savingProduct"
                 class="flex-1 px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <span v-if="savingProduct">{{ $t('restaurantDashboard.saving') }}</span>
-                <span v-else>{{ editingProduct ? $t('restaurantDashboard.updateProduct') : $t('restaurantDashboard.createProduct') }}</span>
+                <span v-if="savingProduct">{{ $t('websiteBuilder.saving') }}</span>
+                <span v-else>{{ editingProduct ? $t('websiteBuilder.updateProduct') : $t('websiteBuilder.createProduct') }}</span>
               </button>
               <button
                 type="button"
                 @click="closeProductForm"
                 class="px-6 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors font-semibold"
               >
-                {{ $t('restaurantDashboard.cancel') }}
+                {{ $t('websiteBuilder.cancel') }}
               </button>
             </div>
           </form>
