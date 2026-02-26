@@ -65,10 +65,10 @@
 
     <!-- Products List -->
     <div class="products-section">
-      <h3>Products ({{ products.length }})</h3>
+      <h3>Products ({{ localProducts.length }})</h3>
       <div class="products-list">
         <div
-          v-for="(product, index) in products"
+          v-for="(product, index) in localProducts"
           :key="index"
           class="product-item"
         >
