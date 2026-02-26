@@ -460,6 +460,33 @@
             <p class="text-sm text-gray-500 mt-2">{{ $t('websiteBuilder.noProductsHint') }}</p>
           </div>
 
+          <div v-else class="mb-4 p-4 bg-gray-50 rounded-lg border border-dashed border-gray-200">
+            <p class="text-sm font-semibold text-gray-700 mb-2">
+              {{ $t('restaurantDashboard.categoryOrder') || 'Category order' }}
+            </p>
+            <p class="text-xs text-gray-500 mb-3">
+              Set the order number for each category (1, 2, 3...). Categories with lower numbers appear first in the menu.
+            </p>
+            <div class="flex flex-wrap gap-3">
+              <div
+                v-for="cat in categoryList"
+                :key="cat.key"
+                class="flex items-center gap-2 bg-white px-3 py-2 rounded-lg border border-gray-200 text-xs"
+                :class="$i18n.locale === 'ar' ? 'flex-row-reverse' : ''"
+              >
+                <span class="text-gray-700 font-medium">{{ cat.label }}</span>
+                <span class="text-gray-400">#</span>
+                <input
+                  v-model.number="categoryOrder[cat.key]"
+                  type="number"
+                  min="1"
+                  class="w-16 px-2 py-1 border border-gray-300 rounded text-xs text-center"
+                  @change="saveCategoryOrder"
+                />
+              </div>
+            </div>
+          </div>
+
           <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div
               v-for="product in sortedProducts"
@@ -2870,6 +2897,7 @@ const saving = ref(false);
 const saveError = ref('');
 const saveSuccess = ref('');
 const products = ref([]);
+const categoryOrder = ref({});
 const orders = ref([]);
 const showAllOrders = ref(false);
 const showProductForm = ref(false);
@@ -3381,23 +3409,55 @@ const resetDeliveryCompany = async () => {
   }
 };
 
+const categoryList = computed(() => {
+  const map = new Map();
+  (products.value || []).forEach((p) => {
+    const key = p.category || p.category_ar || '';
+    if (!key) return;
+    if (!map.has(key)) {
+      const label =
+        locale.value === 'ar'
+          ? p.category_ar || p.category || ''
+          : p.category || p.category_ar || '';
+      map.set(key, label || key);
+    }
+  });
+  return Array.from(map, ([key, label]) => ({ key, label }));
+});
+
+const getCategoryOrderValue = (product) => {
+  const key = product.category || product.category_ar || '';
+  const value = key ? categoryOrder.value[key] : undefined;
+  const num = typeof value === 'number' ? value : parseInt(value, 10);
+  return Number.isFinite(num) && num > 0 ? num : 9999;
+};
+
 const sortedProducts = computed(() => {
   if (!products.value || products.value.length === 0) return [];
 
   const localizedCategory = (p) => {
-    const cat = (locale.value === 'ar' ? p.category_ar : p.category) || p.category || p.category_ar || '';
+    const cat =
+      (locale.value === 'ar' ? p.category_ar : p.category) ||
+      p.category ||
+      p.category_ar ||
+      '';
     return String(cat).toLowerCase().trim();
   };
 
   const nameForTieBreak = (p) => String(p.name || '').toLowerCase().trim();
 
   return [...products.value].sort((a, b) => {
+    const oa = getCategoryOrderValue(a);
+    const ob = getCategoryOrderValue(b);
+    if (oa !== ob) return oa - ob;
+
     const ca = localizedCategory(a);
     const cb = localizedCategory(b);
     if (ca && !cb) return -1;
     if (!ca && cb) return 1;
     if (ca < cb) return -1;
     if (ca > cb) return 1;
+
     const na = nameForTieBreak(a);
     const nb = nameForTieBreak(b);
     if (na < nb) return -1;
@@ -3406,11 +3466,34 @@ const sortedProducts = computed(() => {
   });
 });
 
+const loadCategoryOrder = () => {
+  if (!website.value?.id) return;
+  const storageKey = `categoryOrder_${website.value.id}`;
+  try {
+    const raw = localStorage.getItem(storageKey);
+    categoryOrder.value = raw ? JSON.parse(raw) || {} : {};
+  } catch (e) {
+    console.warn('Failed to load category order from localStorage', e);
+    categoryOrder.value = {};
+  }
+};
+
+const saveCategoryOrder = () => {
+  if (!website.value?.id) return;
+  const storageKey = `categoryOrder_${website.value.id}`;
+  try {
+    localStorage.setItem(storageKey, JSON.stringify(categoryOrder.value || {}));
+  } catch (e) {
+    console.warn('Failed to save category order to localStorage', e);
+  }
+};
+
 // Load products
 const loadProducts = async () => {
   try {
     loadingProducts.value = true;
     products.value = await getRestaurantProducts();
+    loadCategoryOrder();
   } catch (error) {
     console.error('Failed to load products:', error);
     productError.value = 'Failed to load products';
