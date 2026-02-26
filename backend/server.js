@@ -99,6 +99,15 @@ app.use('/api/delivery-zones', deliveryZonesRoutes); // Routes like /api/deliver
 app.use('/api/delivery-company', deliveryCompanyDashboardRoutes); // Delivery company admin dashboard
 app.use('/api/menu-extractor', menuExtractorRoutes); // Menu extractor tool
 
+// Redirect /barcode/:code to frontend SPA (so shared links like /barcode/W0XSWBR9 open the Vue app)
+// Set FRONTEND_URL in production (e.g. https://your-app.ondigitalocean.app/etlobtodayenginrepo-frontend)
+const frontendBase = (process.env.FRONTEND_URL || '').replace(/\/$/, '');
+if (frontendBase) {
+  app.get('/barcode/:code', (req, res) => {
+    res.redirect(302, `${frontendBase}/barcode/${req.params.code}`);
+  });
+}
+
 // Health check
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
