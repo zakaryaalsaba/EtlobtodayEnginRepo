@@ -461,80 +461,48 @@
           </div>
 
           <div v-else>
-            <div class="mb-4 p-4 bg-gray-50 rounded-lg border border-dashed border-gray-200">
-              <p class="text-sm font-semibold text-gray-700 mb-2">
-                {{ $t('restaurantDashboard.categoryOrder') || 'Category order' }}
-              </p>
-              <p class="text-xs text-gray-500 mb-3">
-                Set the order number for each category (1, 2, 3...). Categories with lower numbers appear first in the menu.
-              </p>
-              <div class="flex flex-wrap gap-3">
-                <div
-                  v-for="cat in categoryList"
-                  :key="cat.key"
-                  class="flex items-center gap-2 bg-white px-3 py-2 rounded-lg border border-gray-200 text-xs"
-                  :class="$i18n.locale === 'ar' ? 'flex-row-reverse' : ''"
-                >
-                  <span class="text-gray-700 font-medium">{{ cat.label }}</span>
-                  <span class="text-gray-400">#</span>
-                  <input
-                    v-model.number="categoryOrder[cat.key]"
-                    type="number"
-                    min="1"
-                    class="w-16 px-2 py-1 border border-gray-300 rounded text-xs text-center"
-                    @change="saveCategoryOrder"
-                  />
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div
+                v-for="product in products"
+                :key="product.id"
+                class="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:shadow-md transition-shadow"
+              >
+                <div v-if="product.image_url" class="mb-4">
+                  <img :src="product.image_url" :alt="product.name" class="w-full h-40 object-cover rounded-lg" />
                 </div>
-              </div>
-            </div>
-
-            <div v-for="group in groupedProducts" :key="group.key" class="mb-6">
-              <h3 class="text-lg font-bold text-gray-800 mb-3" :class="$i18n.locale === 'ar' ? 'text-right' : ''">
-                {{ group.label }}
-              </h3>
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div
-                  v-for="product in group.items"
-                  :key="product.id"
-                  class="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:shadow-md transition-shadow"
-                >
-                  <div v-if="product.image_url" class="mb-4">
-                    <img :src="product.image_url" :alt="product.name" class="w-full h-40 object-cover rounded-lg" />
-                  </div>
-                  <h4 class="font-bold text-gray-900 mb-1">{{ product.name }}</h4>
-                  <p class="text-sm text-gray-600 mb-2 line-clamp-2">{{ product.description }}</p>
-                  <div class="flex items-center justify-between mb-3" :class="$i18n.locale === 'ar' ? 'flex-row-reverse' : ''">
-                    <span class="text-lg font-bold text-indigo-600">${{ parseFloat(product.price).toFixed(2) }}</span>
-                    <span
-                      :class="[
-                        'px-2 py-1 text-xs rounded-full',
-                        product.is_available ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                      ]"
-                    >
-                      {{ product.is_available ? $t('websiteBuilder.available') : $t('websiteBuilder.unavailable') }}
-                    </span>
-                  </div>
-                  <div class="flex flex-wrap gap-2">
-                    <button
-                      @click="openAddons(product)"
-                      class="px-3 py-2 bg-amber-100 text-amber-800 rounded-lg hover:bg-amber-200 transition-colors text-sm font-semibold"
-                      :title="$t('restaurantDashboard.manageAddOns')"
-                    >
-                      {{ $t('restaurantDashboard.addOns') }}
-                    </button>
-                    <button
-                      @click="editProduct(product)"
-                      class="flex-1 min-w-0 px-3 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors text-sm font-semibold"
-                    >
-                      {{ $t('websiteBuilder.edit') }}
-                    </button>
-                    <button
-                      @click="deleteProduct(product.id)"
-                      class="px-3 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm font-semibold"
-                    >
-                      {{ $t('websiteBuilder.delete') }}
-                    </button>
-                  </div>
+                <h3 class="font-bold text-gray-900 mb-1">{{ product.name }}</h3>
+                <p class="text-sm text-gray-600 mb-2 line-clamp-2">{{ product.description }}</p>
+                <div class="flex items-center justify-between mb-3" :class="$i18n.locale === 'ar' ? 'flex-row-reverse' : ''">
+                  <span class="text-lg font-bold text-indigo-600">${{ parseFloat(product.price).toFixed(2) }}</span>
+                  <span
+                    :class="[
+                      'px-2 py-1 text-xs rounded-full',
+                      product.is_available ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                    ]"
+                  >
+                    {{ product.is_available ? $t('websiteBuilder.available') : $t('websiteBuilder.unavailable') }}
+                  </span>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                  <button
+                    @click="openAddons(product)"
+                    class="px-3 py-2 bg-amber-100 text-amber-800 rounded-lg hover:bg-amber-200 transition-colors text-sm font-semibold"
+                    :title="$t('restaurantDashboard.manageAddOns')"
+                  >
+                    {{ $t('restaurantDashboard.addOns') }}
+                  </button>
+                  <button
+                    @click="editProduct(product)"
+                    class="flex-1 min-w-0 px-3 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors text-sm font-semibold"
+                  >
+                    {{ $t('websiteBuilder.edit') }}
+                  </button>
+                  <button
+                    @click="deleteProduct(product.id)"
+                    class="px-3 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm font-semibold"
+                  >
+                    {{ $t('websiteBuilder.delete') }}
+                  </button>
                 </div>
               </div>
             </div>
@@ -2904,7 +2872,6 @@ const saving = ref(false);
 const saveError = ref('');
 const saveSuccess = ref('');
 const products = ref([]);
-const categoryOrder = ref({});
 const orders = ref([]);
 const showAllOrders = ref(false);
 const showProductForm = ref(false);
@@ -3416,112 +3383,11 @@ const resetDeliveryCompany = async () => {
   }
 };
 
-const categoryList = computed(() => {
-  const map = new Map();
-  (products.value || []).forEach((p) => {
-    const key = p.category || p.category_ar || '';
-    if (!key) return;
-    if (!map.has(key)) {
-      const label =
-        locale.value === 'ar'
-          ? p.category_ar || p.category || ''
-          : p.category || p.category_ar || '';
-      map.set(key, label || key);
-    }
-  });
-  return Array.from(map, ([key, label]) => ({ key, label }));
-});
-
-const getCategoryOrderValue = (product) => {
-  const key = product.category || product.category_ar || '';
-  const value = key ? categoryOrder.value[key] : undefined;
-  const num = typeof value === 'number' ? value : parseInt(value, 10);
-  return Number.isFinite(num) && num > 0 ? num : 9999;
-};
-
-const sortedProducts = computed(() => {
-  if (!products.value || products.value.length === 0) return [];
-
-  const localizedCategory = (p) => {
-    const cat =
-      (locale.value === 'ar' ? p.category_ar : p.category) ||
-      p.category ||
-      p.category_ar ||
-      '';
-    return String(cat).toLowerCase().trim();
-  };
-
-  const nameForTieBreak = (p) => String(p.name || '').toLowerCase().trim();
-
-  return [...products.value].sort((a, b) => {
-    const oa = getCategoryOrderValue(a);
-    const ob = getCategoryOrderValue(b);
-    if (oa !== ob) return oa - ob;
-
-    const ca = localizedCategory(a);
-    const cb = localizedCategory(b);
-    if (ca && !cb) return -1;
-    if (!ca && cb) return 1;
-    if (ca < cb) return -1;
-    if (ca > cb) return 1;
-
-    const na = nameForTieBreak(a);
-    const nb = nameForTieBreak(b);
-    if (na < nb) return -1;
-    if (na > nb) return 1;
-    return 0;
-  });
-});
-
-// Category-based grouping for dashboard display
-const groupedProducts = computed(() => {
-  const groups = new Map();
-
-  sortedProducts.value.forEach((p) => {
-    const key = p.category || p.category_ar || 'Other';
-    const label =
-      (locale.value === 'ar' ? p.category_ar : p.category) ||
-      p.category ||
-      p.category_ar ||
-      key;
-
-    if (!groups.has(key)) {
-      groups.set(key, { key, label, items: [] });
-    }
-    groups.get(key).items.push(p);
-  });
-
-  return Array.from(groups.values());
-});
-
-const loadCategoryOrder = () => {
-  if (!website.value?.id) return;
-  const storageKey = `categoryOrder_${website.value.id}`;
-  try {
-    const raw = localStorage.getItem(storageKey);
-    categoryOrder.value = raw ? JSON.parse(raw) || {} : {};
-  } catch (e) {
-    console.warn('Failed to load category order from localStorage', e);
-    categoryOrder.value = {};
-  }
-};
-
-const saveCategoryOrder = () => {
-  if (!website.value?.id) return;
-  const storageKey = `categoryOrder_${website.value.id}`;
-  try {
-    localStorage.setItem(storageKey, JSON.stringify(categoryOrder.value || {}));
-  } catch (e) {
-    console.warn('Failed to save category order to localStorage', e);
-  }
-};
-
 // Load products
 const loadProducts = async () => {
   try {
     loadingProducts.value = true;
     products.value = await getRestaurantProducts();
-    loadCategoryOrder();
   } catch (error) {
     console.error('Failed to load products:', error);
     productError.value = 'Failed to load products';
