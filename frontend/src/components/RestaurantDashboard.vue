@@ -461,48 +461,61 @@
           </div>
 
           <div v-else>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div
-                v-for="product in products"
-                :key="product.id"
-                class="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:shadow-md transition-shadow"
+            <div v-for="group in groupedProducts" :key="group.key" class="mb-6">
+              <h3
+                class="text-lg font-bold text-gray-800 mb-3"
+                :class="$i18n.locale === 'ar' ? 'text-right' : ''"
               >
-                <div v-if="product.image_url" class="mb-4">
-                  <img :src="product.image_url" :alt="product.name" class="w-full h-40 object-cover rounded-lg" />
-                </div>
-                <h3 class="font-bold text-gray-900 mb-1">{{ product.name }}</h3>
-                <p class="text-sm text-gray-600 mb-2 line-clamp-2">{{ product.description }}</p>
-                <div class="flex items-center justify-between mb-3" :class="$i18n.locale === 'ar' ? 'flex-row-reverse' : ''">
-                  <span class="text-lg font-bold text-indigo-600">${{ parseFloat(product.price).toFixed(2) }}</span>
-                  <span
-                    :class="[
-                      'px-2 py-1 text-xs rounded-full',
-                      product.is_available ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                    ]"
+                {{ group.label }}
+              </h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div
+                  v-for="product in group.items"
+                  :key="product.id"
+                  class="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:shadow-md transition-shadow"
+                >
+                  <div v-if="product.image_url" class="mb-4">
+                    <img :src="product.image_url" :alt="product.name" class="w-full h-40 object-cover rounded-lg" />
+                  </div>
+                  <h4 class="font-bold text-gray-900 mb-1">{{ product.name }}</h4>
+                  <p class="text-sm text-gray-600 mb-2 line-clamp-2">{{ product.description }}</p>
+                  <div
+                    class="flex items-center justify-between mb-3"
+                    :class="$i18n.locale === 'ar' ? 'flex-row-reverse' : ''"
                   >
-                    {{ product.is_available ? $t('websiteBuilder.available') : $t('websiteBuilder.unavailable') }}
-                  </span>
-                </div>
-                <div class="flex flex-wrap gap-2">
-                  <button
-                    @click="openAddons(product)"
-                    class="px-3 py-2 bg-amber-100 text-amber-800 rounded-lg hover:bg-amber-200 transition-colors text-sm font-semibold"
-                    :title="$t('restaurantDashboard.manageAddOns')"
-                  >
-                    {{ $t('restaurantDashboard.addOns') }}
-                  </button>
-                  <button
-                    @click="editProduct(product)"
-                    class="flex-1 min-w-0 px-3 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors text-sm font-semibold"
-                  >
-                    {{ $t('websiteBuilder.edit') }}
-                  </button>
-                  <button
-                    @click="deleteProduct(product.id)"
-                    class="px-3 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm font-semibold"
-                  >
-                    {{ $t('websiteBuilder.delete') }}
-                  </button>
+                    <span class="text-lg font-bold text-indigo-600">
+                      ${{ parseFloat(product.price).toFixed(2) }}
+                    </span>
+                    <span
+                      :class="[
+                        'px-2 py-1 text-xs rounded-full',
+                        product.is_available ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                      ]"
+                    >
+                      {{ product.is_available ? $t('websiteBuilder.available') : $t('websiteBuilder.unavailable') }}
+                    </span>
+                  </div>
+                  <div class="flex flex-wrap gap-2">
+                    <button
+                      @click="openAddons(product)"
+                      class="px-3 py-2 bg-amber-100 text-amber-800 rounded-lg hover:bg-amber-200 transition-colors text-sm font-semibold"
+                      :title="$t('restaurantDashboard.manageAddOns')"
+                    >
+                      {{ $t('restaurantDashboard.addOns') }}
+                    </button>
+                    <button
+                      @click="editProduct(product)"
+                      class="flex-1 min-w-0 px-3 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors text-sm font-semibold"
+                    >
+                      {{ $t('websiteBuilder.edit') }}
+                    </button>
+                    <button
+                      @click="deleteProduct(product.id)"
+                      class="px-3 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm font-semibold"
+                    >
+                      {{ $t('websiteBuilder.delete') }}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -2872,6 +2885,27 @@ const saving = ref(false);
 const saveError = ref('');
 const saveSuccess = ref('');
 const products = ref([]);
+const groupedProducts = computed(() => {
+  const groups = new Map();
+
+  (products.value || []).forEach((p) => {
+    if (!p) return;
+    const keyRaw = p.category || p.category_ar || '';
+    const key = keyRaw || 'Other';
+    const label =
+      (locale.value === 'ar' ? p.category_ar : p.category) ||
+      p.category ||
+      p.category_ar ||
+      key;
+
+    if (!groups.has(key)) {
+      groups.set(key, { key, label, items: [] });
+    }
+    groups.get(key).items.push(p);
+  });
+
+  return Array.from(groups.values());
+});
 const orders = ref([]);
 const showAllOrders = ref(false);
 const showProductForm = ref(false);
