@@ -164,7 +164,9 @@ router.post('/process', upload.array('images', 10), async (req, res) => {
     
     Object.values(productsByCategory).flat().forEach(product => {
       const key = product.name.toLowerCase().trim();
-      if (!seenNames.has(key) && product.name && product.price > 0) {
+      // Keep unique products by name, even if price is 0.
+      // This allows users to manually fill in prices when AI can't read them.
+      if (!seenNames.has(key) && product.name) {
         seenNames.add(key);
         uniqueProducts.push(product);
       }
