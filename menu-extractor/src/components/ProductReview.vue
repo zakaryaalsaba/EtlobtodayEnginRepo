@@ -161,33 +161,43 @@ const localRestaurantInfo = ref({
   description_ar: ''
 })
 
-// Sync from props when they change (e.g. after extraction)
-watch(() => [props.products, props.restaurantInfo], () => {
-  if (props.products && props.products.length > 0) {
-    localProducts.value = props.products.map(p => ({
-      name: p.name ?? '',
-      name_ar: p.name_ar ?? p.name ?? '',
-      description: p.description ?? '',
-      description_ar: p.description_ar ?? p.description ?? '',
-      price: p.price ?? '',
-      category: p.category ?? '',
-      category_ar: p.category_ar ?? p.category ?? '',
-      is_available: p.is_available !== false
-    }))
-  }
-  if (props.restaurantInfo) {
-    localRestaurantInfo.value = {
-      restaurant_name: props.restaurantInfo.restaurant_name ?? '',
-      restaurant_name_ar: props.restaurantInfo.restaurant_name_ar ?? '',
-      phone: props.restaurantInfo.phone ?? '',
-      email: props.restaurantInfo.email ?? '',
-      address: props.restaurantInfo.address ?? '',
-      address_ar: props.restaurantInfo.address_ar ?? '',
-      description: props.restaurantInfo.description ?? '',
-      description_ar: props.restaurantInfo.description_ar ?? ''
+let initializedFromProps = false
+
+// Sync once from props after extraction; then keep local state independent
+watch(
+  () => [props.products, props.restaurantInfo],
+  () => {
+    if (initializedFromProps) return
+
+    if (props.products && props.products.length > 0) {
+      localProducts.value = props.products.map(p => ({
+        name: p.name ?? '',
+        name_ar: p.name_ar ?? p.name ?? '',
+        description: p.description ?? '',
+        description_ar: p.description_ar ?? p.description ?? '',
+        price: p.price ?? '',
+        category: p.category ?? '',
+        category_ar: p.category_ar ?? p.category ?? '',
+        is_available: p.is_available !== false
+      }))
     }
-  }
-}, { immediate: true })
+    if (props.restaurantInfo) {
+      localRestaurantInfo.value = {
+        restaurant_name: props.restaurantInfo.restaurant_name ?? '',
+        restaurant_name_ar: props.restaurantInfo.restaurant_name_ar ?? '',
+        phone: props.restaurantInfo.phone ?? '',
+        email: props.restaurantInfo.email ?? '',
+        address: props.restaurantInfo.address ?? '',
+        address_ar: props.restaurantInfo.address_ar ?? '',
+        description: props.restaurantInfo.description ?? '',
+        description_ar: props.restaurantInfo.description_ar ?? ''
+      }
+    }
+
+    initializedFromProps = true
+  },
+  { immediate: true }
+)
 
 watch(localProducts, (newProducts) => {
   emit('update-products', newProducts)
