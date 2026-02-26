@@ -538,8 +538,8 @@
                 </div>
               </div>
             </div>
+          </div>
         </div>
-      </div>
 
       <!-- Add-ons Modal -->
       <div v-if="showAddonsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
