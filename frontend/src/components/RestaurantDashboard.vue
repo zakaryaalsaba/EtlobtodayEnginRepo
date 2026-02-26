@@ -2405,6 +2405,12 @@
                       >
                         {{ $t('websiteBuilder.copyUrl') }}
                       </button>
+                      <button
+                        @click="openBarcodeUrl"
+                        class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm font-semibold flex items-center gap-2"
+                      >
+                        {{ $t('websiteBuilder.viewWebsite') }}
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -3870,6 +3876,13 @@ const copyBarcodeUrl = () => {
   if (url) {
     navigator.clipboard.writeText(url);
     alert('QR Code URL copied to clipboard!');
+  }
+};
+
+const openBarcodeUrl = () => {
+  const url = getBarcodeUrl();
+  if (url) {
+    window.open(url, '_blank', 'noopener,noreferrer');
   }
 };
 
