@@ -3472,6 +3472,7 @@ const sortedProducts = computed(() => {
   });
 });
 
+// Category-based grouping for dashboard display
 const groupedProducts = computed(() => {
   const groups = new Map();
 
