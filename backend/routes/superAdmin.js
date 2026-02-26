@@ -33,6 +33,49 @@ export const verifySuperAdminToken = (req, res, next) => {
 };
 
 /**
+ * POST /api/super-admin/create
+ * Create a new super admin account
+ */
+router.post('/create', async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+
+    if (!name || !email || !password) {
+      return res.status(400).json({ error: 'Name, email and password are required' });
+    }
+
+    // Check if email already exists
+    const [existing] = await pool.execute(
+      'SELECT id FROM super_admins WHERE email = ?',
+      [email]
+    );
+
+    if (existing.length > 0) {
+      return res.status(400).json({ error: 'A super admin with this email already exists' });
+    }
+
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    const [result] = await pool.execute(
+      'INSERT INTO super_admins (name, email, password_hash) VALUES (?, ?, ?)',
+      [name, email, passwordHash]
+    );
+
+    res.status(201).json({
+      success: true,
+      superAdmin: {
+        id: result.insertId,
+        name,
+        email
+      }
+    });
+  } catch (error) {
+    console.error('Error creating super admin:', error);
+    res.status(500).json({ error: 'Failed to create super admin', message: error.message });
+  }
+});
+
+/**
  * POST /api/super-admin/login
  * Super admin login
  */

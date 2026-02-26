@@ -21,12 +21,6 @@
           </div>
           <div class="flex items-center gap-4" :class="$i18n.locale === 'ar' ? 'flex-row-reverse' : ''">
             <LanguageSwitcher />
-            <router-link
-              to="/super-admin/login"
-              class="hidden md:inline-block px-4 py-2 text-gray-700 hover:text-indigo-600 transition-colors font-medium"
-            >
-              {{ $t('nav.logIn') }}
-            </router-link>
             <button
               @click="scrollToApply"
               class="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-semibold"
