@@ -2280,7 +2280,7 @@
                 </div>
                 <div class="mt-4">
                   <a
-                    href="/restaurant/dashboard"
+                    :href="($router.resolve('/restaurant/dashboard').href)"
                     target="_blank"
                     class="inline-block px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-semibold"
                   >
@@ -2370,7 +2370,7 @@
               <div v-if="adminAccountCreated" class="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
                 <p class="text-sm text-green-700 font-semibold mb-2">✓ {{ $t('websiteBuilder.adminAccountCreated') }}</p>
                 <a
-                  href="/restaurant/dashboard"
+                  :href="($router.resolve('/restaurant/dashboard').href)"
                   target="_blank"
                   class="inline-block px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-semibold"
                 >
