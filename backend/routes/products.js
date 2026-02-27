@@ -5,26 +5,13 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
 import CacheService from '../services/cacheService.js';
+import { saveImage } from '../services/imageStorage.js';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Configure multer for product image uploads
-const productImageStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadDir = path.join(__dirname, '../uploads');
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, 'product-' + uniqueSuffix + path.extname(file.originalname));
-  }
-});
-
+// Configure multer for product image uploads (in-memory; actual storage is handled by imageStorage)
 const imageFilter = (req, file, cb) => {
   if (file.mimetype.startsWith('image/')) {
     cb(null, true);
@@ -34,7 +21,7 @@ const imageFilter = (req, file, cb) => {
 };
 
 const uploadProductImage = multer({
-  storage: productImageStorage,
+  storage: multer.memoryStorage(),
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
   fileFilter: imageFilter
 });
@@ -230,28 +217,28 @@ router.post('/:id/image', uploadProductImage.single('image'), async (req, res) =
       'SELECT * FROM products WHERE id = ?',
       [id]
     );
-
+    
     if (products.length === 0) {
-      fs.unlinkSync(req.file.path);
       return res.status(404).json({ error: 'Product not found' });
     }
 
-    const filePath = `/uploads/${req.file.filename}`;
-    const apiBaseUrl = process.env.API_BASE_URL || `http://localhost:${process.env.PORT || 3000}`;
-    const imageUrl = `${apiBaseUrl}${filePath}`;
+    // Process and store image (local or Spaces)
+    const saved = await saveImage('products', req.file);
+    const imageUrl = saved.url;
+    const storagePath = saved.storagePath;
 
-    // Delete old image if exists
-    if (products[0].image_path && fs.existsSync(products[0].image_path)) {
+    // Delete old local image if exists and looks like a filesystem path
+    if (products[0].image_path && products[0].image_path.startsWith('/') && fs.existsSync(products[0].image_path)) {
       try {
         fs.unlinkSync(products[0].image_path);
       } catch (err) {
         console.warn('Could not delete old image:', err.message);
       }
     }
-
+    
     await pool.execute(
       'UPDATE products SET image_url = ?, image_path = ? WHERE id = ?',
-      [imageUrl, req.file.path, id]
+      [imageUrl, storagePath, id]
     );
 
     const [updatedProducts] = await pool.execute(

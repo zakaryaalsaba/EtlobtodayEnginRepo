@@ -27,7 +27,9 @@
     "mysql2": "^3.6.5",
     "nodemailer": "^6.9.7",
     "redis": "^5.11.0",
-    "stripe": "^20.1.2"
+    "stripe": "^20.1.2",
+    "sharp": "^0.33.3",
+    "@aws-sdk/client-s3": "^3.679.0"
   },
   "optionalDependencies": {
     "openai": "^4.20.1"
