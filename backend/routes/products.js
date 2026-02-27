@@ -211,7 +211,7 @@ router.post('/:id/image', uploadProductImage.single('image'), async (req, res) =
     }
 
     const { id } = req.params;
-    
+
     // Check if product exists
     const [products] = await pool.execute(
       'SELECT * FROM products WHERE id = ?',
@@ -222,15 +222,19 @@ router.post('/:id/image', uploadProductImage.single('image'), async (req, res) =
       return res.status(404).json({ error: 'Product not found' });
     }
 
+    const product = products[0];
+
     // Process and store image (local or Spaces)
-    const saved = await saveImage('products', req.file);
+    const saved = await saveImage('products', req.file, {
+      websiteId: product.website_id
+    });
     const imageUrl = saved.url;
     const storagePath = saved.storagePath;
 
     // Delete old local image if exists and looks like a filesystem path
-    if (products[0].image_path && products[0].image_path.startsWith('/') && fs.existsSync(products[0].image_path)) {
+    if (product.image_path && product.image_path.startsWith('/') && fs.existsSync(product.image_path)) {
       try {
-        fs.unlinkSync(products[0].image_path);
+        fs.unlinkSync(product.image_path);
       } catch (err) {
         console.warn('Could not delete old image:', err.message);
       }

@@ -61,10 +61,12 @@ async function processImageBuffer(buffer, baseFilename) {
   };
 }
 
-export async function saveImageToLocal(folder, file) {
+export async function saveImageToLocal(folder, file, options = {}) {
   ensureUploadsDir();
 
-  const baseName = `${folder}-${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+  // For local storage we keep a flat structure but include website id if provided
+  const websitePart = options.websiteId ? `websites-${options.websiteId}-` : '';
+  const baseName = `${websitePart}${folder}-${Date.now()}-${Math.round(Math.random() * 1e9)}`;
   const { mediumBuffer, mediumFilename } = await processImageBuffer(file.buffer, baseName);
 
   const targetPath = path.join(uploadsDir, mediumFilename);
@@ -80,14 +82,20 @@ export async function saveImageToLocal(folder, file) {
   };
 }
 
-export async function saveImageToSpaces(folder, file) {
+export async function saveImageToSpaces(folder, file, options = {}) {
   initSpaces();
 
   if (!spacesConfigured || !s3Client) {
     return saveImageToLocal(folder, file);
   }
 
-  const baseName = `${folder}/${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+  // When websiteId is provided, use the requested folder structure:
+  // websites/[website id]/[folder]/[image name]
+  const keyPrefix = options.websiteId
+    ? `websites/${options.websiteId}/${folder}`
+    : folder;
+
+  const baseName = `${keyPrefix}/${Date.now()}-${Math.round(Math.random() * 1e9)}`;
   const { mediumBuffer, mediumFilename } = await processImageBuffer(file.buffer, baseName);
 
   const keyMedium = mediumFilename;
@@ -131,11 +139,11 @@ export async function saveImageToSpaces(folder, file) {
  * Generic image save that decides between local filesystem and Spaces,
  * based on environment variables.
  */
-export async function saveImage(folder, file) {
+export async function saveImage(folder, file, options = {}) {
   initSpaces();
   if (spacesConfigured) {
-    return saveImageToSpaces(folder, file);
+    return saveImageToSpaces(folder, file, options);
   }
-  return saveImageToLocal(folder, file);
+  return saveImageToLocal(folder, file, options);
 }
 
