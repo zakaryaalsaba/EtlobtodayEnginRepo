@@ -5,6 +5,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
 import CacheService from '../services/cacheService.js';
+import { saveImage } from '../services/imageStorage.js';
 
 // Helper function to process menu image (handles missing OpenAI gracefully)
 async function processMenuImageSafe(imagePath, restaurantName) {
@@ -34,35 +35,8 @@ function generateBarcodeCode() {
   return code;
 }
 
-// Configure multer for file uploads - logo
-const logoStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadDir = path.join(__dirname, '../uploads');
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, 'logo-' + uniqueSuffix + path.extname(file.originalname));
-  }
-});
-
-// Configure multer for gallery images
-const galleryStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadDir = path.join(__dirname, '../uploads');
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, 'gallery-' + uniqueSuffix + path.extname(file.originalname));
-  }
-});
+// Memory storage for logo and gallery (processed and stored via imageStorage: local or Spaces)
+const logoGalleryMemoryStorage = multer.memoryStorage();
 
 // Configure multer for menu image uploads
 const menuImageStorage = multer.diskStorage({
@@ -91,14 +65,14 @@ const imageFilter = (req, file, cb) => {
   }
 };
 
-const upload = multer({
-  storage: logoStorage,
+const uploadLogo = multer({
+  storage: logoGalleryMemoryStorage,
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
   fileFilter: imageFilter
 });
 
 const uploadGallery = multer({
-  storage: galleryStorage,
+  storage: logoGalleryMemoryStorage,
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
   fileFilter: imageFilter
 });
@@ -723,33 +697,44 @@ router.post('/', async (req, res) => {
 /**
  * POST /api/websites/:id/logo
  * Upload logo for a restaurant website
+ * Stored under: websites/[website_id]/logo/[filename].webp
  */
-router.post('/:id/logo', upload.single('logo'), async (req, res) => {
+router.post('/:id/logo', uploadLogo.single('logo'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: 'No file uploaded' });
     }
 
     const { id } = req.params;
-    const filePath = `/uploads/${req.file.filename}`;
-    const apiBaseUrl = process.env.API_BASE_URL || `http://localhost:${process.env.PORT || 3000}`;
-    const logoUrl = `${apiBaseUrl}${filePath}`;
+    const websiteId = parseInt(id, 10);
 
-    // Update website with logo
+    // Check website exists
+    const [websites] = await pool.execute('SELECT id, logo_file_path FROM restaurant_websites WHERE id = ?', [id]);
+    if (websites.length === 0) {
+      return res.status(404).json({ error: 'Website not found' });
+    }
+
+    const saved = await saveImage('logo', req.file, { websiteId });
+
+    // Delete old logo file only if it is a local path
+    const oldPath = websites[0].logo_file_path;
+    if (oldPath && typeof oldPath === 'string' && oldPath.startsWith('/') && fs.existsSync(oldPath)) {
+      try {
+        fs.unlinkSync(oldPath);
+      } catch (err) {
+        console.warn('Could not delete old logo file:', err.message);
+      }
+    }
+
     await pool.execute(
       'UPDATE restaurant_websites SET logo_url = ?, logo_file_path = ? WHERE id = ?',
-      [logoUrl, req.file.path, id]
+      [saved.url, saved.storagePath, id]
     );
 
-    const [websites] = await pool.execute(
-      'SELECT * FROM restaurant_websites WHERE id = ?',
-      [id]
-    );
+    const [updated] = await pool.execute('SELECT * FROM restaurant_websites WHERE id = ?', [id]);
+    await CacheService.invalidateRestaurant(websiteId);
 
-    // Invalidate cache after logo update
-    await CacheService.invalidateRestaurant(parseInt(id));
-
-    res.json({ website: websites[0] });
+    res.json({ website: updated[0] });
   } catch (error) {
     console.error('Error uploading logo:', error);
     res.status(500).json({ error: 'Failed to upload logo', message: error.message });
@@ -981,25 +966,17 @@ router.put('/:id', async (req, res) => {
 /**
  * POST /api/websites/:id/gallery
  * Upload multiple gallery images for a restaurant website
+ * Stored under: websites/[website_id]/gallary/[filename].webp
  */
 router.post('/:id/gallery', uploadGallery.array('images', 20), async (req, res) => {
   try {
-    console.log('Gallery upload request received:', {
-      id: req.params.id,
-      filesCount: req.files ? req.files.length : 0,
-      body: req.body,
-      files: req.files ? req.files.map(f => ({ name: f.originalname, size: f.size })) : []
-    });
-
     if (!req.files || req.files.length === 0) {
-      console.error('No files in request');
       return res.status(400).json({ error: 'No files uploaded' });
     }
 
     const { id } = req.params;
-    console.log('Processing gallery upload for website ID:', id);
-    
-    // Get existing gallery images
+    const websiteId = parseInt(id, 10);
+
     const [websites] = await pool.execute(
       'SELECT gallery_images FROM restaurant_websites WHERE id = ?',
       [id]
@@ -1011,46 +988,33 @@ router.post('/:id/gallery', uploadGallery.array('images', 20), async (req, res) 
 
     let existingImages = [];
     try {
-      existingImages = websites[0].gallery_images 
-        ? (typeof websites[0].gallery_images === 'string' 
-            ? JSON.parse(websites[0].gallery_images) 
+      existingImages = websites[0].gallery_images
+        ? (typeof websites[0].gallery_images === 'string'
+            ? JSON.parse(websites[0].gallery_images)
             : websites[0].gallery_images)
         : [];
     } catch (e) {
       existingImages = [];
     }
 
-    // Add new images
-    const apiBaseUrl = process.env.API_BASE_URL || `http://localhost:${process.env.PORT || 3000}`;
-    const newImages = req.files.map(file => ({
-      url: `${apiBaseUrl}/uploads/${file.filename}`,
-      file_path: file.path,
-      filename: file.filename
-    }));
-
-    console.log('New images to add:', newImages.length);
-    console.log('Existing images:', existingImages.length);
+    const newImages = [];
+    for (const file of req.files) {
+      const saved = await saveImage('gallary', file, { websiteId });
+      newImages.push({
+        url: saved.url,
+        file_path: saved.storagePath,
+        filename: saved.storagePath.split('/').pop() || `gallery-${Date.now()}.webp`
+      });
+    }
 
     const allImages = [...existingImages, ...newImages];
-    console.log('Total images after merge:', allImages.length);
 
-    // Update website with gallery images
     try {
-      const imagesJson = JSON.stringify(allImages);
-      console.log('Updating database with images JSON (length):', imagesJson.length);
-      
       await pool.execute(
         'UPDATE restaurant_websites SET gallery_images = ? WHERE id = ?',
-        [imagesJson, id]
+        [JSON.stringify(allImages), id]
       );
-      console.log('Database update successful');
     } catch (dbError) {
-      console.error('Database error:', dbError);
-      console.error('Error code:', dbError.code);
-      console.error('Error message:', dbError.message);
-      console.error('Error sqlState:', dbError.sqlState);
-      
-      // Check if column exists
       if (dbError.message && dbError.message.includes("Unknown column 'gallery_images'")) {
         throw new Error('Gallery images column not found in database. Please restart the server to run migrations.');
       }
@@ -1061,48 +1025,15 @@ router.post('/:id/gallery', uploadGallery.array('images', 20), async (req, res) 
       'SELECT * FROM restaurant_websites WHERE id = ?',
       [id]
     );
+    await CacheService.invalidateRestaurant(websiteId);
 
-    // Invalidate cache after gallery update
-    await CacheService.invalidateRestaurant(parseInt(id));
-
-    console.log('Gallery upload completed successfully');
     res.json({ website: updatedWebsites[0] });
   } catch (error) {
     console.error('Error uploading gallery images:', error);
-    console.error('Error details:', {
+    res.status(500).json({
+      error: 'Failed to upload gallery images',
       message: error.message,
-      stack: error.stack,
-      code: error.code,
-      sqlState: error.sqlState,
-      files: req.files ? req.files.length : 0,
-      errno: error.errno
-    });
-    
-    // If files were uploaded but database update failed, try to clean up
-    if (req.files && req.files.length > 0) {
-      req.files.forEach(file => {
-        try {
-          if (fs.existsSync(file.path)) {
-            fs.unlinkSync(file.path);
-            console.log('Cleaned up file:', file.path);
-          }
-        } catch (cleanupError) {
-          console.error('Failed to cleanup file:', cleanupError);
-        }
-      });
-    }
-    
-    const errorMessage = error.message || 'Failed to upload gallery images';
-    console.error('Sending error response:', errorMessage);
-    
-    res.status(500).json({ 
-      error: 'Failed to upload gallery images', 
-      message: errorMessage,
-      details: process.env.NODE_ENV === 'development' ? {
-        stack: error.stack,
-        code: error.code,
-        sqlState: error.sqlState
-      } : undefined
+      details: process.env.NODE_ENV === 'development' ? { stack: error.stack } : undefined
     });
   }
 });
@@ -1140,9 +1071,9 @@ router.delete('/:id/gallery/:imageIndex', async (req, res) => {
       return res.status(400).json({ error: 'Invalid image index' });
     }
 
-    // Delete file if exists
+    // Delete file if it is a local path (not Spaces URL)
     const imageToDelete = galleryImages[index];
-    if (imageToDelete.file_path) {
+    if (imageToDelete.file_path && typeof imageToDelete.file_path === 'string' && imageToDelete.file_path.startsWith('/') && fs.existsSync(imageToDelete.file_path)) {
       try {
         fs.unlinkSync(imageToDelete.file_path);
       } catch (err) {
@@ -1275,10 +1206,11 @@ router.delete('/:id', async (req, res) => {
       return res.status(404).json({ error: 'Website not found' });
     }
 
-    // Delete logo file if exists
-    if (websites[0].logo_file_path) {
+    // Delete logo file only if it is a local path (not Spaces)
+    const logoPath = websites[0].logo_file_path;
+    if (logoPath && typeof logoPath === 'string' && logoPath.startsWith('/') && fs.existsSync(logoPath)) {
       try {
-        fs.unlinkSync(websites[0].logo_file_path);
+        fs.unlinkSync(logoPath);
       } catch (err) {
         console.warn('Could not delete logo file:', err.message);
       }
