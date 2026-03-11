@@ -29,7 +29,13 @@ data class Restaurant(
     val created_at: String? = null,
     /** Restaurant location for driver navigation (from API when available). */
     val latitude: Double? = null,
-    val longitude: Double? = null
+    val longitude: Double? = null,
+    /**
+     * Optional category order map for menu.
+     * Keys are category names, values are positive integers (1, 2, 3, ...).
+     * Used to sort categories/tabs in RestaurantDetailsActivity.
+     */
+    val menu_category_order: Map<String, Int>? = null
 )
 
 data class CliQServices(

@@ -688,7 +688,7 @@ class RestaurantDetailsActivity : AppCompatActivity() {
         val allByCategory = products.groupBy { p ->
             I18nHelper.getProductCategoryDisplay(p, this).ifBlank { menuFallback }
         }
-        val sortedCategories = allByCategory.keys.sorted()
+        val sortedCategories = sortCategoriesWithRestaurantOrder(allByCategory.keys.toList())
 
         // Trending section
         list.add(MenuPremiumItem.TrendingHeader(getString(R.string.trending)))
@@ -702,6 +702,24 @@ class RestaurantDetailsActivity : AppCompatActivity() {
             allByCategory[category]?.forEach { list.add(MenuPremiumItem.MainProduct(it)) }
         }
         return list
+    }
+
+    /**
+     * Sort category names using the restaurant's menu_category_order when available.
+     * Falls back to alphabetical order for categories without an explicit order.
+     */
+    private fun sortCategoriesWithRestaurantOrder(categories: List<String>): List<String> {
+        val restaurant = restaurantViewModel.selectedRestaurant.value
+        val orderMap = restaurant?.menu_category_order
+        if (orderMap.isNullOrEmpty()) {
+            return categories.sorted()
+        }
+        return categories.sortedWith(
+            compareBy(
+                { name -> orderMap[name] ?: Int.MAX_VALUE },
+                { name -> name.lowercase() }
+            )
+        )
     }
 
     private fun setupCategoryTabs(categories: List<String>) {
@@ -818,8 +836,8 @@ class RestaurantDetailsActivity : AppCompatActivity() {
             val categories = available
                 .map { p -> I18nHelper.getProductCategoryDisplay(p, this).ifBlank { menuFallback } }
                 .distinct()
-                .sorted()
-            setupCategoryTabs(listOf(getString(R.string.trending)) + categories)
+            val orderedCategories = sortCategoriesWithRestaurantOrder(categories)
+            setupCategoryTabs(listOf(getString(R.string.trending)) + orderedCategories)
         }
         refreshMenuCartState()
     }
@@ -1111,8 +1129,8 @@ class RestaurantDetailsActivity : AppCompatActivity() {
                 val categories = available
                     .map { p -> I18nHelper.getProductCategoryDisplay(p, this).ifBlank { menuFallback } }
                     .distinct()
-                    .sorted()
-                setupCategoryTabs(listOf(getString(R.string.trending)) + categories)
+                val orderedCategories = sortCategoriesWithRestaurantOrder(categories)
+                setupCategoryTabs(listOf(getString(R.string.trending)) + orderedCategories)
                 binding.recyclerViewMenu.visibility = android.view.View.VISIBLE
                 binding.textEmptyMenu.visibility = android.view.View.GONE
             } else {

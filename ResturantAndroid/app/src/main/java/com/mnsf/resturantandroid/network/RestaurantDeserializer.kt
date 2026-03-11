@@ -72,6 +72,24 @@ class RestaurantDeserializer : JsonDeserializer<Restaurant> {
             }
         }
         
+        // Normalize menu_category_order so it is always a JSON object (not a string) for Gson to map
+        val categoryOrderElement = jsonObject.get("menu_category_order")
+        if (categoryOrderElement != null && !categoryOrderElement.isJsonNull) {
+            if (categoryOrderElement.isJsonPrimitive && categoryOrderElement.asJsonPrimitive.isString) {
+                // If backend sent JSON as a string, parse it
+                try {
+                    val parsed = com.google.gson.JsonParser.parseString(categoryOrderElement.asString)
+                    if (parsed.isJsonObject) {
+                        jsonObject.add("menu_category_order", parsed.asJsonObject)
+                    } else {
+                        jsonObject.remove("menu_category_order")
+                    }
+                } catch (e: Exception) {
+                    jsonObject.remove("menu_category_order")
+                }
+            }
+        }
+        
         // Use default deserialization for the rest
         val gson = GsonBuilder()
             .registerTypeAdapter(Boolean::class.java, BooleanTypeAdapter())

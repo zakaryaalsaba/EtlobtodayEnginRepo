@@ -39,8 +39,6 @@
                 android:textStyle="bold"
                 android:textColor="?attr/colorOnSurface"
                 android:letterSpacing="-0.01"
-                android:maxLines="2"
-                android:ellipsize="end"
                 android:lineSpacingExtra="2dp"
                 tools:text="Product Name" />
 
