@@ -73,6 +73,33 @@ export async function initDatabase() {
         await pool.execute(withoutLeadingComments);
       }
     }
+
+    // Create business_types table and seed (Restaurant, Groceries, Stores, Sweets)
+    try {
+      await pool.execute(`
+        CREATE TABLE IF NOT EXISTS business_types (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          name VARCHAR(100) NOT NULL UNIQUE,
+          display_order INT DEFAULT 0,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+          INDEX idx_name (name)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+      `);
+      const [rows] = await pool.execute('SELECT COUNT(*) AS cnt FROM business_types');
+      if (rows[0].cnt === 0) {
+        await pool.execute(`
+          INSERT INTO business_types (name, display_order) VALUES
+          ('Restaurant', 1),
+          ('Groceries', 2),
+          ('Stores', 3),
+          ('Sweets', 4)
+        `);
+        console.log('Seeded business_types table');
+      }
+    } catch (err) {
+      console.warn('Error creating/seeding business_types table:', err.message);
+    }
     
     // Run migration to add gallery_images, locations, app_download_url, newsletter_enabled columns
     try {
@@ -288,6 +315,20 @@ export async function initDatabase() {
           console.log('Added address_ar column');
         } catch (err) {
           console.warn('Error adding address_ar column:', err.message);
+        }
+      }
+
+      // Add business_type_id (FK to business_types)
+      if (!existingColumns.includes('business_type_id')) {
+        try {
+          await pool.execute(`
+            ALTER TABLE restaurant_websites
+            ADD COLUMN business_type_id INT NULL AFTER address_ar,
+            ADD CONSTRAINT fk_rw_business_type FOREIGN KEY (business_type_id) REFERENCES business_types(id) ON DELETE SET NULL
+          `);
+          console.log('Added business_type_id column and FK to restaurant_websites');
+        } catch (err) {
+          console.warn('Error adding business_type_id column:', err.message);
         }
       }
 

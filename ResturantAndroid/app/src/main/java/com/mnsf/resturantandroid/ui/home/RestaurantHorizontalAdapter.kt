@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.google.android.material.chip.Chip
 import com.mnsf.resturantandroid.R
 import com.mnsf.resturantandroid.data.model.Restaurant
+import com.mnsf.resturantandroid.util.I18nHelper
 import com.mnsf.resturantandroid.utils.UrlHelper
 
 class RestaurantHorizontalAdapter(
@@ -41,13 +42,15 @@ class RestaurantHorizontalAdapter(
 
         fun bind(restaurant: Restaurant) {
             val context = itemView.context
-            nameTextView.text = restaurant.restaurant_name
-            descriptionTextView.text = restaurant.description
-                ?: context.getString(R.string.no_description_available)
+            // Localized name/description/address based on current language
+            nameTextView.text = I18nHelper.getRestaurantNameDisplay(restaurant, context)
+            val desc = I18nHelper.getRestaurantDescriptionDisplay(restaurant, context)
+            descriptionTextView.text = desc ?: context.getString(R.string.no_description_available)
 
             layoutAddress?.visibility = if (restaurant.address.isNullOrBlank()) View.GONE else View.VISIBLE
             if (!restaurant.address.isNullOrBlank()) {
-                addressTextView.text = restaurant.address
+                val addr = I18nHelper.getRestaurantAddressDisplay(restaurant, context)
+                addressTextView.text = addr ?: restaurant.address
             }
 
             val isFreeDelivery = (restaurant.delivery_fee ?: 0.0) == 0.0

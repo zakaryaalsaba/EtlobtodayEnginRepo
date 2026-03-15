@@ -290,8 +290,16 @@ class MealDetailsActivity : AppCompatActivity() {
                     val data = response.body()!!
                     addonRequired = data.addon_required
                     addonRequiredMin = data.addon_required_min
-                    requiredAddons = data.addons.filter { it.is_required }.sortedBy { it.display_order }
-                    optionalAddons = data.addons.filter { !it.is_required }.sortedBy { it.display_order }
+                    val requiredFromApi = data.addons.filter { it.is_required }.sortedBy { it.display_order }
+                    val optionalFromApi = data.addons.filter { !it.is_required }.sortedBy { it.display_order }
+                    // When product has addon_required but no addon rows have is_required, show all addons as required (dashboard may only set product-level flag)
+                    if (data.addon_required && requiredFromApi.isEmpty() && data.addons.isNotEmpty()) {
+                        requiredAddons = data.addons.sortedBy { it.display_order }
+                        optionalAddons = emptyList()
+                    } else {
+                        requiredAddons = requiredFromApi
+                        optionalAddons = optionalFromApi
+                    }
                     if (requiredAddons.isNotEmpty()) {
                         binding.sectionRequiredAddons.visibility = View.VISIBLE
                         val minN = addonRequiredMin ?: 1

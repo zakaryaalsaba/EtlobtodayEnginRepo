@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.google.android.material.chip.Chip
 import com.mnsf.resturantandroid.R
 import com.mnsf.resturantandroid.data.model.Restaurant
+import com.mnsf.resturantandroid.util.I18nHelper
 
 class RestaurantAdapter(
     private val onItemClick: (Restaurant) -> Unit
@@ -40,12 +41,15 @@ class RestaurantAdapter(
         fun bind(restaurant: Restaurant) {
             try {
                 val context = itemView.context
-                nameTextView.text = restaurant.restaurant_name
-                descriptionTextView.text = restaurant.description ?: context.getString(R.string.no_description_available)
+                // Localized name/description/address based on current language
+                nameTextView.text = I18nHelper.getRestaurantNameDisplay(restaurant, context)
+                val desc = I18nHelper.getRestaurantDescriptionDisplay(restaurant, context)
+                descriptionTextView.text = desc ?: context.getString(R.string.no_description_available)
 
                 val addressLayout = itemView.findViewById<View>(R.id.layoutAddress)
-                restaurant.address?.let { address ->
-                    addressTextView.text = address
+                restaurant.address?.let {
+                    val addr = I18nHelper.getRestaurantAddressDisplay(restaurant, context)
+                    addressTextView.text = addr ?: it
                     addressLayout?.visibility = View.VISIBLE
                 } ?: run {
                     addressLayout?.visibility = View.GONE

@@ -106,6 +106,22 @@ router.get('/', async (req, res) => {
 });
 
 /**
+ * GET /api/websites/business-types
+ * List business types (Restaurant, Groceries, Stores, Sweets) for dropdowns.
+ */
+router.get('/business-types', async (req, res) => {
+  try {
+    const [rows] = await pool.execute(
+      'SELECT id, name, display_order FROM business_types ORDER BY display_order, id'
+    );
+    res.json({ business_types: rows });
+  } catch (error) {
+    console.error('Error fetching business types:', error);
+    res.status(500).json({ error: 'Failed to fetch business types', message: error.message });
+  }
+});
+
+/**
  * GET /api/websites/offers/list
  * Get all active offers from all restaurants (valid today, is_active=1). For app home "Offers" section.
  */
@@ -568,7 +584,8 @@ router.post('/', async (req, res) => {
       newsletter_enabled,
       is_published,
       subdomain,
-      custom_domain
+      custom_domain,
+      business_type_id
     } = req.body;
 
     if (!restaurant_name) {
@@ -649,8 +666,8 @@ router.post('/', async (req, res) => {
       `INSERT INTO restaurant_websites 
        (restaurant_name, restaurant_name_ar, logo_url, description, description_ar, address, address_ar, phone, email, website_url,
         primary_color, secondary_color, font_family, custom_css, menu_items, social_links, 
-        gallery_images, locations, app_download_url, newsletter_enabled, is_published, barcode_code, subdomain, custom_domain)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        gallery_images, locations, app_download_url, newsletter_enabled, is_published, barcode_code, subdomain, custom_domain, business_type_id)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         restaurant_name,
         restaurant_name_ar || null,
@@ -675,7 +692,8 @@ router.post('/', async (req, res) => {
         is_published || false,
         barcodeCode,
         finalSubdomain ? finalSubdomain.toLowerCase() : null,
-        custom_domain ? custom_domain.toLowerCase() : null
+        custom_domain ? custom_domain.toLowerCase() : null,
+        business_type_id != null ? business_type_id : null
       ]
     );
 
@@ -772,7 +790,8 @@ router.put('/:id', async (req, res) => {
       newsletter_enabled,
       is_published,
       subdomain,
-      custom_domain
+      custom_domain,
+      business_type_id
     } = req.body;
 
     const updateFields = [];
@@ -861,6 +880,10 @@ router.put('/:id', async (req, res) => {
     if (is_published !== undefined) {
       updateFields.push('is_published = ?');
       updateValues.push(is_published);
+    }
+    if (business_type_id !== undefined) {
+      updateFields.push('business_type_id = ?');
+      updateValues.push(business_type_id != null ? business_type_id : null);
     }
 
     if (subdomain !== undefined) {
