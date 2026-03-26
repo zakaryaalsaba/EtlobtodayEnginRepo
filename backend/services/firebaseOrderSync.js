@@ -167,21 +167,10 @@ export async function saveOrderDeliveryToFirebase(record) {
       return;
     }
 
-    const idToken = await getValidIdToken();
     const firebaseData = orderDeliveryToFirebaseData(record);
     const path = `orders_delivery/${record.website_id}/${record.id}`;
-    const url = `${databaseUrl}/${path}.json?auth=${encodeURIComponent(idToken)}`;
-
-    const res = await fetch(url, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(firebaseData)
-    });
-
-    if (!res.ok) {
-      const text = await res.text();
-      throw new Error(`Firebase REST PUT failed: ${res.status} ${text}`);
-    }
+    const db = admin.database();
+    await db.ref(path).set(firebaseData);
 
     console.log(`[FirebaseOrderSync] ✅ Driver request (orders_delivery) saved to Firebase: ${path}`);
   } catch (error) {
@@ -210,7 +199,6 @@ export async function saveOrderToFirebase(order) {
       return;
     }
 
-    const idToken = await getValidIdToken();
     const firebaseData = orderToFirebaseData(order);
 
     // Preserve request_status if already set (e.g., a driver accepted it),
@@ -229,18 +217,8 @@ export async function saveOrderToFirebase(order) {
       firebaseData.request_status = 'pending';
     }
     const path = `orders/${order.website_id}/${order.order_number}`;
-    const url = `${databaseUrl}/${path}.json?auth=${encodeURIComponent(idToken)}`;
-
-    const res = await fetch(url, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(firebaseData)
-    });
-
-    if (!res.ok) {
-      const text = await res.text();
-      throw new Error(`Firebase REST PUT failed: ${res.status} ${text}`);
-    }
+    const db = admin.database();
+    await db.ref(path).set(firebaseData);
 
     console.log(`[FirebaseOrderSync] ✅ Order saved to Firebase: ${path}`);
   } catch (error) {

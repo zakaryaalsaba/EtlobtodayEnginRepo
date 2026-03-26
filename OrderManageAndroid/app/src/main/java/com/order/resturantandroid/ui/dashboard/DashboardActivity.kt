@@ -185,6 +185,16 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
                 Toast.makeText(this, "Error displaying orders: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
+
+        viewModel.newCount.observe(this) { count ->
+            binding.tvNewHeader.text = "New ${count ?: 0}"
+        }
+        viewModel.acceptedCount.observe(this) { count ->
+            binding.tvAcceptedHeader.text = "Accepted ${count ?: 0}"
+        }
+        viewModel.upcomingCount.observe(this) { count ->
+            binding.tvUpcomingHeader.text = "Upcoming ${count ?: 0}"
+        }
         
         viewModel.isLoading.observe(this) { isLoading ->
             try {

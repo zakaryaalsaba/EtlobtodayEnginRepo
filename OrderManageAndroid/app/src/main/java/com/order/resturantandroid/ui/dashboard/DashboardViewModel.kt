@@ -47,6 +47,15 @@ class DashboardViewModel(application: Application) : AndroidViewModel(applicatio
     
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> = _error
+
+    private val _newCount = MutableLiveData<Int>()
+    val newCount: LiveData<Int> = _newCount
+
+    private val _acceptedCount = MutableLiveData<Int>()
+    val acceptedCount: LiveData<Int> = _acceptedCount
+
+    private val _upcomingCount = MutableLiveData<Int>()
+    val upcomingCount: LiveData<Int> = _upcomingCount
     
     private var dateFrom: Long? = null
     private var dateTo: Long? = null
@@ -126,6 +135,18 @@ class DashboardViewModel(application: Application) : AndroidViewModel(applicatio
         
         _orders.value = filteredOrders
         calculateStatistics(filteredOrders)
+        updateSectionCounts(ordersList)
+    }
+
+    private fun updateSectionCounts(allOrders: List<Order>) {
+        // "Talabat-like" sections (simple mapping for our statuses)
+        // New: pending
+        // Accepted: confirmed
+        // Upcoming: preparing/ready/picked_up
+        val normStatuses = allOrders.map { (it.status ?: "").trim().lowercase(Locale.getDefault()) }
+        _newCount.value = normStatuses.count { it == "pending" }
+        _acceptedCount.value = normStatuses.count { it == "confirmed" }
+        _upcomingCount.value = normStatuses.count { it == "preparing" || it == "ready" || it == "picked_up" }
     }
     
     private fun updateOrdersFromFirebaseSnapshot(snapshot: DataSnapshot) {

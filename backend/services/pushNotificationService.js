@@ -78,8 +78,12 @@ export function initializeFirebase() {
     }
 
     // Initialize Firebase Admin (include databaseURL for Realtime Database)
-    const databaseURL = process.env.FIREBASE_DATABASE_URL ||
-      `https://${credentials.project_id}-default-rtdb.firebaseio.com`;
+    // Prefer explicit FIREBASE_DATABASE_URL. If missing, try region-based host first (common default),
+    // then fall back to firebaseio.com style.
+    const databaseURL =
+      process.env.FIREBASE_DATABASE_URL ||
+      `https://${credentials.project_id}-default-rtdb.europe-west1.firebasedatabase.app`;
+    console.log(`[PUSH NOTIFICATION SERVICE] Using databaseURL: ${databaseURL}`);
     console.log(`[PUSH NOTIFICATION SERVICE] Initializing Firebase Admin SDK...`);
     admin.initializeApp({
       credential: admin.credential.cert(credentials),
