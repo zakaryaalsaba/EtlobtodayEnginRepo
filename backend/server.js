@@ -51,6 +51,12 @@ const app = express();
 // Default to 8080 in production (DigitalOcean App Platform); 3000 for local dev
 const PORT = process.env.PORT || (process.env.NODE_ENV === 'production' ? 8080 : 3000);
 
+// Respect reverse proxy headers (DigitalOcean/App Platform, Nginx, etc.)
+// Needed for correct client IP detection in express-rate-limit.
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
+
 // Middleware
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));

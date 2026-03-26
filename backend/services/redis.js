@@ -2,6 +2,7 @@ import { createClient } from 'redis';
 import dotenv from 'dotenv';
 
 dotenv.config();
+const hasRedisUrl = Boolean(process.env.REDIS_URL?.trim());
 
 const redisClient = createClient({
   url: process.env.REDIS_URL || 'redis://localhost:6379',
@@ -32,7 +33,7 @@ redisClient.on('ready', () => {
 let isConnected = false;
 
 export async function connectRedis() {
-  if (!process.env.REDIS_URL?.trim()) {
+  if (!hasRedisUrl) {
     return; // No Redis URL: skip connecting (avoids localhost:6379 in production)
   }
   if (!isConnected) {
@@ -45,8 +46,17 @@ export async function connectRedis() {
   }
 }
 
+// If Redis is not configured, provide safe no-op cache methods.
+if (!hasRedisUrl) {
+  redisClient.get = async () => null;
+  redisClient.setEx = async () => 'OK';
+  redisClient.del = async () => 0;
+  redisClient.keys = async () => [];
+  redisClient.flushDb = async () => 'OK';
+}
+
 // Auto-connect only when REDIS_URL is set (avoid connecting to localhost in production)
-if (process.env.REDIS_URL && process.env.REDIS_AUTO_CONNECT !== 'false') {
+if (hasRedisUrl && process.env.REDIS_AUTO_CONNECT !== 'false') {
   connectRedis().catch(() => {});
 }
 
