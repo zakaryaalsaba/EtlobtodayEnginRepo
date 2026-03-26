@@ -56,8 +56,16 @@
             <div>
               <h2 class="text-2xl font-bold mb-2">{{ $t('orderTracking.order') }} #{{ order.order_number }}</h2>
               <p class="text-gray-500">{{ $t('orderTracking.placedOn') }} {{ formatDate(order.created_at) }}</p>
+              <p class="text-xs text-gray-500 mt-2">{{ $t('orderTracking.autoRefreshNotice') }}</p>
             </div>
             <div :class="$i18n.locale === 'ar' ? 'text-left' : 'text-right'">
+              <button
+                @click="manualRefresh"
+                :disabled="refreshing"
+                class="mb-3 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-semibold"
+              >
+                {{ refreshing ? $t('orderTracking.refreshing') : $t('orderTracking.refreshStatus') }}
+              </button>
               <div class="text-sm text-gray-500 mb-1">{{ $t('orderTracking.status') }}</div>
               <span
                 class="px-4 py-2 rounded-full text-white font-semibold text-sm"
@@ -215,8 +223,10 @@ const order = ref(null);
 const orderNumberInput = ref('');
 const loading = ref(false);
 const error = ref('');
+const refreshing = ref(false);
 const POLL_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
 let pollIntervalId = null;
+const STOP_POLLING_STATUSES = new Set(['ready', 'completed', 'cancelled']);
 
 const statusTimeline = computed(() => {
   if (!order.value) return [];
@@ -317,6 +327,16 @@ const refreshTrackedOrder = async () => {
   }
 };
 
+const manualRefresh = async () => {
+  if (refreshing.value) return;
+  refreshing.value = true;
+  try {
+    await refreshTrackedOrder();
+  } finally {
+    refreshing.value = false;
+  }
+};
+
 const startOrderPolling = () => {
   stopOrderPolling();
   pollIntervalId = setInterval(refreshTrackedOrder, POLL_INTERVAL_MS);
@@ -356,7 +376,7 @@ onMounted(async () => {
 });
 
 watch(order, (newOrder) => {
-  if (newOrder?.order_number) {
+  if (newOrder?.order_number && !STOP_POLLING_STATUSES.has(newOrder.status)) {
     startOrderPolling();
   } else {
     stopOrderPolling();

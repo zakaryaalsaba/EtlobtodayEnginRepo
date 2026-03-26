@@ -344,7 +344,10 @@
     "statusCompletedDesc": "Order has been completed",
     "pleaseEnterOrderNumber": "Please enter an order number",
     "orderNotBelong": "This order does not belong to this restaurant",
-    "orderNotFound": "Order not found. Please check your order number and try again."
+    "orderNotFound": "Order not found. Please check your order number and try again.",
+    "refreshStatus": "Refresh Status",
+    "refreshing": "Refreshing...",
+    "autoRefreshNotice": "This page updates automatically every 5 minutes."
   },
   "websiteBuilder": {
     "title": "Restaurant Website Builder",

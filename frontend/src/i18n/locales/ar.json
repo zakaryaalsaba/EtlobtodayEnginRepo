@@ -344,7 +344,10 @@
     "statusCompletedDesc": "تم إكمال الطلب",
     "pleaseEnterOrderNumber": "يرجى إدخال رقم الطلب",
     "orderNotBelong": "هذا الطلب لا ينتمي إلى هذا المطعم",
-    "orderNotFound": "الطلب غير موجود. يرجى التحقق من رقم الطلب والمحاولة مرة أخرى."
+    "orderNotFound": "الطلب غير موجود. يرجى التحقق من رقم الطلب والمحاولة مرة أخرى.",
+    "refreshStatus": "تحديث الحالة",
+    "refreshing": "جارٍ التحديث...",
+    "autoRefreshNotice": "يتم تحديث هذه الصفحة تلقائيا كل 5 دقائق."
   },
   "websiteBuilder": {
     "title": "منشئ مواقع المطاعم",
