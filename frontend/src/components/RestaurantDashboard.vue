@@ -3963,8 +3963,11 @@ const removeNotification = (id) => {
 // Settings
 const getBarcodeUrl = () => {
   if (!website.value?.barcode_code) return '';
-  const baseUrl = window.location.origin;
-  return `${baseUrl}/barcode/${website.value.barcode_code}`;
+  const routeHref = router.resolve(`/barcode/${website.value.barcode_code}`).href;
+  if (routeHref.startsWith('http://') || routeHref.startsWith('https://')) {
+    return routeHref;
+  }
+  return `${window.location.origin}${routeHref}`;
 };
 
 const copyBarcodeCode = () => {
