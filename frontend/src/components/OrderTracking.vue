@@ -199,7 +199,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue';
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import LanguageSwitcher from './LanguageSwitcher.vue';
@@ -215,6 +215,8 @@ const order = ref(null);
 const orderNumberInput = ref('');
 const loading = ref(false);
 const error = ref('');
+const POLL_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
+let pollIntervalId = null;
 
 const statusTimeline = computed(() => {
   if (!order.value) return [];
@@ -302,6 +304,31 @@ const trackOrder = async () => {
   }
 };
 
+const refreshTrackedOrder = async () => {
+  if (!order.value?.order_number) return;
+  try {
+    const latestOrder = await getOrderByNumber(order.value.order_number);
+    if (latestOrder.website_id === parseInt(route.params.id)) {
+      order.value = latestOrder;
+    }
+  } catch (err) {
+    // Keep existing order visible; transient refresh failures should not break the page.
+    console.warn('Order auto-refresh failed:', err?.message || err);
+  }
+};
+
+const startOrderPolling = () => {
+  stopOrderPolling();
+  pollIntervalId = setInterval(refreshTrackedOrder, POLL_INTERVAL_MS);
+};
+
+const stopOrderPolling = () => {
+  if (pollIntervalId) {
+    clearInterval(pollIntervalId);
+    pollIntervalId = null;
+  }
+};
+
 // Watch for locale changes to update RTL
 watch(locale, (newLocale) => {
   document.documentElement.setAttribute('lang', newLocale);
@@ -326,6 +353,18 @@ onMounted(async () => {
   } catch (error) {
     console.error('Failed to load website:', error);
   }
+});
+
+watch(order, (newOrder) => {
+  if (newOrder?.order_number) {
+    startOrderPolling();
+  } else {
+    stopOrderPolling();
+  }
+});
+
+onUnmounted(() => {
+  stopOrderPolling();
 });
 </script>
 
