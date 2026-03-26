@@ -462,40 +462,7 @@ router.put('/orders/:id/status', verifyAdminToken, async (req, res) => {
       order.items = [];
     }
 
-    // If status changed from 'pending' to 'confirmed', save order to Firebase (drivers can now see it)
-    if (statusChanged && oldStatus === 'pending' && status === 'confirmed') {
-      console.log(`[ADMIN STATUS UPDATE] Order confirmed by restaurant: saving ${order.order_number} to Firebase`);
-      (async () => {
-        try {
-          const { saveOrderToFirebase } = await import('../services/firebaseOrderSync.js');
-          
-          // Get restaurant info for Firebase
-          const [sites] = await pool.execute(
-            'SELECT restaurant_name, phone, address, latitude, longitude FROM restaurant_websites WHERE id = ?',
-            [websiteId]
-          );
-          
-          const orderForFirebase = { ...order };
-          if (sites && sites[0]) {
-            orderForFirebase.restaurant = {
-              name: sites[0].restaurant_name || null,
-              phone: sites[0].phone || null,
-              address: sites[0].address || null,
-              latitude: sites[0].latitude != null ? Number(sites[0].latitude) : null,
-              longitude: sites[0].longitude != null ? Number(sites[0].longitude) : null
-            };
-          }
-          
-          await saveOrderToFirebase(orderForFirebase);
-          console.log(`[ADMIN STATUS UPDATE] ✅ Order ${order.order_number} saved to Firebase`);
-        } catch (firebaseError) {
-          console.error('[ADMIN STATUS UPDATE] ❌ Error saving order to Firebase:', firebaseError);
-          // Don't fail the status update if Firebase sync fails
-        }
-      })();
-    }
-
-    // If status changed to 'completed' or 'cancelled', remove order from Firebase only (MySQL already updated above)
+    // Firebase: remove on terminal status; otherwise re-save full order (preparing, ready, etc.)
     if (statusChanged && (status === 'completed' || status === 'cancelled')) {
       console.log(`[ADMIN STATUS UPDATE] Order ${order.order_number} is ${status}: removing from Firebase only`);
       (async () => {
@@ -506,6 +473,31 @@ router.put('/orders/:id/status', verifyAdminToken, async (req, res) => {
         } catch (firebaseError) {
           console.error('[ADMIN STATUS UPDATE] ❌ Error removing order from Firebase:', firebaseError);
           // Don't fail the status update if Firebase remove fails
+        }
+      })();
+    } else if (statusChanged) {
+      console.log(`[ADMIN STATUS UPDATE] Syncing ${order.order_number} to Firebase (status=${status})`);
+      (async () => {
+        try {
+          const { saveOrderToFirebase } = await import('../services/firebaseOrderSync.js');
+          const [sites] = await pool.execute(
+            'SELECT restaurant_name, phone, address, latitude, longitude FROM restaurant_websites WHERE id = ?',
+            [websiteId]
+          );
+          const orderForFirebase = { ...order };
+          if (sites && sites[0]) {
+            orderForFirebase.restaurant = {
+              name: sites[0].restaurant_name || null,
+              phone: sites[0].phone || null,
+              address: sites[0].address || null,
+              latitude: sites[0].latitude != null ? Number(sites[0].latitude) : null,
+              longitude: sites[0].longitude != null ? Number(sites[0].longitude) : null
+            };
+          }
+          await saveOrderToFirebase(orderForFirebase);
+          console.log(`[ADMIN STATUS UPDATE] ✅ Order ${order.order_number} saved to Firebase (status=${status})`);
+        } catch (firebaseError) {
+          console.error('[ADMIN STATUS UPDATE] ❌ Error saving order to Firebase:', firebaseError);
         }
       })();
     }
