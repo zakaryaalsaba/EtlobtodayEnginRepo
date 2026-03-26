@@ -20,17 +20,18 @@
         android:orientation="vertical"
         android:padding="@dimen/spacing_20">
 
-        <!-- Header Row -->
+        <!-- Header: order #, status under it, placed-at, elapsed timer -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_vertical"
+            android:gravity="top"
             android:layout_marginBottom="@dimen/spacing_16">
 
             <View
                 android:layout_width="4dp"
-                android:layout_height="48dp"
+                android:layout_height="match_parent"
+                android:minHeight="72dp"
                 android:background="@color/primary"
                 android:layout_marginEnd="@dimen/spacing_16" />
 
@@ -50,27 +51,40 @@
                     android:letterSpacing="0.02"
                     tools:text="ORD-123456" />
 
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/tvStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_6"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    app:chipBackgroundColor="@color/surface_variant"
+                    app:chipCornerRadius="12dp"
+                    app:chipMinHeight="36dp"
+                    app:chipStrokeWidth="0dp"
+                    tools:text="Pending" />
+
                 <TextView
                     android:id="@+id/tvOrderTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_4"
+                    android:layout_marginTop="@dimen/spacing_6"
                     android:textSize="13sp"
                     android:textColor="@color/text_secondary"
-                    tools:text="Jan 26, 18:30" />
-            </LinearLayout>
+                    tools:text="Mar 27, 2026 · 14:30" />
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/tvStatus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                app:chipBackgroundColor="@color/surface_variant"
-                app:chipCornerRadius="12dp"
-                app:chipMinHeight="36dp"
-                app:chipStrokeWidth="0dp"
-                tools:text="Pending" />
+                <Chronometer
+                    android:id="@+id/chronometerElapsed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_4"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:fontFamily="monospace"
+                    android:textColor="@color/success"
+                    android:visibility="visible"
+                    tools:text="00:42" />
+            </LinearLayout>
         </LinearLayout>
 
         <!-- Customer Info -->

@@ -16,6 +16,35 @@ let tokenExpiryMs = 0;
 const TOKEN_BUFFER_MS = 5 * 60 * 1000; // refresh 5 min before expiry
 
 /**
+ * Normalize MySQL/JS dates to ISO-8601 UTC strings.
+ * Always store strings in RTDB (not Date objects) so clients parse reliably.
+ * JavaScript Date objects in Firebase become numeric timestamps and break string parsers.
+ */
+function toIsoUtc(value) {
+  if (value === null || value === undefined) {
+    return new Date().toISOString();
+  }
+  if (value instanceof Date) {
+    const t = value.getTime();
+    return Number.isNaN(t) ? new Date().toISOString() : value.toISOString();
+  }
+  if (typeof value === 'number') {
+    const d = new Date(value);
+    return Number.isNaN(d.getTime()) ? new Date().toISOString() : d.toISOString();
+  }
+  if (typeof value === 'string') {
+    const d = new Date(value);
+    return Number.isNaN(d.getTime()) ? new Date().toISOString() : d.toISOString();
+  }
+  try {
+    const d = new Date(String(value));
+    return Number.isNaN(d.getTime()) ? new Date().toISOString() : d.toISOString();
+  } catch {
+    return new Date().toISOString();
+  }
+}
+
+/**
  * Get Firebase Realtime Database base URL (no trailing slash).
  */
 function getDatabaseUrl() {
@@ -83,8 +112,8 @@ function orderToFirebaseData(order) {
     total_amount: order.total_amount,
     payment_method: order.payment_method || 'cash',
     payment_status: order.payment_status || 'pending',
-    created_at: order.created_at || new Date().toISOString(),
-    updated_at: order.updated_at || new Date().toISOString(),
+    created_at: toIsoUtc(order.created_at),
+    updated_at: toIsoUtc(order.updated_at),
     // request_status is managed separately (drivers accept via tryAcceptOrderInFirebase).
   };
 
@@ -138,8 +167,8 @@ function orderDeliveryToFirebaseData(record) {
     zone_id: record.zone_id,
     zone_name: record.zone_name || null,
     status: record.status || 'pending',
-    created_at: record.created_at || new Date().toISOString(),
-    updated_at: record.updated_at || new Date().toISOString()
+    created_at: toIsoUtc(record.created_at),
+    updated_at: toIsoUtc(record.updated_at)
   };
   const cleanData = {};
   for (const [key, value] of Object.entries(firebaseData)) {

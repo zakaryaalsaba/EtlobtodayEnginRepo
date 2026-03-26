@@ -1,7 +1,11 @@
 package com.order.resturantandroid.ui.dashboard
 
+import android.graphics.Color
+import android.os.SystemClock
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.Chronometer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -9,13 +13,16 @@ import com.order.resturantandroid.R
 import com.order.resturantandroid.data.model.Order
 import com.order.resturantandroid.databinding.ItemOrderBinding
 import com.order.resturantandroid.util.CurrencyFormatter
-import java.text.SimpleDateFormat
-import java.util.*
+import com.order.resturantandroid.util.formatElapsedMmSs
+import com.order.resturantandroid.util.formatOrderPlacedAt
+import com.order.resturantandroid.util.parseOrderCreatedAtMillis
+import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 class OrdersAdapter(
     private val onOrderClick: (Order) -> Unit
 ) : ListAdapter<Order, OrdersAdapter.OrderViewHolder>(OrderDiffCallback()) {
-    
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrderViewHolder {
         val binding = ItemOrderBinding.inflate(
             LayoutInflater.from(parent.context),
@@ -24,49 +31,48 @@ class OrdersAdapter(
         )
         return OrderViewHolder(binding, onOrderClick)
     }
-    
+
     override fun onBindViewHolder(holder: OrderViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
-    
+
+    override fun onViewRecycled(holder: OrderViewHolder) {
+        holder.unbind()
+        super.onViewRecycled(holder)
+    }
+
     class OrderViewHolder(
         private val binding: ItemOrderBinding,
         private val onOrderClick: (Order) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
-        
+
+        fun unbind() {
+            binding.chronometerElapsed.stop()
+            binding.chronometerElapsed.setOnChronometerTickListener(null)
+        }
+
         fun bind(order: Order) {
+            unbind()
+
             binding.apply {
-                tvOrderNumber.text = order.orderNumber ?: "N/A"
-                tvCustomerName.text = order.customerName ?: "N/A"
+                tvOrderNumber.text = order.orderNumber?.takeIf { it.isNotBlank() } ?: "—"
+                tvCustomerName.text = order.customerName?.takeIf { it.isNotBlank() } ?: "—"
                 tvOrderType.text = (order.orderType ?: "").replaceFirstChar { it.uppercaseChar() }
-                tvStatus.text = (order.status ?: "").replaceFirstChar { it.uppercaseChar() }
-                
-                // Format total amount with currency from database
-                android.util.Log.d("OrdersAdapter", "Order currency: ${order.currencyCode}, position: ${order.currencySymbolPosition}, total: ${order.totalAmount}")
+
+                val statusRaw = (order.status ?: "").lowercase(Locale.getDefault())
+                tvStatus.text = statusRaw.replaceFirstChar { it.uppercaseChar() }
+
                 val formattedTotal = CurrencyFormatter.formatAmount(
                     order.totalAmount ?: "0.00",
                     order.currencyCode,
                     order.currencySymbolPosition
                 )
-                android.util.Log.d("OrdersAdapter", "Formatted total: $formattedTotal")
                 tvTotalAmount.text = formattedTotal
-                
-                // Format time
-                try {
-                    val createdAt = order.createdAt ?: ""
-                    if (createdAt.isNotEmpty()) {
-                        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
-                        val outputFormat = SimpleDateFormat("MMM dd, HH:mm", Locale.getDefault())
-                        val date = inputFormat.parse(createdAt)
-                        tvOrderTime.text = date?.let { outputFormat.format(it) } ?: createdAt
-                    } else {
-                        tvOrderTime.text = "N/A"
-                    }
-                } catch (e: Exception) {
-                    tvOrderTime.text = order.createdAt ?: "N/A"
-                }
-                
-                // Items summary
+
+                val createdMs = parseOrderCreatedAtMillis(order.createdAt)
+                val placedLabel = formatOrderPlacedAt(order.createdAt, createdMs)
+                tvOrderTime.text = placedLabel.ifBlank { "—" }
+
                 try {
                     val itemsList = order.getItemsList()
                     val itemsCount = itemsList.size
@@ -74,57 +80,84 @@ class OrdersAdapter(
                 } catch (e: Exception) {
                     tvItemsCount.text = "0 items"
                 }
-                
-                // Payment method display
-                val paymentMethodLayout = root.findViewById<android.view.ViewGroup>(R.id.layoutPaymentMethod)
+
+                val paymentMethodLayout = root.findViewById<ViewGroup>(R.id.layoutPaymentMethod)
                 val tvPaymentMethod = root.findViewById<android.widget.TextView>(R.id.tvPaymentMethod)
-                
-                if (order.paymentMethod != null && order.paymentMethod.isNotEmpty()) {
-                    val paymentMethod = order.paymentMethod.replace("_", " ").replaceFirstChar { it.uppercaseChar() }
+                if (!order.paymentMethod.isNullOrEmpty()) {
+                    val paymentMethod = order.paymentMethod.replace("_", " ")
+                        .replaceFirstChar { it.uppercaseChar() }
                     tvPaymentMethod?.text = paymentMethod
-                    paymentMethodLayout?.visibility = android.view.View.VISIBLE
+                    paymentMethodLayout?.visibility = View.VISIBLE
                 } else {
-                    paymentMethodLayout?.visibility = android.view.View.GONE
+                    paymentMethodLayout?.visibility = View.GONE
                 }
-                
-                // Status chip styling
-                val status = (order.status ?: "").lowercase()
-                tvStatus.text = status.replaceFirstChar { it.uppercaseChar() }
-                
-                val statusColor = when (status) {
-                    "pending" -> android.graphics.Color.parseColor("#F59E0B")
-                    "confirmed", "preparing" -> android.graphics.Color.parseColor("#3B82F6")
-                    "ready" -> android.graphics.Color.parseColor("#10B981")
-                    "completed" -> android.graphics.Color.parseColor("#059669")
-                    "cancelled" -> android.graphics.Color.parseColor("#EF4444")
-                    else -> android.graphics.Color.parseColor("#6B7280")
+
+                val statusColor = when (statusRaw) {
+                    "pending" -> Color.parseColor("#F59E0B")
+                    "confirmed", "preparing" -> Color.parseColor("#3B82F6")
+                    "ready" -> Color.parseColor("#10B981")
+                    "completed" -> Color.parseColor("#059669")
+                    "cancelled" -> Color.parseColor("#EF4444")
+                    else -> Color.parseColor("#6B7280")
                 }
-                
-                // Set chip background color with alpha
-                val chipColor = android.graphics.Color.argb(30, 
-                    android.graphics.Color.red(statusColor),
-                    android.graphics.Color.green(statusColor),
-                    android.graphics.Color.blue(statusColor)
+                val chipColor = Color.argb(
+                    30,
+                    Color.red(statusColor),
+                    Color.green(statusColor),
+                    Color.blue(statusColor)
                 )
                 tvStatus.setChipBackgroundColorResource(android.R.color.transparent)
                 tvStatus.chipBackgroundColor = android.content.res.ColorStateList.valueOf(chipColor)
                 tvStatus.setTextColor(statusColor)
-                
-                root.setOnClickListener {
-                    onOrderClick(order)
-                }
+
+                setupElapsedTimer(chronometerElapsed, createdMs)
+
+                root.setOnClickListener { onOrderClick(order) }
             }
         }
+
+        private fun setupElapsedTimer(chronometer: Chronometer, createdMs: Long?) {
+            if (createdMs == null) {
+                chronometer.visibility = View.GONE
+                return
+            }
+            chronometer.visibility = View.VISIBLE
+            chronometer.base =
+                SystemClock.elapsedRealtime() - (System.currentTimeMillis() - createdMs)
+
+            val green = binding.root.context.getColor(R.color.success)
+            val orange = binding.root.context.getColor(R.color.warning)
+            val red = binding.root.context.getColor(R.color.error)
+
+            fun applyElapsedColors(elapsedMs: Long) {
+                val minutes = TimeUnit.MILLISECONDS.toMinutes(elapsedMs)
+                val color = when {
+                    minutes < 5L -> green
+                    minutes < 15L -> orange
+                    else -> red
+                }
+                chronometer.setTextColor(color)
+            }
+
+            chronometer.setOnChronometerTickListener { c ->
+                val elapsed = SystemClock.elapsedRealtime() - c.base
+                c.text = formatElapsedMmSs(elapsed)
+                applyElapsedColors(elapsed)
+            }
+            val initialElapsed = SystemClock.elapsedRealtime() - chronometer.base
+            chronometer.text = formatElapsedMmSs(initialElapsed)
+            applyElapsedColors(initialElapsed)
+            chronometer.start()
+        }
     }
-    
+
     class OrderDiffCallback : DiffUtil.ItemCallback<Order>() {
         override fun areItemsTheSame(oldItem: Order, newItem: Order): Boolean {
             return oldItem.id == newItem.id
         }
-        
+
         override fun areContentsTheSame(oldItem: Order, newItem: Order): Boolean {
             return oldItem == newItem
         }
     }
 }
-

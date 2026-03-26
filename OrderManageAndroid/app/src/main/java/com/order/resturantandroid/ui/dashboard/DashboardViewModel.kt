@@ -199,7 +199,7 @@ class DashboardViewModel(application: Application) : AndroidViewModel(applicatio
         val paymentMethod = getStringNullable(snapshot, "payment_method")
         val paymentStatus = getStringNullable(snapshot, "payment_status")
         val notes = getStringNullable(snapshot, "notes")
-        val createdAt = getString(snapshot, "created_at") ?: ""
+        val createdAt = formatCreatedAtFromSnapshot(snapshot)
         
         val deliveryLatitude = getDoubleNullable(snapshot, "delivery_latitude")
         val deliveryLongitude = getDoubleNullable(snapshot, "delivery_longitude")
@@ -240,6 +240,26 @@ class DashboardViewModel(application: Application) : AndroidViewModel(applicatio
         )
     }
     
+    /**
+     * Firebase may store [created_at] as ISO string or as a number (legacy JS Date → ms).
+     * Always expose a single ISO-8601 string to the rest of the app.
+     */
+    private fun formatCreatedAtFromSnapshot(snapshot: DataSnapshot): String {
+        val v = snapshot.child("created_at").getValue(Any::class.java) ?: return ""
+        return when (v) {
+            is Number -> {
+                val n = v.toDouble().toLong()
+                val ms = when {
+                    n >= 1_000_000_000_000L -> n
+                    n in 1_000_000_000L until 1_000_000_000_000L -> n * 1000L
+                    else -> n
+                }
+                Instant.ofEpochMilli(ms).toString()
+            }
+            else -> v.toString().trim()
+        }
+    }
+
     private fun getString(snapshot: DataSnapshot, field: String): String? {
         val v = snapshot.child(field).getValue(Any::class.java) ?: return null
         return v.toString()
