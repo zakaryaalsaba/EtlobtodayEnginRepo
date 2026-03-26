@@ -509,8 +509,16 @@ router.post('/', async (req, res) => {
       // Don't fail the order creation if notification fails
     }
 
-    // Note: Order is NOT saved to Firebase here. It will be saved when restaurant confirms the order
-    // (status changes from 'pending' to 'confirmed'). This ensures drivers only see confirmed orders.
+    // Save the order to Firebase immediately on placement.
+    // This allows restaurant dashboards to read pending orders right away.
+    // (Driver-side visibility is controlled by request_status in Firebase.)
+    (async () => {
+      try {
+        await saveOrderToFirebase(order);
+      } catch (firebaseError) {
+        console.error('[ORDER PLACED] ❌ Failed to save order to Firebase:', firebaseError);
+      }
+    })();
 
     res.status(201).json({ order });
   } catch (error) {

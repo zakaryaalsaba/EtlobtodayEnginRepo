@@ -85,7 +85,7 @@ function orderToFirebaseData(order) {
     payment_status: order.payment_status || 'pending',
     created_at: order.created_at || new Date().toISOString(),
     updated_at: order.updated_at || new Date().toISOString(),
-    request_status: 'pending'  // Drivers see order only when pending; becomes 'Accepted' when a driver accepts
+    // request_status is managed separately (drivers accept via tryAcceptOrderInFirebase).
   };
 
   if (order.customer_email) firebaseData.customer_email = order.customer_email;
@@ -212,6 +212,22 @@ export async function saveOrderToFirebase(order) {
 
     const idToken = await getValidIdToken();
     const firebaseData = orderToFirebaseData(order);
+
+    // Preserve request_status if already set (e.g., a driver accepted it),
+    // so saving on later order status changes doesn't overwrite it.
+    try {
+      const db = admin.database();
+      const existingSnap = await db
+        .ref('orders')
+        .child(String(order.website_id))
+        .child(String(order.order_number))
+        .child('request_status')
+        .get();
+      const existing = existingSnap.val();
+      firebaseData.request_status = existing ?? 'pending';
+    } catch (e) {
+      firebaseData.request_status = 'pending';
+    }
     const path = `orders/${order.website_id}/${order.order_number}`;
     const url = `${databaseUrl}/${path}.json?auth=${encodeURIComponent(idToken)}`;
 

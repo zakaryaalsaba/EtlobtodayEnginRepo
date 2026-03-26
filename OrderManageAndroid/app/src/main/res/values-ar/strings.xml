@@ -94,7 +94,7 @@
     <string name="status">الحالة</string>
     <string name="status_updated">تم تحديث الحالة بنجاح</string>
     <string name="not_available">غير متاح</string>
-    <string name="default_notification_channel_id">إشعارات_الطلبات</string>
+    <string name="default_notification_channel_id">driver_order_notifications</string>
     
     <!-- Navigation (for unused navigation files) -->
     <string name="title_home">الرئيسية</string>

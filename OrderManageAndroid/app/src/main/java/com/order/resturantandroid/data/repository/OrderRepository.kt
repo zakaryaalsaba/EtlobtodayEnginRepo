@@ -4,8 +4,10 @@ import com.order.resturantandroid.data.model.Order
 import com.order.resturantandroid.data.model.OrderStatusUpdate
 import com.order.resturantandroid.data.remote.ApiService
 import com.order.resturantandroid.data.remote.RetrofitClient
+import android.util.Log
 
 class OrderRepository {
+    private val tag = "OrderRepository"
     private val apiService: ApiService = RetrofitClient.apiService
     
     suspend fun getOrders(websiteId: Int, status: String? = null, token: String): Result<List<Order>> {
@@ -14,9 +16,24 @@ class OrderRepository {
             if (response.isSuccessful && response.body() != null) {
                 Result.success(response.body()!!.orders)
             } else {
-                Result.failure(Exception(response.message() ?: "Failed to fetch orders"))
+                val errorBody = try {
+                    response.errorBody()?.string()
+                } catch (_: Exception) {
+                    null
+                }
+                android.util.Log.e(
+                    tag,
+                    "getOrders() failed: http=${response.code()} msg=${response.message()} websiteId=$websiteId status=$status errorBody=$errorBody"
+                )
+                Result.failure(
+                    Exception(
+                        response.message()
+                            ?: "Failed to fetch orders (http ${response.code()})"
+                    )
+                )
             }
         } catch (e: Exception) {
+            Log.e(tag, "getOrders() failed: ${e.javaClass.simpleName} msg=${e.message}")
             Result.failure(e)
         }
     }
@@ -34,6 +51,7 @@ class OrderRepository {
                 Result.failure(Exception("Failed to fetch order: ${response.message()}. Error: $errorBody"))
             }
         } catch (e: Exception) {
+            Log.e(tag, "getOrder() failed: ${e.javaClass.simpleName} msg=${e.message}", e)
             Result.failure(Exception("Error fetching order: ${e.message}", e))
         }
     }
@@ -48,9 +66,24 @@ class OrderRepository {
             if (response.isSuccessful && response.body() != null) {
                 Result.success(response.body()!!)
             } else {
-                Result.failure(Exception(response.message() ?: "Failed to update order status"))
+                val errorBody = try {
+                    response.errorBody()?.string()
+                } catch (_: Exception) {
+                    null
+                }
+                android.util.Log.e(
+                    tag,
+                    "updateOrderStatus() failed: http=${response.code()} msg=${response.message()} orderId=$orderId status=$status errorBody=$errorBody"
+                )
+                Result.failure(
+                    Exception(
+                        response.message()
+                            ?: "Failed to update order status (http ${response.code()})"
+                    )
+                )
             }
         } catch (e: Exception) {
+            Log.e(tag, "updateOrderStatus() failed: ${e.javaClass.simpleName} msg=${e.message}")
             Result.failure(e)
         }
     }

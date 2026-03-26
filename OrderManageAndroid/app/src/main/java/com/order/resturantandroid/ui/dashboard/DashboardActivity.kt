@@ -65,9 +65,7 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         registerDeviceToken()
         
         // Load orders
-        viewModel.loadOrders()
-        
-        // Start polling for real-time updates
+        // Start real-time updates (Firebase)
         viewModel.startPolling()
     }
     
@@ -205,6 +203,7 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
     
     private fun setupRefresh() {
         binding.swipeRefresh.setOnRefreshListener {
+            // Force a manual refresh from Firebase
             viewModel.loadOrders()
         }
     }

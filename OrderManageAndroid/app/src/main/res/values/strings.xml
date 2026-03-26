@@ -95,7 +95,7 @@
     <string name="status">Status</string>
     <string name="status_updated">Status updated successfully</string>
     <string name="not_available">Not available</string>
-    <string name="default_notification_channel_id">order_notifications</string>
+    <string name="default_notification_channel_id">driver_order_notifications</string>
     
     <!-- Navigation (for unused navigation files) -->
     <string name="title_home">Home</string>

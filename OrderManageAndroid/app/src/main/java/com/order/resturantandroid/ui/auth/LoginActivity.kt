@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.order.resturantandroid.R
+import com.order.resturantandroid.BuildConfig
 import com.order.resturantandroid.databinding.ActivityLoginBinding
 import com.order.resturantandroid.ui.dashboard.DashboardActivity
 import com.order.resturantandroid.util.SessionManager
@@ -28,6 +29,13 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
         
         sessionManager = SessionManager(this)
+
+        // Debug-only: prefill credentials for faster testing.
+        // NOTE: Do not keep this behavior in release builds.
+        if (BuildConfig.DEBUG) {
+            binding.etEmail.setText("ghotaadmin@admin.com")
+            binding.etPassword.setText("admin123")
+        }
         
         // Check if already logged in
         if (sessionManager.isLoggedIn()) {

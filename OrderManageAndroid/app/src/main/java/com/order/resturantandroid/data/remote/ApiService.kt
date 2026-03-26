@@ -32,7 +32,8 @@ interface ApiService {
         @SerializedName("order") val order: Order
     )
     
-    @PUT("orders/{orderId}/status")
+    // Restaurant/admin updates order status
+    @PUT("admin/orders/{orderId}/status")
     suspend fun updateOrderStatus(
         @Path("orderId") orderId: Int,
         @Body statusUpdate: OrderStatusUpdate,

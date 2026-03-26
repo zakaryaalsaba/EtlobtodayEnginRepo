@@ -4,8 +4,10 @@ import com.order.resturantandroid.data.model.AuthResponse
 import com.order.resturantandroid.data.remote.ApiService
 import com.order.resturantandroid.data.remote.LoginRequest
 import com.order.resturantandroid.data.remote.RetrofitClient
+import android.util.Log
 
 class AuthRepository {
+    private val tag = "AuthRepository"
     private val apiService: ApiService = RetrofitClient.apiService
     
     suspend fun login(email: String, password: String): Result<AuthResponse> {
@@ -17,6 +19,7 @@ class AuthRepository {
                 Result.failure(Exception(response.message() ?: "Login failed"))
             }
         } catch (e: Exception) {
+            Log.e(tag, "login() failed: ${e.javaClass.simpleName} msg=${e.message}")
             Result.failure(e)
         }
     }
@@ -30,6 +33,7 @@ class AuthRepository {
                 Result.failure(Exception(response.message() ?: "Failed to get profile"))
             }
         } catch (e: Exception) {
+            Log.e(tag, "getProfile() failed: ${e.javaClass.simpleName} msg=${e.message}")
             Result.failure(e)
         }
     }

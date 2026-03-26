@@ -19,6 +19,14 @@ android {
         
         // API Base URL - can be overridden via gradle.properties
         buildConfigField("String", "API_BASE_URL", "\"${project.findProperty("API_BASE_URL") ?: "http://10.0.2.2:3000/api/"}\"")
+
+        // Firebase Realtime Database URL - used for dashboard real-time orders
+        buildConfigField(
+            "String",
+            "FIREBASE_DATABASE_URL",
+            "\"${project.findProperty("FIREBASE_DATABASE_URL")
+                ?: "https://tashkeela-8cab1-default-rtdb.europe-west1.firebasedatabase.app"}\""
+        )
     }
 
     buildTypes {
@@ -66,6 +74,8 @@ dependencies {
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
     implementation("com.google.firebase:firebase-messaging-ktx")
+    implementation("com.google.firebase:firebase-database-ktx")
+    implementation("com.google.firebase:firebase-auth-ktx")
     
     // WebSocket for real-time updates
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
