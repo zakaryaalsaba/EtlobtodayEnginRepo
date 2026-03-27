@@ -312,7 +312,7 @@
   },
   "orderStatus": {
     "mergeHint": "Your order confirmation and live status are on this page.",
-    "firebaseLive": "Connected for live updates — status changes appear as soon as the store updates your order.",
+    "firebaseLive": "Live sync is on — updates appear quickly. The page also rechecks the server about every 30 seconds as a backup.",
     "firebaseNotConfigured": "Live updates are not enabled in this build. Status refreshes about every 30 seconds while this tab is open, or tap Refresh.",
     "liveFeedEnded": "Live tracking for this order has ended (for example, when it is completed). Showing the latest details from our servers.",
     "updatesRealtime": "Updates right away when the store changes the order status.",

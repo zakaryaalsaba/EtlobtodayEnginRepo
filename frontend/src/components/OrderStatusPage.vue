@@ -515,7 +515,9 @@ async function loadOrderFromApi() {
   const num = orderNum();
   if (!num) return;
   const o = await getOrderByNumber(num);
-  if (o.website_id !== websiteIdNum()) {
+  // API / MySQL may return website_id as string; coerce so refresh never fails silently.
+  const orderWid = o.website_id != null ? Number(o.website_id) : NaN;
+  if (Number.isNaN(orderWid) || orderWid !== websiteIdNum()) {
     throw new Error(t('orderTracking.orderNotBelong'));
   }
   order.value = o;
@@ -530,9 +532,13 @@ async function refreshFromApi() {
   }
 }
 
+/**
+ * Always poll the REST API while the order is "active".
+ * Firebase live sync is best-effort (rules, env, sync failures); previously we disabled polling
+ * whenever Firebase env was set, which left the page frozen if RTDB did not deliver updates.
+ */
 function startPoll() {
   stopPoll();
-  if (firebaseConfigured) return;
   pollId = window.setInterval(async () => {
     if (order.value?.order_number && !STOP_POLL.has(order.value.status)) {
       await refreshFromApi();
@@ -592,7 +598,7 @@ watch(
   (st) => {
     if (st && STOP_POLL.has(st)) {
       stopPoll();
-    } else if (!firebaseConfigured) {
+    } else if (st) {
       startPoll();
     }
   }
@@ -618,6 +624,7 @@ onMounted(async () => {
   if (canUseNotifications) {
     notificationPermission.value = Notification.permission;
   }
+  document.addEventListener('visibilitychange', onVisibilityChange);
 
   try {
     website.value = await getWebsite(route.params.id);
@@ -647,7 +654,7 @@ onMounted(async () => {
       }
     }
     attachFirebase();
-    if (!firebaseConfigured && order.value && !STOP_POLL.has(order.value.status)) {
+    if (order.value && !STOP_POLL.has(order.value.status)) {
       startPoll();
     }
   } catch (e) {
@@ -657,7 +664,14 @@ onMounted(async () => {
   }
 });
 
+function onVisibilityChange() {
+  if (document.visibilityState !== 'visible') return;
+  if (!order.value?.order_number || STOP_POLL.has(order.value.status)) return;
+  refreshFromApi();
+}
+
 onUnmounted(() => {
+  document.removeEventListener('visibilitychange', onVisibilityChange);
   detachFirebase();
   stopPoll();
 });
