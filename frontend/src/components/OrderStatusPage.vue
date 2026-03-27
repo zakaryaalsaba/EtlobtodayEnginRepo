@@ -228,6 +228,7 @@ import { useI18n } from 'vue-i18n';
 import { ref as dbRef, onValue } from 'firebase/database';
 import { getWebsite, getOrderByNumber } from '../services/api.js';
 import { getFirebaseRealtimeDb, isFirebaseRealtimeConfigured } from '../config/firebaseClient.js';
+import { formatRestaurantMoney } from '../utils/currencyDisplay.js';
 
 const { locale, t } = useI18n();
 const route = useRoute();
@@ -337,24 +338,12 @@ const formatDate = (dateString) => {
   });
 };
 
-const getCurrencySymbol = (currencyCode) => {
-  const currentLang = locale.value || 'en';
-  if (currencyCode === 'JOD') {
-    return currentLang === 'ar' ? 'د.ا' : 'JD';
-  }
-  const symbols = { USD: '$', EUR: '€', GBP: '£', SAR: 'ر.س' };
-  return symbols[currencyCode] || '$';
-};
-
 const formatCurrency = (amount) => {
-  if (!website.value) {
-    return `$${parseFloat(amount || 0).toFixed(2)}`;
-  }
-  const currencyCode = website.value.currency_code || 'USD';
-  const symbolPosition = website.value.currency_symbol_position || 'before';
-  const symbol = getCurrencySymbol(currencyCode);
-  const formattedAmount = parseFloat(amount || 0).toFixed(2);
-  return symbolPosition === 'after' ? `${formattedAmount} ${symbol}` : `${symbol}${formattedAmount}`;
+  const o = order.value;
+  const w = website.value;
+  const currencyCode = o?.currency_code || w?.currency_code || 'USD';
+  const symbolPosition = o?.currency_symbol_position ?? w?.currency_symbol_position ?? 'before';
+  return formatRestaurantMoney(amount, currencyCode, symbolPosition);
 };
 
 const paymentMethods = computed(() => {
@@ -424,6 +413,13 @@ const nextStepsMessage = computed(() => {
   if (methods.includes('mobile')) methodNames.push(t('checkout.paymentMobile'));
   if (methodNames.length === 0) {
     return `${baseMessage} ${t('orderConfirmation.paymentNoteDefault')}`;
+  }
+  if (methods.length === 1 && methods[0] === 'cash') {
+    const paymentNote =
+      orderType === 'delivery'
+        ? t('orderConfirmation.paymentNoteCashDeliveryOnly')
+        : t('orderConfirmation.paymentNoteCashPickupOnly');
+    return `${baseMessage} ${paymentNote}`;
   }
   if (methodNames.length === 1) {
     const paymentNote =

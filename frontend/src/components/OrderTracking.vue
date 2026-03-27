@@ -140,15 +140,15 @@
                 <p class="text-sm text-gray-500">{{ $t('orderTracking.quantity') }}: {{ item.quantity }}</p>
               </div>
               <div class="text-right">
-                <p class="font-semibold text-gray-800">${{ parseFloat(item.subtotal).toFixed(2) }}</p>
-                <p class="text-sm text-gray-500">${{ parseFloat(item.product_price).toFixed(2) }} {{ $t('orderTracking.each') }}</p>
+                <p class="font-semibold text-gray-800">{{ formatOrderMoney(item.subtotal) }}</p>
+                <p class="text-sm text-gray-500">{{ formatOrderMoney(item.product_price) }} {{ $t('orderTracking.each') }}</p>
               </div>
             </div>
           </div>
           <div class="mt-6 pt-4 border-t border-gray-200">
             <div class="flex items-center justify-between text-lg font-bold" :style="{ color: website?.primary_color || '#4F46E5' }">
               <span>{{ $t('orderTracking.total') }}</span>
-              <span>${{ parseFloat(order.total_amount).toFixed(2) }}</span>
+              <span>{{ formatOrderMoney(order.total_amount) }}</span>
             </div>
           </div>
         </div>
@@ -212,6 +212,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import LanguageSwitcher from './LanguageSwitcher.vue';
 import { getWebsite, getOrderByNumber } from '../services/api.js';
+import { formatRestaurantMoney } from '../utils/currencyDisplay.js';
 
 const { locale, t } = useI18n();
 
@@ -287,6 +288,14 @@ const formatDate = (dateString) => {
     hour: '2-digit',
     minute: '2-digit'
   });
+};
+
+const formatOrderMoney = (amount) => {
+  const o = order.value;
+  const w = website.value;
+  const currencyCode = o?.currency_code || w?.currency_code || 'USD';
+  const symbolPosition = o?.currency_symbol_position ?? w?.currency_symbol_position ?? 'before';
+  return formatRestaurantMoney(amount, currencyCode, symbolPosition);
 };
 
 const trackOrder = async () => {

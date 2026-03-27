@@ -9,7 +9,14 @@ import { getDatabase } from 'firebase/database';
  * Firebase Realtime Database rules must allow read for guests on the paths you expose, e.g.:
  * orders/{websiteId}/{orderNumber} — read: true (tracking), write: false for clients.
  */
-const firebaseConfig = {
+function pickDefined(obj) {
+  return Object.fromEntries(
+    Object.entries(obj).filter(([, v]) => v != null && String(v).trim() !== '')
+  );
+}
+
+/** Built from Vite env; matches backend Firebase project (see backend/.env.example). */
+const firebaseConfig = pickDefined({
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
   databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
@@ -17,7 +24,7 @@ const firebaseConfig = {
   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
   appId: import.meta.env.VITE_FIREBASE_APP_ID
-};
+});
 
 export function isFirebaseRealtimeConfigured() {
   return !!(firebaseConfig.databaseURL && firebaseConfig.apiKey && firebaseConfig.projectId);

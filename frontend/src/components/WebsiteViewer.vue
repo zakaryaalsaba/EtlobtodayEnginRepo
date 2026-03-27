@@ -848,6 +848,7 @@ import { useI18n } from 'vue-i18n';
 import LanguageSwitcher from './LanguageSwitcher.vue';
 import { getWebsite, getProducts, getWebsiteByBarcode, getWebsiteByDomain } from '../services/api.js';
 import { useSEO } from '../composables/useSEO.js';
+import { formatRestaurantMoney } from '../utils/currencyDisplay.js';
 
 const { locale, t } = useI18n();
 const { setSEO, clearSEO } = useSEO();
@@ -1310,40 +1311,11 @@ const shouldShowLanguageSwitcher = computed(() => {
   return availableLanguages.value.length > 1;
 });
 
-// Currency symbol mapping - language-aware
-const getCurrencySymbol = (currencyCode) => {
-  const currentLang = locale.value || 'en';
-  
-  if (currencyCode === 'JOD') {
-    // JOD: Show "JD" in English, "د.ا" in Arabic
-    return currentLang === 'ar' ? 'د.ا' : 'JD';
-  }
-  
-  // Default currency symbols (same for all languages)
-  const symbols = {
-    USD: '$',
-    JOD: currentLang === 'ar' ? 'د.ا' : 'JD'
-  };
-  
-  return symbols[currencyCode] || '$';
-};
-
-// Format currency based on restaurant settings
+// Format currency based on restaurant settings (JOD always as "JOD"; amounts in Latin digits)
 const formatCurrency = (amount) => {
-  if (!website.value) {
-    return `$${parseFloat(amount).toFixed(2)}`;
-  }
-
-  const currencyCode = website.value.currency_code || 'USD';
-  const symbolPosition = website.value.currency_symbol_position || 'before';
-  const symbol = getCurrencySymbol(currencyCode);
-  const formattedAmount = parseFloat(amount).toFixed(2);
-
-  if (symbolPosition === 'before') {
-    return `${symbol}${formattedAmount}`;
-  } else {
-    return `${formattedAmount} ${symbol}`;
-  }
+  const currencyCode = website.value?.currency_code || 'USD';
+  const symbolPosition = website.value?.currency_symbol_position || 'before';
+  return formatRestaurantMoney(amount, currencyCode, symbolPosition);
 };
 
 const getSocialIcon = (platform) => {

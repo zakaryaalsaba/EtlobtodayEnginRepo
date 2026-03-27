@@ -2311,7 +2311,7 @@
                 class="w-full md:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               >
                 <option value="USD">USD - US Dollar ($)</option>
-                <option value="JOD">JOD - Jordanian Dinar (د.ا)</option>
+                <option value="JOD">JOD - Jordanian Dinar (JOD)</option>
               </select>
               <p class="text-xs text-gray-500 mt-1">{{ $t('restaurantDashboard.currencyCodeHint') }}</p>
             </div>
@@ -2899,6 +2899,7 @@ import {
   deleteRestaurantBranch,
   updateRestaurantMenuCategoryOrder
 } from '../services/api.js';
+import { formatRestaurantMoney } from '../utils/currencyDisplay.js';
 
 const { t, locale } = useI18n();
 
@@ -4193,22 +4194,13 @@ const saveLanguageSettings = async () => {
   }
 };
 
-// Currency symbol mapping
-const currencySymbols = {
-  USD: '$',
-  JOD: 'د.ا'
-};
-
-// Format currency for preview
+// Format currency for preview (matches public site: JOD code + Latin digits)
 const formatCurrency = (amount) => {
-  const symbol = currencySymbols[currencySettings.value.currency_code] || '$';
-  const formattedAmount = parseFloat(amount).toFixed(2);
-  
-  if (currencySettings.value.symbol_position === 'before') {
-    return `${symbol}${formattedAmount}`;
-  } else {
-    return `${formattedAmount} ${symbol}`;
-  }
+  return formatRestaurantMoney(
+    amount,
+    currencySettings.value.currency_code || 'USD',
+    currencySettings.value.symbol_position || 'before'
+  );
 };
 
 // Load currency settings

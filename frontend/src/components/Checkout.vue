@@ -46,8 +46,8 @@
               </div>
             </div>
 
-            <!-- Coupon Code Section -->
-            <div class="mb-4 pb-4 border-b border-gray-200">
+            <!-- Coupon Code Section (hidden on public checkout) -->
+            <div v-if="SHOW_CHECKOUT_COUPONS" class="mb-4 pb-4 border-b border-gray-200">
               <label class="block text-sm font-medium text-gray-700 mb-2">
                 {{ $t('checkout.couponCode') }}
               </label>
@@ -227,7 +227,7 @@
                       class="w-5 h-5 text-indigo-600 focus:ring-indigo-500"
                       :style="{ accentColor: website?.primary_color || '#4F46E5' }"
                     />
-                    <span :class="['ml-3 text-gray-700 font-medium', $i18n.locale === 'ar' ? 'mr-3 ml-0' : '']">{{ $t('checkout.paymentCash') }}</span>
+                    <span :class="['ml-3 text-gray-700 font-medium', $i18n.locale === 'ar' ? 'mr-3 ml-0' : '']">{{ $t('checkout.paymentOnReceipt') }}</span>
                   </label>
                   <label v-if="paymentMethods.cashOnDelivery && checkoutForm.order_type === 'delivery'" class="flex items-center cursor-pointer p-4 border-2 rounded-lg transition-colors" :class="checkoutForm.payment_method === 'cash' ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 hover:border-gray-300'" :style="checkoutForm.payment_method === 'cash' ? { borderColor: website?.primary_color || '#4F46E5', backgroundColor: (website?.primary_color || '#4F46E5') + '10' } : {}">
                     <input
@@ -237,7 +237,7 @@
                       class="w-5 h-5 text-indigo-600 focus:ring-indigo-500"
                       :style="{ accentColor: website?.primary_color || '#4F46E5' }"
                     />
-                    <span :class="['ml-3 text-gray-700 font-medium', $i18n.locale === 'ar' ? 'mr-3 ml-0' : '']">{{ $t('checkout.paymentCash') }}</span>
+                    <span :class="['ml-3 text-gray-700 font-medium', $i18n.locale === 'ar' ? 'mr-3 ml-0' : '']">{{ $t('checkout.paymentOnReceipt') }}</span>
                   </label>
                   <label v-if="paymentMethods.creditCard" class="flex items-center cursor-pointer p-4 border-2 rounded-lg transition-colors" :class="checkoutForm.payment_method === 'card' ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 hover:border-gray-300'" :style="checkoutForm.payment_method === 'card' ? { borderColor: website?.primary_color || '#4F46E5', backgroundColor: (website?.primary_color || '#4F46E5') + '10' } : {}">
                     <input
@@ -341,8 +341,11 @@ import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import LanguageSwitcher from './LanguageSwitcher.vue';
 import { getWebsite, createOrder, createPaymentIntent, validateCoupon } from '../services/api.js';
+import { formatRestaurantMoney } from '../utils/currencyDisplay.js';
 
 const { locale, t } = useI18n();
+
+const SHOW_CHECKOUT_COUPONS = false;
 
 const route = useRoute();
 const router = useRouter();
@@ -410,40 +413,11 @@ const finalTotal = computed(() => {
   return subtotal + taxAmount.value + deliveryFee.value;
 });
 
-// Currency symbol mapping - language-aware
-const getCurrencySymbol = (currencyCode) => {
-  const currentLang = locale.value || 'en';
-  
-  if (currencyCode === 'JOD') {
-    // JOD: Show "JD" in English, "د.ا" in Arabic
-    return currentLang === 'ar' ? 'د.ا' : 'JD';
-  }
-  
-  // Default currency symbols (same for all languages)
-  const symbols = {
-    USD: '$',
-    JOD: currentLang === 'ar' ? 'د.ا' : 'JD'
-  };
-  
-  return symbols[currencyCode] || '$';
-};
-
-// Format currency based on restaurant settings
+// Format currency based on restaurant settings (JOD always as "JOD"; amounts in Latin digits)
 const formatCurrency = (amount) => {
-  if (!website.value) {
-    return `$${parseFloat(amount).toFixed(2)}`;
-  }
-
-  const currencyCode = website.value.currency_code || 'USD';
-  const symbolPosition = website.value.currency_symbol_position || 'before';
-  const symbol = getCurrencySymbol(currencyCode);
-  const formattedAmount = parseFloat(amount).toFixed(2);
-
-  if (symbolPosition === 'before') {
-    return `${symbol}${formattedAmount}`;
-  } else {
-    return `${formattedAmount} ${symbol}`;
-  }
+  const currencyCode = website.value?.currency_code || 'USD';
+  const symbolPosition = website.value?.currency_symbol_position || 'before';
+  return formatRestaurantMoney(amount, currencyCode, symbolPosition);
 };
 
 // Apply coupon
@@ -610,7 +584,13 @@ const paymentNote = computed(() => {
   if (methodNames.length === 0) {
     return t('checkout.paymentNoteDefault');
   }
-  
+
+  if (methods.length === 1 && methods[0] === 'cash') {
+    return orderType === 'delivery'
+      ? t('checkout.paymentNoteCashDeliveryOnly')
+      : t('checkout.paymentNoteCashPickupOnly');
+  }
+
   if (methodNames.length === 1) {
     if (orderType === 'delivery') {
       return t('checkout.paymentNoteSingleDelivery', { method: methodNames[0] });
