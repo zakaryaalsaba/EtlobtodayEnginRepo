@@ -131,6 +131,7 @@
                       v-model="checkoutForm.customer_name"
                       type="text"
                       required
+                      :maxlength="CHECKOUT_MAX_LENGTH.fullName"
                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                       :placeholder="$t('checkout.fullNamePlaceholder')"
                     />
@@ -144,6 +145,7 @@
                       v-model="checkoutForm.customer_phone"
                       type="tel"
                       required
+                      :maxlength="CHECKOUT_MAX_LENGTH.phone"
                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                       :placeholder="$t('checkout.phoneNumberPlaceholder')"
                     />
@@ -157,10 +159,10 @@
                   <input
                     v-model="checkoutForm.customer_email"
                     type="email"
+                    :maxlength="CHECKOUT_MAX_LENGTH.email"
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     :placeholder="$t('checkout.emailAddressPlaceholder')"
                   />
-                  <p class="text-xs text-gray-500 mt-1">{{ $t('checkout.emailHint') }}</p>
                 </div>
               </div>
 
@@ -305,26 +307,27 @@
                 <textarea
                   v-model="checkoutForm.notes"
                   rows="4"
+                  :maxlength="CHECKOUT_MAX_LENGTH.specialInstructions"
                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                   :placeholder="$t('checkout.specialInstructionsPlaceholder')"
                 ></textarea>
               </div>
 
-              <div class="flex gap-4 pt-4">
-                <button
-                  type="button"
-                  @click="$router.back()"
-                  class="flex-1 px-6 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors font-semibold"
-                >
-                  {{ $t('checkout.backToCart') }}
-                </button>
+              <div class="flex flex-col sm:flex-row gap-4 pt-4">
                 <button
                   type="submit"
                   :disabled="placingOrder"
                   :style="{ backgroundColor: website?.primary_color || '#4F46E5' }"
-                  class="flex-1 px-6 py-3 text-white rounded-lg font-semibold hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
+                  class="w-full sm:flex-1 px-6 py-3 text-white rounded-lg font-semibold hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
                 >
                   {{ placingOrder ? $t('checkout.placingOrder') : $t('checkout.placeOrder') }}
+                </button>
+                <button
+                  type="button"
+                  @click="$router.back()"
+                  class="w-full sm:flex-1 px-6 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors font-semibold"
+                >
+                  {{ $t('checkout.backToCart') }}
                 </button>
               </div>
             </form>
@@ -346,6 +349,14 @@ import { formatRestaurantMoney } from '../utils/currencyDisplay.js';
 const { locale, t } = useI18n();
 
 const SHOW_CHECKOUT_COUPONS = false;
+
+/** Matches DB: customer_name / customer_email VARCHAR(255), customer_phone VARCHAR(50); notes is TEXT (reasonable UI cap). */
+const CHECKOUT_MAX_LENGTH = {
+  fullName: 255,
+  phone: 50,
+  email: 255,
+  specialInstructions: 2000
+};
 
 const route = useRoute();
 const router = useRouter();

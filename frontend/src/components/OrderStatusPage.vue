@@ -6,9 +6,9 @@
     </div>
   </div>
 
-  <div v-else class="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8" :dir="$i18n.locale === 'ar' ? 'rtl' : 'ltr'">
+  <div v-else class="min-h-screen bg-gray-50 py-4 sm:py-8 lg:py-10 px-4 sm:px-6 lg:px-8" :dir="$i18n.locale === 'ar' ? 'rtl' : 'ltr'">
     <div class="max-w-4xl mx-auto">
-      <div class="mb-6">
+      <div class="mb-3 sm:mb-4">
         <button
           type="button"
           @click="router.push(`/website/${route.params.id}`)"
@@ -21,25 +21,25 @@
         </button>
       </div>
 
-      <div class="bg-white rounded-lg shadow-xl p-8 mb-8 text-center">
-        <div class="mb-4">
+      <div class="bg-white rounded-lg shadow-md p-4 sm:p-5 mb-3 sm:mb-4 text-center">
+        <div class="mb-3">
           <div
-            class="w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center"
+            class="w-12 h-12 sm:w-14 sm:h-14 mx-auto mb-2 rounded-full flex items-center justify-center"
             :style="{ backgroundColor: (website?.primary_color || '#4F46E5') + '20' }"
           >
-            <svg class="w-12 h-12" :style="{ color: website?.primary_color || '#4F46E5' }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-7 h-7 sm:w-8 sm:h-8" :style="{ color: website?.primary_color || '#4F46E5' }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h1 class="text-3xl font-bold mb-2" :style="{ color: website?.primary_color || '#4F46E5' }">
+          <h1 class="text-xl sm:text-2xl font-bold mb-1" :style="{ color: website?.primary_color || '#4F46E5' }">
             {{ $t('orderConfirmation.title') }}
           </h1>
-          <p class="text-gray-600">{{ $t('orderConfirmation.thankYou') }}</p>
-          <p class="text-sm text-gray-500 mt-2">{{ $t('orderStatus.mergeHint') }}</p>
+          <p class="text-sm text-gray-600">{{ $t('orderConfirmation.thankYou') }}</p>
+          <p class="text-xs text-gray-500 mt-1 leading-snug">{{ $t('orderStatus.mergeHint') }}</p>
         </div>
-        <div class="bg-gray-50 rounded-lg p-6">
-          <p class="text-sm text-gray-500 mb-2">{{ $t('orderConfirmation.orderNumber') }}</p>
-          <p class="text-2xl font-bold" :style="{ color: website?.primary_color || '#4F46E5' }">
+        <div class="bg-gray-50 rounded-lg p-3 sm:p-4">
+          <p class="text-xs text-gray-500 mb-1">{{ $t('orderConfirmation.orderNumber') }}</p>
+          <p class="text-lg sm:text-xl font-bold" :style="{ color: website?.primary_color || '#4F46E5' }">
             {{ order?.order_number || route.params.orderNumber }}
           </p>
         </div>
@@ -47,36 +47,36 @@
 
       <div
         v-if="firebaseRealtimeOn"
-        class="mb-6 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900"
+        class="mb-3 sm:mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs sm:text-sm text-emerald-900"
       >
         {{ $t('orderStatus.firebaseLive') }}
       </div>
       <div
         v-else-if="!firebaseConfigured"
-        class="mb-6 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900"
+        class="mb-3 sm:mb-4 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs sm:text-sm text-amber-900"
       >
         {{ $t('orderStatus.firebaseNotConfigured') }}
       </div>
       <div
         v-if="liveFeedEnded"
-        class="mb-6 rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-700"
+        class="mb-3 sm:mb-4 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-xs sm:text-sm text-gray-700"
       >
         {{ $t('orderStatus.liveFeedEnded') }}
       </div>
 
-      <div v-if="order" class="space-y-6">
-        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <p class="text-sm text-blue-800">
+      <div v-if="order" class="space-y-3 sm:space-y-4">
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+          <p class="text-xs sm:text-sm text-blue-800 leading-snug">
             <strong>{{ $t('orderConfirmation.whatsNext') }}</strong> {{ nextStepsMessage }}
           </p>
         </div>
 
-        <div class="bg-white rounded-lg shadow-lg p-8">
-          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div class="bg-white rounded-lg shadow-md p-4 sm:p-5">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
             <div>
-              <h2 class="text-2xl font-bold mb-2">{{ $t('orderTracking.order') }} #{{ order.order_number }}</h2>
-              <p class="text-gray-500">{{ $t('orderTracking.placedOn') }} {{ formatDate(order.created_at) }}</p>
-              <p class="text-xs text-gray-500 mt-2">
+              <h2 class="text-lg sm:text-xl font-bold mb-1">{{ $t('orderTracking.order') }} #{{ order.order_number }}</h2>
+              <p class="text-sm text-gray-500">{{ $t('orderTracking.placedOn') }} {{ formatDate(order.created_at) }}</p>
+              <p class="text-xs text-gray-500 mt-1 leading-snug">
                 {{ firebaseRealtimeOn ? $t('orderStatus.updatesRealtime') : $t('orderTracking.autoRefreshNotice') }}
               </p>
             </div>
@@ -85,13 +85,13 @@
                 type="button"
                 @click="manualRefresh"
                 :disabled="refreshing"
-                class="mb-3 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 text-sm font-semibold"
+                class="mb-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 text-xs sm:text-sm font-semibold"
               >
                 {{ refreshing ? $t('orderTracking.refreshing') : $t('orderTracking.refreshStatus') }}
               </button>
-              <div class="text-sm text-gray-500 mb-1">{{ $t('orderTracking.status') }}</div>
+              <div class="text-xs sm:text-sm text-gray-500 mb-0.5">{{ $t('orderTracking.status') }}</div>
               <span
-                class="inline-block px-4 py-2 rounded-full text-white font-semibold text-sm"
+                class="inline-block px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-white font-semibold text-xs sm:text-sm"
                 :style="{ backgroundColor: getStatusColor(order.status) }"
               >
                 {{ formatStatus(order.status) }}
@@ -99,18 +99,18 @@
             </div>
           </div>
 
-          <div class="mb-6">
-            <h3 class="text-lg font-semibold mb-4">{{ $t('orderTracking.orderProgress') }}</h3>
-            <div class="space-y-4">
+          <div class="mb-4">
+            <h3 class="text-base font-semibold mb-2">{{ $t('orderTracking.orderProgress') }}</h3>
+            <div class="space-y-2">
               <div
                 v-for="(statusItem, index) in statusTimeline"
                 :key="statusItem.key + index"
-                class="flex items-start gap-4"
+                class="flex items-start gap-3"
                 :class="$i18n.locale === 'ar' ? 'flex-row-reverse' : ''"
               >
                 <div class="flex flex-col items-center">
                   <div
-                    class="w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-all"
+                    class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all"
                     :class="statusItem.completed ? 'text-white shadow-lg' : 'text-gray-400 border-2 border-gray-300'"
                     :style="statusItem.completed ? { backgroundColor: website?.primary_color || '#4F46E5' } : {}"
                   >
@@ -119,14 +119,14 @@
                   </div>
                   <div
                     v-if="index < statusTimeline.length - 1"
-                    class="w-0.5 h-12"
+                    class="w-0.5 h-8"
                     :class="statusItem.completed ? 'bg-indigo-500' : 'bg-gray-300'"
                   ></div>
                 </div>
-                <div class="flex-1 pb-4" :class="$i18n.locale === 'ar' ? 'text-right' : 'text-left'">
-                  <div class="font-semibold text-gray-800">{{ statusItem.label }}</div>
-                  <div class="text-sm text-gray-500">{{ statusItem.description }}</div>
-                  <div v-if="statusItem.completed && statusItem.timestamp" class="text-xs text-gray-400 mt-1">
+                <div class="flex-1 pb-2" :class="$i18n.locale === 'ar' ? 'text-right' : 'text-left'">
+                  <div class="text-sm font-semibold text-gray-800">{{ statusItem.label }}</div>
+                  <div class="text-xs sm:text-sm text-gray-500">{{ statusItem.description }}</div>
+                  <div v-if="statusItem.completed && statusItem.timestamp" class="text-xs text-gray-400 mt-0.5">
                     {{ formatDate(statusItem.timestamp) }}
                   </div>
                 </div>
@@ -134,7 +134,7 @@
             </div>
           </div>
 
-          <div class="border-t border-gray-200 pt-4 flex justify-between items-center">
+          <div class="border-t border-gray-200 pt-3 flex justify-between items-center text-sm">
             <span class="text-gray-600">{{ $t('orderTracking.paymentStatus') }}:</span>
             <span
               class="px-3 py-1 rounded-full text-sm font-semibold"
@@ -145,33 +145,33 @@
           </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow-lg p-8">
-          <h3 class="text-xl font-bold mb-4">{{ $t('orderTracking.orderItems') }}</h3>
-          <div class="space-y-4">
+        <div class="bg-white rounded-lg shadow-md p-4 sm:p-5">
+          <h3 class="text-lg font-bold mb-3">{{ $t('orderTracking.orderItems') }}</h3>
+          <div class="space-y-2">
             <div
               v-for="(item, index) in normalizedItems"
               :key="'item-' + index"
-              class="flex items-center gap-4 pb-4 border-b border-gray-200 last:border-0"
+              class="flex items-center gap-3 pb-3 border-b border-gray-200 last:border-0"
             >
-              <div class="flex-1">
-                <h4 class="font-semibold text-gray-800">{{ item.product_name }}</h4>
-                <p class="text-sm text-gray-500">{{ $t('orderTracking.quantity') }}: {{ item.quantity }}</p>
+              <div class="flex-1 min-w-0">
+                <h4 class="text-sm font-semibold text-gray-800 truncate">{{ item.product_name }}</h4>
+                <p class="text-xs text-gray-500">{{ $t('orderTracking.quantity') }}: {{ item.quantity }}</p>
               </div>
-              <div :class="$i18n.locale === 'ar' ? 'text-left' : 'text-right'">
-                <p class="font-semibold text-gray-800">{{ formatCurrency(item.subtotal) }}</p>
-                <p class="text-sm text-gray-500">{{ formatCurrency(item.product_price) }} {{ $t('orderTracking.each') }}</p>
+              <div :class="$i18n.locale === 'ar' ? 'text-left shrink-0' : 'text-right shrink-0'">
+                <p class="text-sm font-semibold text-gray-800">{{ formatCurrency(item.subtotal) }}</p>
+                <p class="text-xs text-gray-500">{{ formatCurrency(item.product_price) }} {{ $t('orderTracking.each') }}</p>
               </div>
             </div>
           </div>
-          <div class="mt-6 pt-4 border-t border-gray-200 flex justify-between text-lg font-bold" :style="{ color: website?.primary_color || '#4F46E5' }">
+          <div class="mt-4 pt-3 border-t border-gray-200 flex justify-between text-base font-bold" :style="{ color: website?.primary_color || '#4F46E5' }">
             <span>{{ $t('orderTracking.total') }}</span>
             <span>{{ formatCurrency(order.total_amount) }}</span>
           </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow-lg p-8">
-          <h3 class="text-xl font-bold mb-4">{{ $t('orderTracking.customerInformation') }}</h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="bg-white rounded-lg shadow-md p-4 sm:p-5">
+          <h3 class="text-lg font-bold mb-3">{{ $t('orderTracking.customerInformation') }}</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
               <p class="text-sm text-gray-500 mb-1">{{ $t('orderTracking.name') }}</p>
               <p class="font-semibold">{{ order.customer_name }}</p>
@@ -189,17 +189,17 @@
               <p class="font-semibold">{{ order.customer_address }}</p>
             </div>
           </div>
-          <div v-if="order.notes" class="mt-4">
-            <p class="text-sm text-gray-500 mb-1">{{ $t('orderTracking.specialInstructions') }}</p>
-            <p class="font-semibold">{{ order.notes }}</p>
+          <div v-if="order.notes" class="mt-3">
+            <p class="text-xs text-gray-500 mb-0.5">{{ $t('orderTracking.specialInstructions') }}</p>
+            <p class="text-sm font-semibold">{{ order.notes }}</p>
           </div>
         </div>
 
-        <div class="flex flex-col sm:flex-row gap-4">
+        <div class="flex flex-col sm:flex-row gap-3">
           <button
             type="button"
             @click="router.push(`/website/${route.params.id}/track`)"
-            class="flex-1 px-6 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold"
+            class="flex-1 px-4 py-2.5 sm:px-6 sm:py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 text-sm sm:text-base font-semibold"
           >
             {{ $t('orderTracking.trackAnotherOrder') }}
           </button>
@@ -207,14 +207,14 @@
             type="button"
             @click="router.push(`/website/${route.params.id}`)"
             :style="{ backgroundColor: website?.primary_color || '#4F46E5' }"
-            class="flex-1 px-6 py-3 text-white rounded-lg hover:opacity-90 font-semibold"
+            class="flex-1 px-4 py-2.5 sm:px-6 sm:py-3 text-white rounded-lg hover:opacity-90 text-sm sm:text-base font-semibold"
           >
             {{ $t('orderConfirmation.backToMenu') }}
           </button>
         </div>
       </div>
 
-      <div v-else class="bg-white rounded-lg shadow p-8 text-center text-gray-600">
+      <div v-else class="bg-white rounded-lg shadow p-4 sm:p-6 text-center text-sm text-gray-600">
         {{ $t('orderConfirmation.orderNotLoaded') }}
       </div>
     </div>

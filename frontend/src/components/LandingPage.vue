@@ -575,18 +575,18 @@ const { setSEO, clearSEO } = useSEO();
 
 const heroTexts = {
   en: [
-    'restaurant they love',
+    'store they love',
     'local favorite',
     'success story',
     'go-to spot',
-    'restaurant they line up for'
+    'store they line up for'
   ],
   ar: [
-    'المطعم الذي يحبه الجميع',
+    'المتجر الذي يحبه الجميع',
     'المفضل المحلي',
     'قصة نجاح',
     'الوجهة المفضلة',
-    'المطعم الذي يصطفون من أجله'
+    'المتجر الذي يصطفون من أجله'
   ]
 };
 const heroText = ref(heroTexts[locale.value][0]);

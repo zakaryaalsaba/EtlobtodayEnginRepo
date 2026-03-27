@@ -371,7 +371,7 @@
             class="border border-gray-200 rounded-lg p-4 flex items-center justify-between flex-wrap gap-3"
           >
             <div>
-              <h3 class="font-semibold text-gray-900">{{ r.restaurant_name || 'Restaurant' }}</h3>
+              <h3 class="font-semibold text-gray-900">{{ r.restaurant_name || 'Store' }}</h3>
               <p v-if="r.subdomain" class="text-sm text-gray-500">{{ r.subdomain }}</p>
               <p class="text-xs text-gray-500 mt-1">Requested {{ new Date(r.created_at).toLocaleDateString() }}</p>
             </div>

@@ -1161,7 +1161,7 @@ const loadProducts = async () => {
 const updateSEO = () => {
   if (!website.value) return;
   
-  const restaurantName = displayRestaurantName.value || 'Restaurant';
+  const restaurantName = displayRestaurantName.value || 'Store';
   const description = displayDescription.value || shortDescription.value || `Order online from ${restaurantName}. Browse our menu and place your order today.`;
   const logoUrl = website.value.logo_url || '';
   const websiteUrl = window.location.href;
@@ -1181,7 +1181,7 @@ const updateSEO = () => {
   setSEO({
     title: `${restaurantName} - Order Online | RestaurantAI`,
     description: description,
-    keywords: [restaurantName, 'restaurant', 'online ordering', 'food delivery', 'menu'],
+    keywords: [restaurantName, 'store', 'online ordering', 'food delivery', 'menu'],
     image: logoUrl || '/og-image.jpg',
     url: websiteUrl,
     locale: locale.value === 'ar' ? 'ar_SA' : 'en_US',

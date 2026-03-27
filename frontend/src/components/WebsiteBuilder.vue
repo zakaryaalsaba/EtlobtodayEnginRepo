@@ -655,7 +655,7 @@
               <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                   <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ $t('websiteBuilder.restaurantName', 'اسم المطعم') }}</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ $t('websiteBuilder.restaurantName', 'اسم المتجر') }}</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ $t('websiteBuilder.locationLabel', 'الموقع') }}</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ $t('websiteBuilder.phoneLabel', 'رقم الهاتف') }}</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ $t('websiteBuilder.emailLabel', 'البريد الإلكتروني') }}</th>
@@ -705,15 +705,15 @@
               <div class="relative inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full" :class="$i18n.locale === 'ar' ? 'text-right' : 'text-left'">
                 <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                   <h3 class="text-lg font-semibold text-gray-900 mb-4" id="modal-title">
-                    {{ editingRestaurantForTable ? $t('websiteBuilder.editRestaurant', 'تعديل المطعم') : $t('websiteBuilder.addRestaurant', 'إضافة مطعم جديد') }}
+                    {{ editingRestaurantForTable ? $t('websiteBuilder.editRestaurant', 'تعديل المتجر') : $t('websiteBuilder.addRestaurant', 'إضافة متجر جديد') }}
                   </h3>
                   <div class="space-y-4">
                     <div>
-                      <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('websiteBuilder.restaurantName', 'اسم المطعم') }} <span class="text-red-500">*</span></label>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('websiteBuilder.restaurantName', 'اسم المتجر') }} <span class="text-red-500">*</span></label>
                       <input
                         v-model="restaurantForm.name"
                         type="text"
-                        :placeholder="$t('websiteBuilder.enterRestaurantName', 'أدخل اسم المطعم')"
+                        :placeholder="$t('websiteBuilder.enterRestaurantName', 'أدخل اسم المتجر')"
                         class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                       />
                     </div>
@@ -889,7 +889,7 @@
                   <thead class="bg-gray-50">
                     <tr>
                       <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ $t('websiteBuilder.orderNumber', 'Order #') }}</th>
-                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ $t('websiteBuilder.restaurant', 'Restaurant') }}</th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ $t('websiteBuilder.restaurant', 'Store') }}</th>
                       <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ $t('websiteBuilder.customer', 'Customer') }}</th>
                       <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ $t('websiteBuilder.status', 'Status') }}</th>
                       <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ $t('websiteBuilder.orderType', 'Order Type') }}</th>
@@ -3994,10 +3994,10 @@ const saveRestaurantModal = async () => {
     };
     if (editingRestaurantForTable.value?.id) {
       await updateWebsite(editingRestaurantForTable.value.id, payload);
-      alert(t('websiteBuilder.restaurantUpdated', 'تم تحديث المطعم بنجاح'));
+      alert(t('websiteBuilder.restaurantUpdated', 'تم تحديث المتجر بنجاح'));
     } else {
       await createWebsite(payload);
-      alert(t('websiteBuilder.restaurantCreated', 'تم إضافة المطعم بنجاح'));
+      alert(t('websiteBuilder.restaurantCreated', 'تم إضافة المتجر بنجاح'));
     }
     await loadWebsites();
     closeRestaurantModal();
@@ -4018,10 +4018,10 @@ const getRestaurantLocation = (site) => {
 };
 
 const deleteRestaurantFromTable = async (id) => {
-  if (!confirm(t('websiteBuilder.deleteRestaurantConfirm', 'هل أنت متأكد من حذف هذا المطعم؟'))) return;
+  if (!confirm(t('websiteBuilder.deleteRestaurantConfirm', 'هل أنت متأكد من حذف هذا المتجر؟'))) return;
   try {
     await deleteWebsiteAPI(id);
-    alert(t('websiteBuilder.restaurantDeleted', 'تم حذف المطعم بنجاح'));
+    alert(t('websiteBuilder.restaurantDeleted', 'تم حذف المتجر بنجاح'));
     await loadWebsites();
   } catch (err) {
     alert(err.message || t('websiteBuilder.deleteFailed', 'فشل الحذف'));
