@@ -48,28 +48,59 @@
       </div>
 
       <div
-        v-if="canUseNotifications && notificationPermission === 'default'"
-        class="mb-3 sm:mb-4 rounded-lg border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs sm:text-sm text-indigo-900 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2"
-        :class="$i18n.locale === 'ar' ? 'sm:flex-row-reverse' : ''"
+        v-if="notifyEnv === 'no_api'"
+        class="mb-3 sm:mb-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs sm:text-sm text-amber-950"
       >
-        <span class="leading-snug">{{ $t('orderStatus.notifyPrompt') }}</span>
-        <button
-          type="button"
-          @click="enableNotifications"
-          class="shrink-0 px-3 py-1.5 rounded-lg bg-indigo-600 text-white font-semibold text-xs sm:text-sm hover:bg-indigo-700"
-        >
-          {{ $t('orderStatus.notifyEnable') }}
-        </button>
+        <p class="font-semibold mb-1">{{ $t('orderStatus.notifyTitle') }}</p>
+        <p class="leading-snug">{{ $t('orderStatus.notifyUnsupported') }}</p>
       </div>
       <div
-        v-else-if="canUseNotifications && notificationPermission === 'granted'"
-        class="mb-3 sm:mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs sm:text-sm text-emerald-900"
+        v-else-if="notifyEnv === 'no_https'"
+        class="mb-3 sm:mb-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs sm:text-sm text-amber-950"
+      >
+        <p class="font-semibold mb-1">{{ $t('orderStatus.notifyTitle') }}</p>
+        <p class="leading-snug">{{ $t('orderStatus.notifyNeedsHttps') }}</p>
+      </div>
+      <div
+        v-else-if="notifyEnv === 'ok' && notificationPermission === 'default' && !notifyPromptDismissed"
+        class="mb-3 sm:mb-4 rounded-xl border-2 border-indigo-300 bg-indigo-50 px-4 py-4 shadow-sm"
+      >
+        <div class="flex items-start gap-3" :class="$i18n.locale === 'ar' ? 'flex-row-reverse' : ''">
+          <span
+            class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-white text-lg"
+            aria-hidden="true"
+          >🔔</span>
+          <div class="flex-1 min-w-0">
+            <p class="font-bold text-indigo-950 text-sm sm:text-base mb-1">{{ $t('orderStatus.notifyTitle') }}</p>
+            <p class="text-xs sm:text-sm text-indigo-900 leading-snug mb-3">{{ $t('orderStatus.notifyPrompt') }}</p>
+            <div class="flex flex-wrap gap-2" :class="$i18n.locale === 'ar' ? 'flex-row-reverse' : ''">
+              <button
+                type="button"
+                @click="enableNotifications"
+                class="px-4 py-2 rounded-lg bg-indigo-600 text-white font-semibold text-sm hover:bg-indigo-700 shadow-sm"
+              >
+                {{ $t('orderStatus.notifyEnable') }}
+              </button>
+              <button
+                type="button"
+                @click="dismissNotifyPrompt"
+                class="px-4 py-2 rounded-lg border border-indigo-300 bg-white text-indigo-800 font-semibold text-sm hover:bg-indigo-100/80"
+              >
+                {{ $t('orderStatus.notifyMaybeLater') }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        v-else-if="notifyEnv === 'ok' && notificationPermission === 'granted'"
+        class="mb-3 sm:mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-xs sm:text-sm text-emerald-900"
       >
         {{ $t('orderStatus.notifyEnabled') }}
       </div>
       <div
-        v-else-if="canUseNotifications && notificationPermission === 'denied'"
-        class="mb-3 sm:mb-4 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-xs sm:text-sm text-gray-700"
+        v-else-if="notifyEnv === 'ok' && notificationPermission === 'denied'"
+        class="mb-3 sm:mb-4 rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-xs sm:text-sm text-gray-800"
       >
         {{ $t('orderStatus.notifyDenied') }}
       </div>
@@ -98,6 +129,14 @@
                 class="mb-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 text-xs sm:text-sm font-semibold"
               >
                 {{ refreshing ? $t('orderTracking.refreshing') : $t('orderTracking.refreshStatus') }}
+              </button>
+              <button
+                v-if="notifyEnv === 'ok' && notificationPermission === 'default' && notifyPromptDismissed"
+                type="button"
+                class="mb-2 block w-full text-center text-xs font-semibold text-indigo-600 hover:text-indigo-800 underline"
+                @click="enableNotifications"
+              >
+                {{ $t('orderStatus.notifyEnableInline') }}
               </button>
               <div class="text-xs sm:text-sm text-gray-500 mb-0.5">{{ $t('orderTracking.status') }}</div>
               <span
@@ -255,23 +294,81 @@ const sawFirebasePayload = ref(false);
 const firebaseConfigured = isFirebaseRealtimeConfigured();
 let firebaseUnsubscribe = null;
 
-const canUseNotifications = typeof Notification !== 'undefined';
+/** Cleanup for notification permission sync */
+let notifyPermQuery = null;
+let onWindowFocusHandler = null;
+
+/** Secure context required for notifications (HTTPS), except localhost. */
+function computeNotifyEnv() {
+  if (typeof Notification === 'undefined') return 'no_api';
+  if (typeof window !== 'undefined' && !window.isSecureContext) {
+    const h = window.location?.hostname || '';
+    if (h !== 'localhost' && h !== '127.0.0.1') return 'no_https';
+  }
+  return 'ok';
+}
+
+const notifyEnv = computed(() => computeNotifyEnv());
+
 const notificationPermission = ref(
-  canUseNotifications ? Notification.permission : 'unsupported'
+  computeNotifyEnv() === 'ok' ? Notification.permission : 'unsupported'
 );
 
+const notifyPromptDismissed = ref(false);
+
+function notifyDismissStorageKey() {
+  const n = orderNum();
+  return n ? `orderStatus_notify_dismiss_${n}` : 'orderStatus_notify_dismiss';
+}
+
+function loadNotifyDismissState() {
+  try {
+    notifyPromptDismissed.value = sessionStorage.getItem(notifyDismissStorageKey()) === '1';
+  } catch {
+    notifyPromptDismissed.value = false;
+  }
+}
+
+function dismissNotifyPrompt() {
+  try {
+    sessionStorage.setItem(notifyDismissStorageKey(), '1');
+  } catch {
+    /* ignore */
+  }
+  notifyPromptDismissed.value = true;
+}
+
+function syncNotificationPermission() {
+  if (computeNotifyEnv() !== 'ok') return;
+  try {
+    notificationPermission.value = Notification.permission;
+  } catch {
+    /* ignore */
+  }
+}
+
 async function enableNotifications() {
-  if (!canUseNotifications) return;
+  if (computeNotifyEnv() !== 'ok') return;
   try {
     const p = await Notification.requestPermission();
     notificationPermission.value = p;
+    if (p === 'granted') {
+      try {
+        new Notification(t('orderStatus.notifyTestTitle'), {
+          body: t('orderStatus.notifyTestBody'),
+          tag: `order-status-setup-${orderNum() || 'x'}`
+        });
+      } catch (e) {
+        console.warn('Test notification failed', e);
+      }
+    }
   } catch (e) {
     console.warn('Notification.requestPermission failed', e);
   }
 }
 
 function notifyBrowserOrderStatus(orderNumber, statusKey) {
-  if (!canUseNotifications || Notification.permission !== 'granted') return;
+  if (computeNotifyEnv() !== 'ok' || Notification.permission !== 'granted') return;
   if (!orderNumber || !statusKey) return;
   const statusLabel = formatStatus(statusKey);
   try {
@@ -621,9 +718,21 @@ onMounted(async () => {
   document.documentElement.setAttribute('lang', savedLang);
   document.documentElement.setAttribute('dir', savedLang === 'ar' ? 'rtl' : 'ltr');
 
-  if (canUseNotifications) {
-    notificationPermission.value = Notification.permission;
+  syncNotificationPermission();
+  loadNotifyDismissState();
+
+  onWindowFocusHandler = () => syncNotificationPermission();
+  window.addEventListener('focus', onWindowFocusHandler);
+
+  try {
+    if (navigator.permissions?.query) {
+      notifyPermQuery = await navigator.permissions.query({ name: 'notifications' });
+      notifyPermQuery?.addEventListener?.('change', syncNotificationPermission);
+    }
+  } catch {
+    /* not supported in all browsers */
   }
+
   document.addEventListener('visibilitychange', onVisibilityChange);
 
   try {
@@ -671,6 +780,12 @@ function onVisibilityChange() {
 }
 
 onUnmounted(() => {
+  if (onWindowFocusHandler) {
+    window.removeEventListener('focus', onWindowFocusHandler);
+    onWindowFocusHandler = null;
+  }
+  notifyPermQuery?.removeEventListener?.('change', syncNotificationPermission);
+  notifyPermQuery = null;
   document.removeEventListener('visibilitychange', onVisibilityChange);
   detachFirebase();
   stopPoll();
