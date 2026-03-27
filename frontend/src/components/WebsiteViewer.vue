@@ -150,28 +150,37 @@
           </div>
         </div>
         
-        <div v-if="cart.length > 0" class="p-6 border-t border-gray-200 bg-white flex-shrink-0">
-          <div class="space-y-3 mb-4">
-            <div class="flex items-center justify-between text-gray-600">
+        <div v-if="cart.length > 0" class="p-4 border-t border-gray-200 bg-white flex-shrink-0">
+          <div class="space-y-2 mb-3">
+            <div class="flex items-center justify-between text-sm text-gray-600">
               <span>{{ $t('website.subtotal') }}</span>
               <span>{{ formatCurrency(cartTotal) }}</span>
             </div>
-            <div v-if="website.tax_enabled && taxAmount > 0" class="flex items-center justify-between text-gray-600">
+            <div v-if="website.tax_enabled && taxAmount > 0" class="flex items-center justify-between text-sm text-gray-600">
               <span>{{ $t('website.tax') }}</span>
               <span>{{ formatCurrency(taxAmount) }}</span>
             </div>
-            <div class="flex items-center justify-between text-xl font-bold pt-3 border-t border-gray-200" :style="{ color: website.primary_color }">
+            <div class="flex items-center justify-between text-lg font-bold pt-2 border-t border-gray-200" :style="{ color: website.primary_color }">
               <span>{{ $t('website.total') }}</span>
               <span>{{ formatCurrency(finalTotal) }}</span>
             </div>
           </div>
-          <button
-            @click="goToCheckout"
-            :style="{ backgroundColor: website.primary_color }"
-            class="w-full px-6 py-4 text-white rounded-lg font-semibold hover:opacity-90 transition-opacity shadow-lg"
-          >
-            {{ $t('website.proceedToCheckout') }} →
-          </button>
+          <div class="flex flex-col gap-2">
+            <button
+              type="button"
+              @click="goToCheckout"
+              class="w-full px-4 py-3 text-white rounded-lg font-semibold bg-emerald-600 hover:bg-emerald-700 shadow-md transition-colors"
+            >
+              {{ $t('website.proceedToCheckout') }} →
+            </button>
+            <button
+              type="button"
+              @click="continueShoppingFromCart"
+              class="w-full px-4 py-3 rounded-lg font-semibold border-2 border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
+            >
+              {{ $t('website.continueShopping') }}
+            </button>
+          </div>
         </div>
       </div>
     </aside>
@@ -1113,6 +1122,11 @@ const goToCheckout = () => {
     sessionStorage.setItem(`cart_${website.value.id}`, JSON.stringify(cart.value));
     router.push(`/website/${website.value.id}/checkout`);
   }
+};
+
+const continueShoppingFromCart = () => {
+  showCart.value = false;
+  scrollToMenu();
 };
 
 const scrollToMenu = () => {

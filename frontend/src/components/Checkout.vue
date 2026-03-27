@@ -1,39 +1,26 @@
 <template>
-  <div class="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8" :dir="$i18n.locale === 'ar' ? 'rtl' : 'ltr'">
+  <div class="min-h-screen bg-gray-50 py-4 sm:py-6 px-4 sm:px-6 lg:px-8" :dir="$i18n.locale === 'ar' ? 'rtl' : 'ltr'">
     <div class="max-w-4xl mx-auto">
-      <!-- Header -->
-      <div class="mb-8">
-        <div class="flex items-center justify-between mb-4">
-          <button
-            @click="$router.back()"
-            class="flex items-center gap-2 text-gray-600 hover:text-gray-800"
-            :class="$i18n.locale === 'ar' ? 'flex-row-reverse' : ''"
-          >
-            <span v-if="$i18n.locale === 'ar'">→</span>
-            <span v-else>←</span>
-            {{ $t('checkout.backToMenu') }}
-          </button>
-          <LanguageSwitcher v-if="false" />
-        </div>
-        <h1 class="text-4xl font-bold" :style="{ color: website?.primary_color || '#4F46E5' }">
+      <div class="mb-4">
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">
           {{ $t('checkout.title') }}
         </h1>
-        <p class="text-gray-600 mt-2">{{ $t('checkout.subtitle') }}</p>
+        <p class="text-sm text-gray-600 mt-1 leading-snug">{{ $t('checkout.subtitle') }}</p>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
         <!-- Order Summary -->
         <div class="lg:col-span-1">
-          <div class="bg-white rounded-lg shadow-lg p-6 sticky top-4">
-            <h2 class="text-xl font-bold mb-4">{{ $t('checkout.orderSummary') }}</h2>
+          <div class="bg-white rounded-lg shadow-md p-4 sticky top-3">
+            <h2 class="text-lg font-bold mb-3">{{ $t('checkout.orderSummary') }}</h2>
             
-            <div class="space-y-4 mb-6">
+            <div class="space-y-3 mb-4">
               <div
                 v-for="(item, index) in cart"
                 :key="index"
-                class="flex items-center gap-3 pb-4 border-b border-gray-200"
+                class="flex items-center gap-2 pb-3 border-b border-gray-200"
               >
-                <div v-if="item.image_url" class="w-16 h-16 flex-shrink-0">
+                <div v-if="item.image_url" class="w-14 h-14 flex-shrink-0">
                   <img :src="item.image_url" :alt="item.name" class="w-full h-full object-cover rounded" />
                 </div>
                 <div class="flex-1 min-w-0">
@@ -107,8 +94,8 @@
               </div>
             </div>
 
-            <div class="mt-6 p-4 bg-blue-50 rounded-lg">
-              <p class="text-sm text-blue-800">
+            <div class="mt-4 p-3 bg-blue-50 rounded-lg">
+              <p class="text-xs text-blue-800 leading-snug">
                 💳 {{ paymentNote }}
               </p>
             </div>
@@ -117,14 +104,14 @@
 
         <!-- Checkout Form -->
         <div class="lg:col-span-2">
-          <div class="bg-white rounded-lg shadow-lg p-6">
-            <form @submit.prevent="placeOrder" class="space-y-6">
+          <div class="bg-white rounded-lg shadow-md p-4 sm:p-5">
+            <form @submit.prevent="placeOrder" class="space-y-4">
               <div>
-                <h2 class="text-2xl font-bold mb-4">{{ $t('checkout.customerInformation') }}</h2>
+                <h2 class="text-lg font-bold mb-2">{{ $t('checkout.customerInformation') }}</h2>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
                       {{ $t('checkout.fullName') }} <span class="text-red-500">*</span>
                     </label>
                     <input
@@ -132,13 +119,13 @@
                       type="text"
                       required
                       :maxlength="CHECKOUT_MAX_LENGTH.fullName"
-                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                       :placeholder="$t('checkout.fullNamePlaceholder')"
                     />
                   </div>
 
                   <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
                       {{ $t('checkout.phoneNumber') }} <span class="text-red-500">*</span>
                     </label>
                     <input
@@ -146,30 +133,30 @@
                       type="tel"
                       required
                       :maxlength="CHECKOUT_MAX_LENGTH.phone"
-                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                       :placeholder="$t('checkout.phoneNumberPlaceholder')"
                     />
                   </div>
                 </div>
 
-                <div class="mt-4">
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
+                <div class="mt-3">
+                  <label class="block text-sm font-medium text-gray-700 mb-1">
                     {{ $t('checkout.emailAddress') }}
                   </label>
                   <input
                     v-model="checkoutForm.customer_email"
                     type="email"
                     :maxlength="CHECKOUT_MAX_LENGTH.email"
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     :placeholder="$t('checkout.emailAddressPlaceholder')"
                   />
                 </div>
               </div>
 
               <div>
-                <h2 class="text-2xl font-bold mb-4">{{ $t('checkout.orderType') }}</h2>
-                <div class="space-y-3">
-                  <label v-if="isDineInEnabled" class="flex items-center cursor-pointer p-4 border-2 rounded-lg transition-colors" :class="checkoutForm.order_type === 'dine_in' ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 hover:border-gray-300'" :style="checkoutForm.order_type === 'dine_in' ? { borderColor: website?.primary_color || '#4F46E5', backgroundColor: (website?.primary_color || '#4F46E5') + '10' } : {}">
+                <h2 class="text-lg font-bold mb-2">{{ $t('checkout.orderType') }}</h2>
+                <div class="space-y-2">
+                  <label v-if="isDineInEnabled" class="flex items-center cursor-pointer p-3 border-2 rounded-lg transition-colors" :class="checkoutForm.order_type === 'dine_in' ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 hover:border-gray-300'" :style="checkoutForm.order_type === 'dine_in' ? { borderColor: website?.primary_color || '#4F46E5', backgroundColor: (website?.primary_color || '#4F46E5') + '10' } : {}">
                     <input
                       v-model="checkoutForm.order_type"
                       type="radio"
@@ -179,7 +166,7 @@
                     />
                     <span :class="['ml-3 text-gray-700 font-medium', $i18n.locale === 'ar' ? 'mr-3 ml-0' : '']">{{ $t('checkout.dineIn') }}</span>
                   </label>
-                  <label v-if="isPickupEnabled" class="flex items-center cursor-pointer p-4 border-2 rounded-lg transition-colors" :class="checkoutForm.order_type === 'pickup' ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 hover:border-gray-300'" :style="checkoutForm.order_type === 'pickup' ? { borderColor: website?.primary_color || '#4F46E5', backgroundColor: (website?.primary_color || '#4F46E5') + '10' } : {}">
+                  <label v-if="isPickupEnabled" class="flex items-center cursor-pointer p-3 border-2 rounded-lg transition-colors" :class="checkoutForm.order_type === 'pickup' ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 hover:border-gray-300'" :style="checkoutForm.order_type === 'pickup' ? { borderColor: website?.primary_color || '#4F46E5', backgroundColor: (website?.primary_color || '#4F46E5') + '10' } : {}">
                     <input
                       v-model="checkoutForm.order_type"
                       type="radio"
@@ -189,7 +176,7 @@
                     />
                     <span :class="['ml-3 text-gray-700 font-medium', $i18n.locale === 'ar' ? 'mr-3 ml-0' : '']">{{ $t('checkout.pickup') }}</span>
                   </label>
-                  <label v-if="isDeliveryEnabled" class="flex items-center cursor-pointer p-4 border-2 rounded-lg transition-colors" :class="checkoutForm.order_type === 'delivery' ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 hover:border-gray-300'" :style="checkoutForm.order_type === 'delivery' ? { borderColor: website?.primary_color || '#4F46E5', backgroundColor: (website?.primary_color || '#4F46E5') + '10' } : {}">
+                  <label v-if="isDeliveryEnabled" class="flex items-center cursor-pointer p-3 border-2 rounded-lg transition-colors" :class="checkoutForm.order_type === 'delivery' ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 hover:border-gray-300'" :style="checkoutForm.order_type === 'delivery' ? { borderColor: website?.primary_color || '#4F46E5', backgroundColor: (website?.primary_color || '#4F46E5') + '10' } : {}">
                     <input
                       v-model="checkoutForm.order_type"
                       type="radio"
@@ -203,25 +190,25 @@
               </div>
 
               <div v-if="checkoutForm.order_type === 'delivery'">
-                <h2 class="text-2xl font-bold mb-4">{{ $t('checkout.deliveryAddress') }}</h2>
+                <h2 class="text-lg font-bold mb-2">{{ $t('checkout.deliveryAddress') }}</h2>
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
+                  <label class="block text-sm font-medium text-gray-700 mb-1">
                     {{ $t('checkout.deliveryAddress') }} <span class="text-red-500">*</span>
                   </label>
                   <textarea
                     v-model="checkoutForm.customer_address"
-                    rows="3"
+                    rows="2"
                     required
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     :placeholder="$t('checkout.deliveryAddressPlaceholder')"
                   ></textarea>
                 </div>
               </div>
 
               <div>
-                <h2 class="text-2xl font-bold mb-4">{{ $t('checkout.paymentMethod') }}</h2>
-                <div class="space-y-3">
-                  <label v-if="paymentMethods.cashOnPickup && (checkoutForm.order_type === 'pickup' || checkoutForm.order_type === 'dine_in')" class="flex items-center cursor-pointer p-4 border-2 rounded-lg transition-colors" :class="checkoutForm.payment_method === 'cash' ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 hover:border-gray-300'" :style="checkoutForm.payment_method === 'cash' ? { borderColor: website?.primary_color || '#4F46E5', backgroundColor: (website?.primary_color || '#4F46E5') + '10' } : {}">
+                <h2 class="text-lg font-bold mb-2">{{ $t('checkout.paymentMethod') }}</h2>
+                <div class="space-y-2">
+                  <label v-if="paymentMethods.cashOnPickup && (checkoutForm.order_type === 'pickup' || checkoutForm.order_type === 'dine_in')" class="flex items-center cursor-pointer p-3 border-2 rounded-lg transition-colors" :class="checkoutForm.payment_method === 'cash' ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 hover:border-gray-300'" :style="checkoutForm.payment_method === 'cash' ? { borderColor: website?.primary_color || '#4F46E5', backgroundColor: (website?.primary_color || '#4F46E5') + '10' } : {}">
                     <input
                       v-model="checkoutForm.payment_method"
                       type="radio"
@@ -231,7 +218,7 @@
                     />
                     <span :class="['ml-3 text-gray-700 font-medium', $i18n.locale === 'ar' ? 'mr-3 ml-0' : '']">{{ $t('checkout.paymentOnReceipt') }}</span>
                   </label>
-                  <label v-if="paymentMethods.cashOnDelivery && checkoutForm.order_type === 'delivery'" class="flex items-center cursor-pointer p-4 border-2 rounded-lg transition-colors" :class="checkoutForm.payment_method === 'cash' ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 hover:border-gray-300'" :style="checkoutForm.payment_method === 'cash' ? { borderColor: website?.primary_color || '#4F46E5', backgroundColor: (website?.primary_color || '#4F46E5') + '10' } : {}">
+                  <label v-if="paymentMethods.cashOnDelivery && checkoutForm.order_type === 'delivery'" class="flex items-center cursor-pointer p-3 border-2 rounded-lg transition-colors" :class="checkoutForm.payment_method === 'cash' ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 hover:border-gray-300'" :style="checkoutForm.payment_method === 'cash' ? { borderColor: website?.primary_color || '#4F46E5', backgroundColor: (website?.primary_color || '#4F46E5') + '10' } : {}">
                     <input
                       v-model="checkoutForm.payment_method"
                       type="radio"
@@ -241,7 +228,7 @@
                     />
                     <span :class="['ml-3 text-gray-700 font-medium', $i18n.locale === 'ar' ? 'mr-3 ml-0' : '']">{{ $t('checkout.paymentOnReceipt') }}</span>
                   </label>
-                  <label v-if="paymentMethods.creditCard" class="flex items-center cursor-pointer p-4 border-2 rounded-lg transition-colors" :class="checkoutForm.payment_method === 'card' ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 hover:border-gray-300'" :style="checkoutForm.payment_method === 'card' ? { borderColor: website?.primary_color || '#4F46E5', backgroundColor: (website?.primary_color || '#4F46E5') + '10' } : {}">
+                  <label v-if="paymentMethods.creditCard" class="flex items-center cursor-pointer p-3 border-2 rounded-lg transition-colors" :class="checkoutForm.payment_method === 'card' ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 hover:border-gray-300'" :style="checkoutForm.payment_method === 'card' ? { borderColor: website?.primary_color || '#4F46E5', backgroundColor: (website?.primary_color || '#4F46E5') + '10' } : {}">
                     <input
                       v-model="checkoutForm.payment_method"
                       type="radio"
@@ -251,7 +238,7 @@
                     />
                     <span :class="['ml-3 text-gray-700 font-medium', $i18n.locale === 'ar' ? 'mr-3 ml-0' : '']">{{ $t('checkout.paymentCard') }}</span>
                   </label>
-                  <label v-if="paymentMethods.onlinePayment" class="flex items-center cursor-pointer p-4 border-2 rounded-lg transition-colors" :class="checkoutForm.payment_method === 'online' ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 hover:border-gray-300'" :style="checkoutForm.payment_method === 'online' ? { borderColor: website?.primary_color || '#4F46E5', backgroundColor: (website?.primary_color || '#4F46E5') + '10' } : {}">
+                  <label v-if="paymentMethods.onlinePayment" class="flex items-center cursor-pointer p-3 border-2 rounded-lg transition-colors" :class="checkoutForm.payment_method === 'online' ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 hover:border-gray-300'" :style="checkoutForm.payment_method === 'online' ? { borderColor: website?.primary_color || '#4F46E5', backgroundColor: (website?.primary_color || '#4F46E5') + '10' } : {}">
                     <input
                       v-model="checkoutForm.payment_method"
                       type="radio"
@@ -261,7 +248,7 @@
                     />
                     <span :class="['ml-3 text-gray-700 font-medium', $i18n.locale === 'ar' ? 'mr-3 ml-0' : '']">{{ $t('checkout.paymentOnline') }}</span>
                   </label>
-                  <label v-if="paymentMethods.mobilePayment" class="flex items-center cursor-pointer p-4 border-2 rounded-lg transition-colors" :class="checkoutForm.payment_method === 'mobile' ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 hover:border-gray-300'" :style="checkoutForm.payment_method === 'mobile' ? { borderColor: website?.primary_color || '#4F46E5', backgroundColor: (website?.primary_color || '#4F46E5') + '10' } : {}">
+                  <label v-if="paymentMethods.mobilePayment" class="flex items-center cursor-pointer p-3 border-2 rounded-lg transition-colors" :class="checkoutForm.payment_method === 'mobile' ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 hover:border-gray-300'" :style="checkoutForm.payment_method === 'mobile' ? { borderColor: website?.primary_color || '#4F46E5', backgroundColor: (website?.primary_color || '#4F46E5') + '10' } : {}">
                     <input
                       v-model="checkoutForm.payment_method"
                       type="radio"
@@ -271,7 +258,7 @@
                     />
                     <span :class="['ml-3 text-gray-700 font-medium', $i18n.locale === 'ar' ? 'mr-3 ml-0' : '']">{{ $t('checkout.paymentMobile') }}</span>
                   </label>
-                  <label v-if="paymentMethods.cliQServices?.enabled" class="flex items-center cursor-pointer p-4 border-2 rounded-lg transition-colors" :class="checkoutForm.payment_method === 'cliq' ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 hover:border-gray-300'" :style="checkoutForm.payment_method === 'cliq' ? { borderColor: website?.primary_color || '#4F46E5', backgroundColor: (website?.primary_color || '#4F46E5') + '10' } : {}">
+                  <label v-if="paymentMethods.cliQServices?.enabled" class="flex items-center cursor-pointer p-3 border-2 rounded-lg transition-colors" :class="checkoutForm.payment_method === 'cliq' ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 hover:border-gray-300'" :style="checkoutForm.payment_method === 'cliq' ? { borderColor: website?.primary_color || '#4F46E5', backgroundColor: (website?.primary_color || '#4F46E5') + '10' } : {}">
                     <input
                       v-model="checkoutForm.payment_method"
                       type="radio"
@@ -303,22 +290,21 @@
               </div>
 
               <div>
-                <h2 class="text-2xl font-bold mb-4">{{ $t('checkout.specialInstructions') }}</h2>
+                <h2 class="text-lg font-bold mb-2">{{ $t('checkout.specialInstructions') }}</h2>
                 <textarea
                   v-model="checkoutForm.notes"
-                  rows="4"
+                  rows="3"
                   :maxlength="CHECKOUT_MAX_LENGTH.specialInstructions"
-                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                   :placeholder="$t('checkout.specialInstructionsPlaceholder')"
                 ></textarea>
               </div>
 
-              <div class="flex flex-col sm:flex-row gap-4 pt-4">
+              <div class="flex flex-col sm:flex-row gap-3 pt-2">
                 <button
                   type="submit"
                   :disabled="placingOrder"
-                  :style="{ backgroundColor: website?.primary_color || '#4F46E5' }"
-                  class="w-full sm:flex-1 px-6 py-3 text-white rounded-lg font-semibold hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
+                  class="w-full sm:flex-1 px-6 py-3 text-white rounded-lg font-semibold bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   {{ placingOrder ? $t('checkout.placingOrder') : $t('checkout.placeOrder') }}
                 </button>
@@ -342,7 +328,6 @@
 import { ref, computed, onMounted, watch, nextTick } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
-import LanguageSwitcher from './LanguageSwitcher.vue';
 import { getWebsite, createOrder, createPaymentIntent, validateCoupon } from '../services/api.js';
 import { formatRestaurantMoney } from '../utils/currencyDisplay.js';
 
@@ -965,8 +950,9 @@ onMounted(async () => {
     // If cart is empty, redirect back
     if (cart.value.length === 0) {
       router.push(`/website/${route.params.id}`);
+      return;
     }
-    
+
     // Set default payment method based on available methods
     if (website.value && paymentMethods.value) {
       if (checkoutForm.value.order_type === 'delivery' && paymentMethods.value.cashOnDelivery) {
@@ -981,6 +967,9 @@ onMounted(async () => {
         checkoutForm.value.payment_method = 'mobile';
       }
     }
+
+    await nextTick();
+    window.scrollTo(0, 0);
   } catch (error) {
     console.error('Failed to load checkout data:', error);
     router.push(`/website/${route.params.id}`);

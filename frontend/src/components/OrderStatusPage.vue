@@ -8,39 +8,22 @@
 
   <div v-else class="min-h-screen bg-gray-50 py-4 sm:py-8 lg:py-10 px-4 sm:px-6 lg:px-8" :dir="$i18n.locale === 'ar' ? 'rtl' : 'ltr'">
     <div class="max-w-4xl mx-auto">
-      <div class="mb-3 sm:mb-4">
-        <button
-          type="button"
-          @click="router.push(`/website/${route.params.id}`)"
-          class="flex items-center gap-2 text-gray-600 hover:text-gray-800"
+      <div class="bg-white rounded-lg shadow-md px-3 py-2 sm:px-4 sm:py-2.5 mb-2 sm:mb-3">
+        <div
+          class="flex items-center justify-center gap-2 text-emerald-600"
           :class="$i18n.locale === 'ar' ? 'flex-row-reverse' : ''"
         >
-          <span v-if="$i18n.locale === 'ar'">→</span>
-          <span v-else>←</span>
-          {{ $t('orderTracking.backToMenu') }}
-        </button>
-      </div>
-
-      <div class="bg-white rounded-lg shadow-md p-4 sm:p-5 mb-3 sm:mb-4 text-center">
-        <div class="mb-3">
-          <div
-            class="w-12 h-12 sm:w-14 sm:h-14 mx-auto mb-2 rounded-full flex items-center justify-center"
-            :style="{ backgroundColor: (website?.primary_color || '#4F46E5') + '20' }"
+          <svg
+            class="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
           >
-            <svg class="w-7 h-7 sm:w-8 sm:h-8" :style="{ color: website?.primary_color || '#4F46E5' }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-          <h1 class="text-xl sm:text-2xl font-bold mb-1" :style="{ color: website?.primary_color || '#4F46E5' }">
-            {{ $t('orderConfirmation.title') }}
-          </h1>
-          <p class="text-sm text-gray-600">{{ $t('orderConfirmation.thankYou') }}</p>
-          <p class="text-xs text-gray-500 mt-1 leading-snug">{{ $t('orderStatus.mergeHint') }}</p>
-        </div>
-        <div class="bg-gray-50 rounded-lg p-3 sm:p-4">
-          <p class="text-xs text-gray-500 mb-1">{{ $t('orderConfirmation.orderNumber') }}</p>
-          <p class="text-lg sm:text-xl font-bold" :style="{ color: website?.primary_color || '#4F46E5' }">
-            {{ order?.order_number || route.params.orderNumber }}
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+          <p class="text-sm sm:text-base font-semibold leading-snug">
+            {{ $t('orderConfirmation.compactThanks') }}
           </p>
         </div>
       </div>

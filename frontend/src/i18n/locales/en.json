@@ -149,6 +149,7 @@
     "cartEmptyHint": "Add items from the menu to get started",
     "browseMenu": "Browse Menu",
     "proceedToCheckout": "Proceed to Checkout",
+    "continueShopping": "Continue shopping",
     "viewMenu": "View Menu",
     "ourMenu": "Our Menu",
     "addToCart": "Add to Cart",
@@ -189,7 +190,7 @@
   },
   "checkout": {
     "title": "Checkout",
-    "subtitle": "Complete your order",
+    "subtitle": "Complete your order — you'll be notified and can track it after you submit.",
     "backToMenu": "Back to Menu",
     "orderSummary": "Order Summary",
     "quantity": "Qty",
@@ -258,6 +259,7 @@
   "orderConfirmation": {
     "title": "Order Confirmed!",
     "thankYou": "Thank you for your order",
+    "compactThanks": "Thanks — your order is confirmed.",
     "orderNumber": "Order Number",
     "orderDetails": "Order Details",
     "status": "Status",

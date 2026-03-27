@@ -149,6 +149,7 @@
     "cartEmptyHint": "أضف عناصر من القائمة للبدء",
     "browseMenu": "تصفح القائمة",
     "proceedToCheckout": "المتابعة إلى الدفع",
+    "continueShopping": "متابعة التسوق",
     "viewMenu": "عرض القائمة",
     "ourMenu": "قائمتنا",
     "addToCart": "أضف إلى السلة",
@@ -189,7 +190,7 @@
   },
   "checkout": {
     "title": "الدفع",
-    "subtitle": "أكمل طلبك",
+    "subtitle": "أكمل طلبك — ستصلك تحديثات ويمكنك تتبع الطلب بعد الإرسال.",
     "backToMenu": "العودة إلى القائمة",
     "orderSummary": "ملخص الطلب",
     "quantity": "الكمية",
@@ -258,6 +259,7 @@
   "orderConfirmation": {
     "title": "تم تأكيد الطلب!",
     "thankYou": "شكراً لطلبك",
+    "compactThanks": "شكراً تم تأكيد الطلب..",
     "orderNumber": "رقم الطلب",
     "orderDetails": "تفاصيل الطلب",
     "status": "الحالة",
