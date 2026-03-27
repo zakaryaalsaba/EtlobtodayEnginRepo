@@ -61,63 +61,85 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <LinearLayout
+                <androidx.core.widget.NestedScrollView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:fillViewport="true"
+                    android:overScrollMode="ifContentScrolls">
 
-                    <!-- Summary headers like Talabat -->
                     <LinearLayout
-                        android:id="@+id/sectionSummary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:paddingStart="16dp"
-                        android:paddingEnd="16dp"
-                        android:paddingTop="12dp"
-                        android:paddingBottom="8dp">
+                        android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/tvNewHeader"
-                            android:layout_width="wrap_content"
+                        <!-- Summary headers like Talabat -->
+                        <LinearLayout
+                            android:id="@+id/sectionSummary"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="New 0"
-                            android:textColor="@color/text_primary"
-                            android:textSize="20sp"
-                            android:textStyle="bold" />
+                            android:orientation="horizontal"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp"
+                            android:paddingTop="12dp"
+                            android:paddingBottom="8dp">
 
-                        <TextView
-                            android:id="@+id/tvAcceptedHeader"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="14dp"
-                            android:text="Accepted 0"
-                            android:textColor="@color/text_primary"
-                            android:textSize="20sp"
-                            android:textStyle="bold" />
+                            <TextView
+                                android:id="@+id/tvNewHeader"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/new_count_zero"
+                                android:textColor="@color/text_primary"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
 
-                        <TextView
-                            android:id="@+id/tvUpcomingHeader"
-                            android:layout_width="wrap_content"
+                            <TextView
+                                android:id="@+id/tvAcceptedHeader"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:text="@string/accepted_count_zero"
+                                android:textColor="@color/text_primary"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tvUpcomingHeader"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="end"
+                                android:text="@string/upcoming_count_zero"
+                                android:textColor="@color/text_primary"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerViewNewSpotlight"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="14dp"
-                            android:text="Upcoming 0"
-                            android:textColor="@color/text_primary"
-                            android:textSize="20sp"
-                            android:textStyle="bold" />
+                            android:layout_marginTop="4dp"
+                            android:layout_marginBottom="6dp"
+                            android:nestedScrollingEnabled="false"
+                            android:overScrollMode="never"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp"
+                            tools:listitem="@layout/item_new_spotlight_order" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerViewOrders"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:nestedScrollingEnabled="false"
+                            android:paddingTop="8dp"
+                            android:paddingBottom="16dp"
+                            android:clipToPadding="false"
+                            android:overScrollMode="never"
+                            tools:listitem="@layout/item_order" />
                     </LinearLayout>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recyclerViewOrders"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:paddingTop="8dp"
-                        android:paddingBottom="16dp"
-                        android:clipToPadding="false"
-                        android:scrollbars="vertical"
-                        tools:listitem="@layout/item_order" />
-                </LinearLayout>
+                </androidx.core.widget.NestedScrollView>
 
                 <!-- Empty State -->
                 <LinearLayout

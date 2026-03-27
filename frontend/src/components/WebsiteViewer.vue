@@ -423,6 +423,25 @@
       <span class="font-bold text-lg">{{ formatCurrency(finalTotal) }}</span>
     </button>
 
+    <!-- Mobile add-to-cart feedback (non-blocking) -->
+    <div
+      v-if="showAddedToast"
+      class="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-md bg-white shadow-2xl rounded-2xl border border-gray-200 px-4 py-3 sm:hidden"
+      role="status"
+      aria-live="polite"
+    >
+      <div class="flex items-center justify-between gap-3">
+        <p class="text-sm font-semibold text-gray-800 truncate">{{ addedToastMessage }}</p>
+        <button
+          @click="openCartFromToast"
+          class="text-sm font-bold whitespace-nowrap"
+          :style="{ color: website.primary_color }"
+        >
+          {{ $t('website.viewCart') }}
+        </button>
+      </div>
+    </div>
+
     <!-- About Section -->
     <section id="about" v-if="displayDescription" class="py-20 px-4 sm:px-6 lg:px-8" aria-label="About section">
       <div class="max-w-7xl mx-auto">
@@ -907,6 +926,9 @@ const menuItems = computed(() => {
 const cart = ref([]);
 const showCart = ref(false);
 const windowWidth = ref(window.innerWidth);
+const showAddedToast = ref(false);
+const addedToastMessage = ref('');
+let addToastTimer = null;
 const products = ref([]);
 const productsByCategory = computed(() => {
   const _locale = locale.value; // depend on locale so grouping by display category updates
@@ -1033,6 +1055,37 @@ const addToCart = (product) => {
       quantity: 1
     });
   }
+
+  // Save cart to sessionStorage
+  if (website.value?.id) {
+    sessionStorage.setItem(`cart_${website.value.id}`, JSON.stringify(cart.value));
+  }
+
+  // Desktop: keep current behavior (open cart)
+  // Mobile: keep menu visible and show non-blocking feedback
+  if (windowWidth.value >= 640) {
+    showCart.value = true;
+  } else {
+    showCart.value = false;
+    showAddToCartToast(product);
+  }
+};
+
+const showAddToCartToast = (product) => {
+  const productName = getProductDisplay(product).name || '';
+  addedToastMessage.value = `${productName} ${t('website.addedToCart')}`.trim();
+  showAddedToast.value = true;
+  if (addToastTimer) {
+    clearTimeout(addToastTimer);
+  }
+  addToastTimer = setTimeout(() => {
+    showAddedToast.value = false;
+    addToastTimer = null;
+  }, 2200);
+};
+
+const openCartFromToast = () => {
+  showAddedToast.value = false;
   showCart.value = true;
 };
 
@@ -1324,9 +1377,9 @@ const handleResize = () => {
   if (windowWidth.value >= 640 && cart.value.length > 0) {
     showCart.value = true;
   }
-  // On mobile, close cart overlay when resizing to desktop
-  if (windowWidth.value >= 640 && showCart.value) {
-    // Keep it open on desktop
+  // On mobile, keep cart hidden until user taps cart button
+  if (windowWidth.value < 640 && showCart.value) {
+    showCart.value = false;
   }
 };
 
@@ -1417,6 +1470,10 @@ onMounted(async () => {
   // Cleanup
   onUnmounted(() => {
     window.removeEventListener('resize', handleResize);
+    if (addToastTimer) {
+      clearTimeout(addToastTimer);
+      addToastTimer = null;
+    }
     clearSEO();
   });
 </script>

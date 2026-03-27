@@ -122,4 +122,17 @@
     <string name="request_driver">Request Driver</string>
     <string name="cancel_countdown">Cancel(%d)</string>
     <string name="processing">Processing…</string>
+    <string name="new_count_header">New %1$d</string>
+    <string name="accepted_count_header">Accepted %1$d</string>
+    <string name="upcoming_count_header">Upcoming %1$d</string>
+    <string name="new_count_zero">New 0</string>
+    <string name="accepted_count_zero">Accepted 0</string>
+    <string name="upcoming_count_zero">Upcoming 0</string>
+    <string name="confirm">Confirm</string>
+    <string name="view_order_details">View Order Details</string>
+
+    <plurals name="items_count">
+        <item quantity="one">%d item</item>
+        <item quantity="other">%d items</item>
+    </plurals>
 </resources>

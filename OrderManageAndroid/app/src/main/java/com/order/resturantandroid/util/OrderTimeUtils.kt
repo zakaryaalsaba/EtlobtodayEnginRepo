@@ -59,7 +59,7 @@ fun parseOrderCreatedAtMillis(createdAt: String?): Long? {
 
 fun formatOrderPlacedAt(createdAt: String?, millis: Long?): String {
     val m = millis ?: parseOrderCreatedAtMillis(createdAt) ?: return ""
-    val out = SimpleDateFormat("MMM d, yyyy · HH:mm", Locale.getDefault())
+    val out = SimpleDateFormat("MMM d, yyyy · hh:mm a", Locale.getDefault())
     return out.format(m)
 }
 

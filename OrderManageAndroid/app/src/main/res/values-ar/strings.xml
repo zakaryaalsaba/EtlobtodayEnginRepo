@@ -121,5 +121,18 @@
     <string name="request_driver">طلب سائق</string>
     <string name="cancel_countdown">إلغاء (%d)</string>
     <string name="processing">جاري المعالجة…</string>
+    <string name="new_count_header">جديد %1$d</string>
+    <string name="accepted_count_header">مقبول %1$d</string>
+    <string name="upcoming_count_header">قادمة %1$d</string>
+    <string name="new_count_zero">جديد 0</string>
+    <string name="accepted_count_zero">مقبول 0</string>
+    <string name="upcoming_count_zero">قادمة 0</string>
+    <string name="confirm">تأكيد</string>
+    <string name="view_order_details">عرض تفاصيل الطلب</string>
+
+    <plurals name="items_count">
+        <item quantity="one">%d عنصر</item>
+        <item quantity="other">%d عناصر</item>
+    </plurals>
 </resources>
 

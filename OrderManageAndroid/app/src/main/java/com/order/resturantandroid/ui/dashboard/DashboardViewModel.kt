@@ -12,6 +12,7 @@ import com.google.firebase.database.ValueEventListener
 import com.order.resturantandroid.BuildConfig
 import com.order.resturantandroid.data.model.Order
 import com.order.resturantandroid.data.model.OrderItem
+import com.order.resturantandroid.data.repository.OrderRepository
 import com.order.resturantandroid.util.SessionManager
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -26,6 +27,7 @@ data class DashboardStatistics(
 
 class DashboardViewModel(application: Application) : AndroidViewModel(application) {
     private val sessionManager = SessionManager(application)
+    private val orderRepository = OrderRepository()
     
     private val _orders = MutableLiveData<List<Order>>()
     val orders: LiveData<List<Order>> = _orders
@@ -56,6 +58,12 @@ class DashboardViewModel(application: Application) : AndroidViewModel(applicatio
 
     private val _upcomingCount = MutableLiveData<Int>()
     val upcomingCount: LiveData<Int> = _upcomingCount
+    
+    private val _newSpotlightOrder = MutableLiveData<Order?>()
+    val newSpotlightOrder: LiveData<Order?> = _newSpotlightOrder
+    
+    private val _newSpotlightOrders = MutableLiveData<List<Order>>(emptyList())
+    val newSpotlightOrders: LiveData<List<Order>> = _newSpotlightOrders
     
     private var dateFrom: Long? = null
     private var dateTo: Long? = null
@@ -124,12 +132,13 @@ class DashboardViewModel(application: Application) : AndroidViewModel(applicatio
                 }
             }
         } else {
-            // Default: show only active orders when no date filter
+            // Default: show active non-pending orders in bottom list.
+            // Pending is shown in the top "New" spotlight card.
             filteredOrders = filteredOrders.filter { order ->
                 val statusNorm = (order.status ?: "")
                     .trim()
                     .lowercase(Locale.getDefault())
-                statusNorm != "completed" && statusNorm != "cancelled"
+                statusNorm != "completed" && statusNorm != "cancelled" && statusNorm != "pending"
             }
         }
         
@@ -147,6 +156,17 @@ class DashboardViewModel(application: Application) : AndroidViewModel(applicatio
         _newCount.value = normStatuses.count { it == "pending" }
         _acceptedCount.value = normStatuses.count { it == "confirmed" }
         _upcomingCount.value = normStatuses.count { it == "preparing" || it == "ready" || it == "picked_up" }
+
+        // Spotlight latest pending order under "New"
+        val latestPending = allOrders
+            .filter { (it.status ?: "").trim().lowercase(Locale.getDefault()) == "pending" }
+            .maxByOrNull { parseCreatedAtToMillis(it.createdAt) ?: Long.MIN_VALUE }
+        _newSpotlightOrder.value = latestPending
+
+        val pendingOrders = allOrders
+            .filter { (it.status ?: "").trim().lowercase(Locale.getDefault()) == "pending" }
+            .sortedBy { parseCreatedAtToMillis(it.createdAt) ?: Long.MAX_VALUE }
+        _newSpotlightOrders.value = pendingOrders
     }
     
     private fun updateOrdersFromFirebaseSnapshot(snapshot: DataSnapshot) {
@@ -154,7 +174,8 @@ class DashboardViewModel(application: Application) : AndroidViewModel(applicatio
             firebaseSnapshotToOrder(child)
         }
         
-        val sorted = ordersList.sortedByDescending { parseCreatedAtToMillis(it.createdAt) ?: 0L }
+        // First-come, first-serve list ordering.
+        val sorted = ordersList.sortedBy { parseCreatedAtToMillis(it.createdAt) ?: Long.MAX_VALUE }
         
         _currencyCode.value = DEFAULT_CURRENCY_CODE
         _currencySymbolPosition.value = DEFAULT_CURRENCY_SYMBOL_POSITION
@@ -353,6 +374,24 @@ class DashboardViewModel(application: Application) : AndroidViewModel(applicatio
             }
         }
         ordersRefListener = null
+    }
+
+    fun confirmOrderQuickly(orderId: Int) {
+        val token = sessionManager.getAuthToken()
+        if (token.isNullOrBlank()) {
+            _error.value = "Session expired. Please login again."
+            return
+        }
+        viewModelScope.launch {
+            orderRepository.updateOrderStatus(orderId, "confirmed", token).fold(
+                onSuccess = {
+                    // Firebase listener will refresh UI state.
+                },
+                onFailure = { ex ->
+                    _error.value = ex.message ?: "Failed to confirm order"
+                }
+            )
+        }
     }
     
     override fun onCleared() {

@@ -16,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.navigation.NavigationView
 import com.order.resturantandroid.R
+import com.order.resturantandroid.data.model.Order
 import com.order.resturantandroid.databinding.ActivityDashboardBinding
 import com.order.resturantandroid.ui.auth.LoginActivity
 import com.order.resturantandroid.ui.orders.OrderDetailActivity
@@ -38,7 +39,10 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
     }
     private lateinit var sessionManager: SessionManager
     private lateinit var ordersAdapter: OrdersAdapter
+    private lateinit var newSpotlightOrdersAdapter: NewSpotlightOrdersAdapter
     private lateinit var drawerToggle: ActionBarDrawerToggle
+    private var currentMainOrdersCount: Int = 0
+    private var currentPendingSpotlightCount: Int = 0
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -152,6 +156,21 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
     }
     
     private fun setupRecyclerView() {
+        newSpotlightOrdersAdapter = NewSpotlightOrdersAdapter(
+            onConfirm = { order ->
+                viewModel.confirmOrderQuickly(order.id)
+            },
+            onViewDetails = { order ->
+                try {
+                    val intent = Intent(this, OrderDetailActivity::class.java)
+                    intent.putExtra("order_id", order.id)
+                    intent.putExtra("order_number", order.orderNumber)
+                    startActivity(intent)
+                } catch (e: Exception) {
+                    Toast.makeText(this, "Error opening order: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+        )
         ordersAdapter = OrdersAdapter { order ->
             try {
                 android.util.Log.d("DashboardActivity", "Opening order details for order ID: ${order.id}, Number: ${order.orderNumber}")
@@ -169,17 +188,19 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
             layoutManager = LinearLayoutManager(this@DashboardActivity)
             adapter = ordersAdapter
         }
+        binding.recyclerViewNewSpotlight.apply {
+            layoutManager = LinearLayoutManager(this@DashboardActivity)
+            adapter = newSpotlightOrdersAdapter
+        }
     }
     
     private fun setupObservers() {
         viewModel.orders.observe(this) { orders ->
             try {
-                val hasOrders = !orders.isNullOrEmpty()
-                ordersAdapter.submitList(orders ?: emptyList())
-                
-                // Show/hide RecyclerView and empty state
-                binding.recyclerViewOrders.visibility = if (hasOrders) android.view.View.VISIBLE else android.view.View.GONE
-                binding.emptyState.visibility = if (hasOrders) android.view.View.GONE else android.view.View.VISIBLE
+                val safeOrders = orders ?: emptyList()
+                currentMainOrdersCount = safeOrders.size
+                ordersAdapter.submitList(safeOrders)
+                renderOrdersVisibility()
             } catch (e: Exception) {
                 e.printStackTrace()
                 Toast.makeText(this, "Error displaying orders: ${e.message}", Toast.LENGTH_SHORT).show()
@@ -187,13 +208,13 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         }
 
         viewModel.newCount.observe(this) { count ->
-            binding.tvNewHeader.text = "New ${count ?: 0}"
+            binding.tvNewHeader.text = getString(R.string.new_count_header, count ?: 0)
         }
         viewModel.acceptedCount.observe(this) { count ->
-            binding.tvAcceptedHeader.text = "Accepted ${count ?: 0}"
+            binding.tvAcceptedHeader.text = getString(R.string.accepted_count_header, count ?: 0)
         }
         viewModel.upcomingCount.observe(this) { count ->
-            binding.tvUpcomingHeader.text = "Upcoming ${count ?: 0}"
+            binding.tvUpcomingHeader.text = getString(R.string.upcoming_count_header, count ?: 0)
         }
         
         viewModel.isLoading.observe(this) { isLoading ->
@@ -209,6 +230,24 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
                 Toast.makeText(this, it, Toast.LENGTH_LONG).show()
             }
         }
+
+        viewModel.newSpotlightOrders.observe(this) { pendingOrders ->
+            val safePending = pendingOrders ?: emptyList()
+            currentPendingSpotlightCount = safePending.size
+            newSpotlightOrdersAdapter.submitList(safePending)
+            renderOrdersVisibility()
+        }
+    }
+
+    private fun renderOrdersVisibility() {
+        val hasMainOrders = currentMainOrdersCount > 0
+        val hasPendingSpotlight = currentPendingSpotlightCount > 0
+        val hasAnyOrder = hasMainOrders || hasPendingSpotlight
+
+        binding.recyclerViewOrders.visibility =
+            if (hasMainOrders) android.view.View.VISIBLE else android.view.View.GONE
+        binding.emptyState.visibility =
+            if (hasAnyOrder) android.view.View.GONE else android.view.View.VISIBLE
     }
     
     private fun setupRefresh() {
