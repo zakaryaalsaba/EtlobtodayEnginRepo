@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Launcher adaptive icon background (behind EtlobToday artwork) -->
+    <color name="ic_launcher_background_solid">#FFFFFF</color>
     <!-- Material Design 3 Color System -->
     <!-- Primary colors -->
     <color name="primary">#6366F1</color>

@@ -1,8 +1,12 @@
 package com.order.resturantandroid.ui.orders
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.activity.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory
@@ -12,8 +16,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.order.resturantandroid.R
 import com.order.resturantandroid.databinding.ActivityOrderDetailBinding
+import com.order.resturantandroid.service.PrinterService
 import com.order.resturantandroid.util.SessionManager
 import com.order.resturantandroid.util.CurrencyFormatter
+import com.order.resturantandroid.util.withEnglishDigits
 import kotlinx.coroutines.launch
 
 class OrderDetailActivity : AppCompatActivity() {
@@ -22,9 +28,11 @@ class OrderDetailActivity : AppCompatActivity() {
         AndroidViewModelFactory.getInstance(application)
     }
     private lateinit var sessionManager: SessionManager
+    private lateinit var printerService: PrinterService
     private lateinit var itemsAdapter: OrderItemsAdapter
     private var orderId: Int = -1
     private var orderNumber: String? = null
+    private var pendingPrintOrder: com.order.resturantandroid.data.model.Order? = null
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +41,7 @@ class OrderDetailActivity : AppCompatActivity() {
             setContentView(binding.root)
             
         sessionManager = SessionManager(this)
+        printerService = PrinterService(this)
         orderId = intent.getIntExtra("order_id", -1)
         orderNumber = intent.getStringExtra("order_number")
         
@@ -128,9 +137,10 @@ class OrderDetailActivity : AppCompatActivity() {
     private fun displayOrder(order: com.order.resturantandroid.data.model.Order) {
         binding.apply {
             try {
-                tvOrderNumber.text = order.orderNumber ?: "N/A"
+                tvOrderNumber.text = order.orderNumber?.withEnglishDigits() ?: "N/A"
                 tvCustomerName.text = order.customerName ?: "N/A"
-                tvCustomerPhone.text = order.customerPhone ?: getString(R.string.not_available)
+                tvCustomerPhone.text = order.customerPhone?.withEnglishDigits()
+                    ?: getString(R.string.not_available)
                 tvCustomerAddress.text = order.customerAddress ?: getString(R.string.not_available)
                 tvOrderType.text = (order.orderType ?: "").replaceFirstChar { it.uppercaseChar() }
                 
@@ -291,10 +301,60 @@ class OrderDetailActivity : AppCompatActivity() {
         
         binding.btnPrint.setOnClickListener {
             viewModel.order.value?.let { order ->
-                // TODO: Implement printing
-                Toast.makeText(this, "Printing feature coming soon", Toast.LENGTH_SHORT).show()
+                android.util.Log.d(TAG, "[PRINT_DEBUG] btnPrint clicked orderId=${order.id} orderNo=${order.orderNumber}")
+                if (!ensureBluetoothPermissionForPrinting(order)) return@setOnClickListener
+                lifecycleScope.launch {
+                    binding.btnPrint.isEnabled = false
+                    android.util.Log.d(TAG, "[PRINT_DEBUG] starting silent print coroutine")
+                    val ok = printerService.printOrderSilently(
+                        order = order,
+                        restaurantName = sessionManager.getRestaurantName() ?: getString(R.string.app_name)
+                    )
+                    binding.btnPrint.isEnabled = true
+                    android.util.Log.d(TAG, "[PRINT_DEBUG] silent print result ok=$ok lastError=${printerService.getLastError()}")
+                    if (ok) {
+                        Toast.makeText(this@OrderDetailActivity, "Printed successfully", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(
+                            this@OrderDetailActivity,
+                            "Silent print failed: ${printerService.getLastError() ?: "Unknown error"}. Ensure printer is paired and Bluetooth is enabled.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+            } ?: run {
+                Toast.makeText(this, getString(R.string.error), Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun ensureBluetoothPermissionForPrinting(order: com.order.resturantandroid.data.model.Order): Boolean {
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.S) return true
+        val connectGranted = ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.BLUETOOTH_CONNECT
+        ) == PackageManager.PERMISSION_GRANTED
+        val scanGranted = ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.BLUETOOTH_SCAN
+        ) == PackageManager.PERMISSION_GRANTED
+        android.util.Log.d(
+            TAG,
+            "[PRINT_DEBUG] BLUETOOTH_CONNECT granted=$connectGranted BLUETOOTH_SCAN granted=$scanGranted sdk=${android.os.Build.VERSION.SDK_INT}"
+        )
+        if (connectGranted && scanGranted) return true
+
+        pendingPrintOrder = order
+        android.util.Log.d(TAG, "[PRINT_DEBUG] requesting BLUETOOTH_CONNECT + BLUETOOTH_SCAN permissions")
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(
+                Manifest.permission.BLUETOOTH_CONNECT,
+                Manifest.permission.BLUETOOTH_SCAN
+            ),
+            REQUEST_BLUETOOTH_CONNECT
+        )
+        return false
     }
     
     private fun showRejectDialog() {
@@ -351,6 +411,61 @@ class OrderDetailActivity : AppCompatActivity() {
             return true
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_BLUETOOTH_CONNECT) {
+            val connectGranted = ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.BLUETOOTH_CONNECT
+            ) == PackageManager.PERMISSION_GRANTED
+            val scanGranted = ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.BLUETOOTH_SCAN
+            ) == PackageManager.PERMISSION_GRANTED
+            android.util.Log.d(
+                TAG,
+                "[PRINT_DEBUG] onRequestPermissionsResult connectGranted=$connectGranted scanGranted=$scanGranted"
+            )
+            if (!(connectGranted && scanGranted)) {
+                Toast.makeText(this, "Bluetooth permission denied. Can't print.", Toast.LENGTH_LONG).show()
+                pendingPrintOrder = null
+                return
+            }
+
+            val order = pendingPrintOrder
+            pendingPrintOrder = null
+            if (order != null) {
+                lifecycleScope.launch {
+                    binding.btnPrint.isEnabled = false
+                    val ok = printerService.printOrderSilently(
+                        order = order,
+                        restaurantName = sessionManager.getRestaurantName() ?: getString(R.string.app_name)
+                    )
+                    binding.btnPrint.isEnabled = true
+                    android.util.Log.d(TAG, "[PRINT_DEBUG] print after permission result ok=$ok lastError=${printerService.getLastError()}")
+                    if (ok) {
+                        Toast.makeText(this@OrderDetailActivity, "Printed successfully", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(
+                            this@OrderDetailActivity,
+                            "Silent print failed: ${printerService.getLastError() ?: "Unknown error"}",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+            }
+        }
+    }
+
+    companion object {
+        private const val TAG = "OrderDetailActivity"
+        private const val REQUEST_BLUETOOTH_CONNECT = 12021
     }
 }
 

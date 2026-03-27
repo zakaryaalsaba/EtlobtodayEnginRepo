@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.order.resturantandroid.data.model.OrderItem
 import com.order.resturantandroid.databinding.ItemOrderItemBinding
 import com.order.resturantandroid.util.CurrencyFormatter
+import com.order.resturantandroid.util.ENGLISH_NUMBER_LOCALE
 
 class OrderItemsAdapter(
     private val currencyCode: String? = "USD",
@@ -36,7 +37,7 @@ class OrderItemsAdapter(
         fun bind(item: OrderItem) {
             binding.apply {
                 tvItemName.text = item.productName
-                tvQuantity.text = "x${item.quantity}"
+                tvQuantity.text = String.format(ENGLISH_NUMBER_LOCALE, "x%d", item.quantity)
                 
                 android.util.Log.d("OrderItemsAdapter", "Formatting with currency: $currencyCode, position: $currencySymbolPosition")
                 

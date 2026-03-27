@@ -110,6 +110,8 @@ function orderToFirebaseData(order) {
     order_type: order.order_type || 'pickup',
     status: order.status,
     total_amount: order.total_amount,
+    currency_code: order.currency_code || 'USD',
+    currency_symbol_position: order.currency_symbol_position || 'before',
     payment_method: order.payment_method || 'cash',
     payment_status: order.payment_status || 'pending',
     created_at: toIsoUtc(order.created_at),

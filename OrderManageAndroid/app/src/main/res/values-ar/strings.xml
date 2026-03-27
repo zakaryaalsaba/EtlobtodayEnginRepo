@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">مدير الطلبات</string>
+    <string name="app_name">EtlobToday</string>
     
     <!-- Authentication -->
     <string name="email">البريد الإلكتروني</string>

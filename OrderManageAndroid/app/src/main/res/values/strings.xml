@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Order Manager</string>
+    <string name="app_name">EtlobToday</string>
     
     <!-- Authentication -->
     <string name="email">Email</string>

@@ -3,6 +3,7 @@ package com.order.resturantandroid.data.repository
 import com.order.resturantandroid.data.model.Order
 import com.order.resturantandroid.data.model.OrderStatusUpdate
 import com.order.resturantandroid.data.remote.ApiService
+import com.order.resturantandroid.data.remote.RestaurantWebsite
 import com.order.resturantandroid.data.remote.RetrofitClient
 import android.util.Log
 
@@ -84,6 +85,20 @@ class OrderRepository {
             }
         } catch (e: Exception) {
             Log.e(tag, "updateOrderStatus() failed: ${e.javaClass.simpleName} msg=${e.message}")
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getRestaurantWebsite(token: String): Result<RestaurantWebsite> {
+        return try {
+            val response = apiService.getRestaurantInfo("Bearer $token")
+            if (response.isSuccessful && response.body() != null) {
+                Result.success(response.body()!!.website)
+            } else {
+                Result.failure(Exception(response.message() ?: "Failed to fetch website"))
+            }
+        } catch (e: Exception) {
+            Log.e(tag, "getRestaurantWebsite() failed: ${e.message}")
             Result.failure(e)
         }
     }

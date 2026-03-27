@@ -130,7 +130,9 @@ data class RestaurantWebsite(
     @SerializedName("description") val description: String? = null,
     @SerializedName("logo_url") val logoUrl: String? = null,
     @SerializedName("latitude") val latitude: Double? = null,
-    @SerializedName("longitude") val longitude: Double? = null
+    @SerializedName("longitude") val longitude: Double? = null,
+    @SerializedName("currency_code") val currencyCode: String? = null,
+    @SerializedName("currency_symbol_position") val currencySymbolPosition: String? = null
 ) {
     fun getIsPublished(): Boolean {
         return when (isPublished) {

@@ -7,7 +7,7 @@ import LandingPage from './components/LandingPage.vue';
 import WebsiteBuilder from './components/WebsiteBuilder.vue';
 import WebsiteViewer from './components/WebsiteViewer.vue';
 import Checkout from './components/Checkout.vue';
-import OrderConfirmation from './components/OrderConfirmation.vue';
+import OrderStatusPage from './components/OrderStatusPage.vue';
 import OrderTracking from './components/OrderTracking.vue';
 import AdminLogin from './components/AdminLogin.vue';
 import AdminDashboard from './components/AdminDashboard.vue';
@@ -24,9 +24,14 @@ const routes = [
   { path: '/barcode/:code', component: WebsiteViewer, props: true },
   { path: '/website/:id', component: WebsiteViewer, props: true },
   { path: '/website/:id/checkout', component: Checkout, props: true },
-  { path: '/website/:id/order/:orderNumber', component: OrderConfirmation, props: true },
+  { path: '/website/:id/order/:orderNumber', component: OrderStatusPage, props: true },
   { path: '/website/:id/track', component: OrderTracking, props: true },
-  { path: '/website/:id/track/:orderNumber', component: OrderTracking, props: true },
+  {
+    path: '/website/:id/track/:orderNumber',
+    redirect: (to) => ({
+      path: `/website/${to.params.id}/order/${to.params.orderNumber}`
+    })
+  },
   { path: '/admin/login', component: AdminLogin },
   { path: '/admin/dashboard', component: AdminDashboard },
   { path: '/restaurant/login', component: RestaurantLogin },

@@ -13,9 +13,11 @@ import com.order.resturantandroid.R
 import com.order.resturantandroid.data.model.Order
 import com.order.resturantandroid.databinding.ItemOrderBinding
 import com.order.resturantandroid.util.CurrencyFormatter
+import com.order.resturantandroid.util.ENGLISH_NUMBER_LOCALE
 import com.order.resturantandroid.util.formatElapsedMmSs
 import com.order.resturantandroid.util.formatOrderPlacedAt
 import com.order.resturantandroid.util.parseOrderCreatedAtMillis
+import com.order.resturantandroid.util.withEnglishDigits
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 
@@ -55,7 +57,7 @@ class OrdersAdapter(
             unbind()
 
             binding.apply {
-                tvOrderNumber.text = order.orderNumber?.takeIf { it.isNotBlank() } ?: "—"
+                tvOrderNumber.text = order.orderNumber?.takeIf { it.isNotBlank() }?.withEnglishDigits() ?: "—"
                 tvCustomerName.text = order.customerName?.takeIf { it.isNotBlank() } ?: "—"
                 tvOrderType.text = (order.orderType ?: "").replaceFirstChar { it.uppercaseChar() }
 
@@ -76,9 +78,11 @@ class OrdersAdapter(
                 try {
                     val itemsList = order.getItemsList()
                     val itemsCount = itemsList.size
-                    tvItemsCount.text = "$itemsCount ${if (itemsCount == 1) "item" else "items"}"
+                    val template = binding.root.resources.getQuantityString(R.plurals.items_count, itemsCount)
+                    tvItemsCount.text = String.format(ENGLISH_NUMBER_LOCALE, template, itemsCount)
                 } catch (e: Exception) {
-                    tvItemsCount.text = "0 items"
+                    val t = binding.root.resources.getQuantityString(R.plurals.items_count, 0)
+                    tvItemsCount.text = String.format(ENGLISH_NUMBER_LOCALE, t, 0)
                 }
 
                 val paymentMethodLayout = root.findViewById<ViewGroup>(R.id.layoutPaymentMethod)

@@ -61,10 +61,10 @@ object CurrencyFormatter {
             val symbol = getCurrencySymbol(actualCurrencyCode)
             android.util.Log.d("CurrencyFormatter", "Currency symbol: $symbol")
             
-            // Format based on position
+            // Always use Latin digits for amounts (consistent with Order Details / English numerals).
             val formatted = when (symbolPosition?.lowercase()?.trim()) {
-                "after" -> String.format("%.2f %s", amountValue, symbol)
-                else -> String.format("%s %.2f", symbol, amountValue)
+                "after" -> String.format(Locale.US, "%.2f %s", amountValue, symbol)
+                else -> String.format(Locale.US, "%s %.2f", symbol, amountValue)
             }
             android.util.Log.d("CurrencyFormatter", "Formatted result: $formatted")
             return formatted

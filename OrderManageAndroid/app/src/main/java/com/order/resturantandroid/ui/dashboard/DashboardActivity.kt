@@ -26,6 +26,7 @@ import com.order.resturantandroid.data.remote.RetrofitClient
 import com.order.resturantandroid.ui.profile.ProfileActivity
 import com.order.resturantandroid.ui.statistics.StatisticsActivity
 import com.order.resturantandroid.ui.delivery.RequestDeliveryActivity
+import com.order.resturantandroid.util.ENGLISH_NUMBER_LOCALE
 import com.order.resturantandroid.util.LocaleHelper
 import com.order.resturantandroid.util.SessionManager
 import kotlinx.coroutines.CoroutineScope
@@ -208,13 +209,16 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         }
 
         viewModel.newCount.observe(this) { count ->
-            binding.tvNewHeader.text = getString(R.string.new_count_header, count ?: 0)
+            val n = count ?: 0
+            binding.tvNewHeader.text = String.format(ENGLISH_NUMBER_LOCALE, getString(R.string.new_count_header), n)
         }
         viewModel.acceptedCount.observe(this) { count ->
-            binding.tvAcceptedHeader.text = getString(R.string.accepted_count_header, count ?: 0)
+            val n = count ?: 0
+            binding.tvAcceptedHeader.text = String.format(ENGLISH_NUMBER_LOCALE, getString(R.string.accepted_count_header), n)
         }
         viewModel.upcomingCount.observe(this) { count ->
-            binding.tvUpcomingHeader.text = getString(R.string.upcoming_count_header, count ?: 0)
+            val n = count ?: 0
+            binding.tvUpcomingHeader.text = String.format(ENGLISH_NUMBER_LOCALE, getString(R.string.upcoming_count_header), n)
         }
         
         viewModel.isLoading.observe(this) { isLoading ->

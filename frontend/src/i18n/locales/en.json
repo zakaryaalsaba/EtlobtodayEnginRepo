@@ -304,6 +304,13 @@
     "registrationFailed": "Failed to register. Please try again.",
     "loading": "Loading order details..."
   },
+  "orderStatus": {
+    "mergeHint": "Your order confirmation and live status are on this page.",
+    "firebaseLive": "Connected for live updates — status changes appear as soon as the restaurant updates your order.",
+    "firebaseNotConfigured": "Live updates are not enabled in this build. Status still refreshes every 5 minutes, or tap Refresh.",
+    "liveFeedEnded": "Live tracking for this order has ended (for example, when it is completed). Showing the latest details from our servers.",
+    "updatesRealtime": "Updating in real time when your restaurant changes the order status."
+  },
   "orderTracking": {
     "title": "Track Your Order",
     "subtitle": "Enter your order number to see the status",

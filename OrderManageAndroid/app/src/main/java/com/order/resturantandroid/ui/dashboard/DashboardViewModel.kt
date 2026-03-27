@@ -69,18 +69,36 @@ class DashboardViewModel(application: Application) : AndroidViewModel(applicatio
     private var dateTo: Long? = null
     private var isPolling = false
     private var ordersRefListener: ValueEventListener? = null
-    private val isoFallbackDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+    private val isoFallbackDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US)
     
-    // Simple defaults since Firebase data doesn't include currency_code/symbol_position
     private val DEFAULT_CURRENCY_CODE = "USD"
     private val DEFAULT_CURRENCY_SYMBOL_POSITION = "before"
+
+    /** Matches restaurant website settings (API); used when Firebase has no currency fields yet. */
+    private var websiteCurrencyCode: String = DEFAULT_CURRENCY_CODE
+    private var websiteSymbolPosition: String = DEFAULT_CURRENCY_SYMBOL_POSITION
     
     fun hasDateFilter(): Boolean {
         return dateFrom != null || dateTo != null
     }
     
-    private val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-    
+    private val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
+
+    private suspend fun refreshWebsiteCurrency() {
+        val token = sessionManager.getAuthToken() ?: return
+        orderRepository.getRestaurantWebsite(token).fold(
+            onSuccess = { website ->
+                website.currencyCode?.trim()?.takeIf { it.isNotEmpty() }?.let {
+                    websiteCurrencyCode = it.uppercase(Locale.US)
+                }
+                website.currencySymbolPosition?.trim()?.takeIf { it.isNotEmpty() }?.let {
+                    websiteSymbolPosition = it.lowercase(Locale.US)
+                }
+            },
+            onFailure = { }
+        )
+    }
+
     fun loadOrders() {
         val websiteId = sessionManager.getWebsiteId()
         if (websiteId == -1) {
@@ -90,18 +108,21 @@ class DashboardViewModel(application: Application) : AndroidViewModel(applicatio
         _isLoading.value = true
         _error.value = null
 
-        val db = FirebaseDatabase.getInstance(BuildConfig.FIREBASE_DATABASE_URL)
-        val ref = db.getReference("orders").child(websiteId.toString())
-        ref.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                updateOrdersFromFirebaseSnapshot(snapshot)
-            }
+        viewModelScope.launch {
+            refreshWebsiteCurrency()
+            val db = FirebaseDatabase.getInstance(BuildConfig.FIREBASE_DATABASE_URL)
+            val ref = db.getReference("orders").child(websiteId.toString())
+            ref.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    updateOrdersFromFirebaseSnapshot(snapshot)
+                }
 
-            override fun onCancelled(error: DatabaseError) {
-                _error.value = error.message ?: "Failed to load orders from Firebase"
-                _isLoading.value = false
-            }
-        })
+                override fun onCancelled(error: DatabaseError) {
+                    _error.value = error.message ?: "Failed to load orders from Firebase"
+                    _isLoading.value = false
+                }
+            })
+        }
     }
     
     fun setDateFilter(fromDate: Long?, toDate: Long?) {
@@ -177,8 +198,8 @@ class DashboardViewModel(application: Application) : AndroidViewModel(applicatio
         // First-come, first-serve list ordering.
         val sorted = ordersList.sortedBy { parseCreatedAtToMillis(it.createdAt) ?: Long.MAX_VALUE }
         
-        _currencyCode.value = DEFAULT_CURRENCY_CODE
-        _currencySymbolPosition.value = DEFAULT_CURRENCY_SYMBOL_POSITION
+        _currencyCode.value = websiteCurrencyCode
+        _currencySymbolPosition.value = websiteSymbolPosition
         _allOrders.value = sorted
         applyFilters(sorted)
         _isLoading.value = false
@@ -217,6 +238,8 @@ class DashboardViewModel(application: Application) : AndroidViewModel(applicatio
         val orderType = getString(snapshot, "order_type") ?: "pickup"
         val status = getString(snapshot, "status") ?: "pending"
         val totalAmount = getString(snapshot, "total_amount") ?: "0.00"
+        val resolvedCurrencyCode = getStringNullable(snapshot, "currency_code") ?: websiteCurrencyCode
+        val resolvedSymbolPosition = getStringNullable(snapshot, "currency_symbol_position") ?: websiteSymbolPosition
         val paymentMethod = getStringNullable(snapshot, "payment_method")
         val paymentStatus = getStringNullable(snapshot, "payment_status")
         val notes = getStringNullable(snapshot, "notes")
@@ -250,6 +273,8 @@ class DashboardViewModel(application: Application) : AndroidViewModel(applicatio
             orderType = orderType,
             status = status,
             totalAmount = totalAmount,
+            currencyCode = resolvedCurrencyCode,
+            currencySymbolPosition = resolvedSymbolPosition,
             paymentMethod = paymentMethod,
             paymentStatus = paymentStatus,
             notes = notes,
@@ -342,23 +367,24 @@ class DashboardViewModel(application: Application) : AndroidViewModel(applicatio
             return
         }
 
-        // Attach a Firebase listener to get real-time order updates.
-        val db = FirebaseDatabase.getInstance(BuildConfig.FIREBASE_DATABASE_URL)
-        val ref = db.getReference("orders").child(websiteId.toString())
-        val listener = object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                updateOrdersFromFirebaseSnapshot(snapshot)
+        viewModelScope.launch {
+            refreshWebsiteCurrency()
+            val db = FirebaseDatabase.getInstance(BuildConfig.FIREBASE_DATABASE_URL)
+            val ref = db.getReference("orders").child(websiteId.toString())
+            val listener = object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    updateOrdersFromFirebaseSnapshot(snapshot)
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    _error.value = error.message ?: "Firebase listener cancelled"
+                    _isLoading.value = false
+                }
             }
 
-            override fun onCancelled(error: DatabaseError) {
-                _error.value = error.message ?: "Firebase listener cancelled"
-                _isLoading.value = false
-            }
+            ordersRefListener = listener
+            ref.addValueEventListener(listener)
         }
-        
-        ordersRefListener = listener
-        // Store the reference in a closure by re-creating it in stopPolling is fine for now.
-        ref.addValueEventListener(listener)
     }
     
     fun stopPolling() {

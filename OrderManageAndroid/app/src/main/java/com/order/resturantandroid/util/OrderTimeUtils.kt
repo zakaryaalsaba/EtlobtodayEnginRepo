@@ -59,7 +59,8 @@ fun parseOrderCreatedAtMillis(createdAt: String?): Long? {
 
 fun formatOrderPlacedAt(createdAt: String?, millis: Long?): String {
     val m = millis ?: parseOrderCreatedAtMillis(createdAt) ?: return ""
-    val out = SimpleDateFormat("MMM d, yyyy · hh:mm a", Locale.getDefault())
+    // Locale.US: Latin digits and English month names (app UI language can stay Arabic for labels).
+    val out = SimpleDateFormat("MMM d, yyyy · hh:mm a", Locale.US)
     return out.format(m)
 }
 

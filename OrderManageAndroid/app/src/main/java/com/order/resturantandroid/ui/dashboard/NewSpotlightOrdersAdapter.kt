@@ -11,8 +11,10 @@ import com.order.resturantandroid.R
 import com.order.resturantandroid.data.model.Order
 import com.order.resturantandroid.databinding.ItemNewSpotlightOrderBinding
 import com.order.resturantandroid.service.GlobalOrderAlertManager
+import com.order.resturantandroid.util.ENGLISH_NUMBER_LOCALE
 import com.order.resturantandroid.util.formatElapsedMmSs
 import com.order.resturantandroid.util.parseOrderCreatedAtMillis
+import com.order.resturantandroid.util.withEnglishDigits
 
 class NewSpotlightOrdersAdapter(
     private val onConfirm: (Order) -> Unit,
@@ -52,10 +54,10 @@ class NewSpotlightOrdersAdapter(
 
         fun bind(order: Order) {
             unbind()
-            binding.tvSpotOrderNumber.text = "#${order.orderNumber}"
+            binding.tvSpotOrderNumber.text = "#${order.orderNumber.withEnglishDigits()}"
             val count = order.getItemsList().size
-            binding.tvSpotOrderItems.text = binding.root.resources
-                .getQuantityString(R.plurals.items_count, count, count)
+            val qtyTemplate = binding.root.resources.getQuantityString(R.plurals.items_count, count)
+            binding.tvSpotOrderItems.text = String.format(ENGLISH_NUMBER_LOCALE, qtyTemplate, count)
 
             val createdMs = parseOrderCreatedAtMillis(order.createdAt)
             if (createdMs != null) {
