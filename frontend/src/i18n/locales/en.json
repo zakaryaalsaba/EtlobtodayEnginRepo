@@ -232,6 +232,7 @@
     "phoneNumber": "Phone Number",
     "phoneNumberPlaceholder": "(555) 123-4567",
     "emailAddress": "Email Address",
+    "optional": "(optional)",
     "emailAddressPlaceholder": "john{'@'}example.com",
     "deliveryAddress": "Delivery Address",
     "deliveryAddressPlaceholder": "123 Main St, City, State ZIP (if delivery is available)",
@@ -312,9 +313,15 @@
   "orderStatus": {
     "mergeHint": "Your order confirmation and live status are on this page.",
     "firebaseLive": "Connected for live updates — status changes appear as soon as the store updates your order.",
-    "firebaseNotConfigured": "Live updates are not enabled in this build. Status still refreshes every 5 minutes, or tap Refresh.",
+    "firebaseNotConfigured": "Live updates are not enabled in this build. Status refreshes about every 30 seconds while this tab is open, or tap Refresh.",
     "liveFeedEnded": "Live tracking for this order has ended (for example, when it is completed). Showing the latest details from our servers.",
-    "updatesRealtime": "Updates right away when the store changes the order status."
+    "updatesRealtime": "Updates right away when the store changes the order status.",
+    "notifyPrompt": "Get a browser notification when your order status changes (works even if you switch tabs).",
+    "notifyEnable": "Enable notifications",
+    "notifyEnabled": "Notifications are on for this order page.",
+    "notifyDenied": "Notifications are blocked. You can enable them in your browser settings for this site.",
+    "notificationTitle": "Order update",
+    "notificationBody": "#{orderNumber}: {status}"
   },
   "orderTracking": {
     "title": "Track Your Order",
@@ -360,7 +367,7 @@
     "orderNotFound": "Order not found. Please check your order number and try again.",
     "refreshStatus": "Refresh Status",
     "refreshing": "Refreshing...",
-    "autoRefreshNotice": "This page updates automatically every 5 minutes."
+    "autoRefreshNotice": "This page refreshes status about every 30 seconds while it stays open."
   },
   "websiteBuilder": {
     "title": "Store Website Builder",

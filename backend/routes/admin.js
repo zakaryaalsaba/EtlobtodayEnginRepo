@@ -156,6 +156,59 @@ router.post('/login', async (req, res) => {
 });
 
 /**
+ * POST /api/admin/refresh
+ * Exchange a valid refresh token for a new access token (and rotated refresh token).
+ */
+router.post('/refresh', async (req, res) => {
+  try {
+    const { refreshToken } = req.body || {};
+    if (!refreshToken) {
+      return res.status(400).json({ error: 'refreshToken is required' });
+    }
+
+    let decoded;
+    try {
+      decoded = jwt.verify(refreshToken, JWT_SECRET);
+    } catch (err) {
+      if (err.name === 'TokenExpiredError') {
+        return res.status(401).json({ error: 'Refresh token expired', expired: true });
+      }
+      return res.status(401).json({ error: 'Invalid refresh token' });
+    }
+
+    if (decoded.type !== 'refresh') {
+      return res.status(401).json({ error: 'Invalid refresh token' });
+    }
+
+    const [admins] = await pool.execute(
+      'SELECT * FROM admins WHERE id = ? AND website_id = ?',
+      [decoded.adminId, decoded.websiteId]
+    );
+
+    if (admins.length === 0) {
+      return res.status(401).json({ error: 'Invalid token' });
+    }
+
+    const admin = admins[0];
+    const token = jwt.sign(
+      { adminId: admin.id, websiteId: admin.website_id, email: admin.email },
+      JWT_SECRET,
+      { expiresIn: process.env.ACCESS_TOKEN_EXPIRY || '1h' }
+    );
+    const newRefreshToken = jwt.sign(
+      { adminId: admin.id, websiteId: admin.website_id, email: admin.email, type: 'refresh' },
+      JWT_SECRET,
+      { expiresIn: process.env.REFRESH_TOKEN_EXPIRY || '7d' }
+    );
+
+    res.json({ token, refreshToken: newRefreshToken });
+  } catch (error) {
+    console.error('Error during token refresh:', error);
+    res.status(500).json({ error: 'Failed to refresh token', message: error.message });
+  }
+});
+
+/**
  * GET /api/admin/me
  * Get current admin info
  */

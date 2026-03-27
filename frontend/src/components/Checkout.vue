@@ -142,6 +142,7 @@
                 <div class="mt-3">
                   <label class="block text-sm font-medium text-gray-700 mb-1">
                     {{ $t('checkout.emailAddress') }}
+                    <span class="text-gray-500 font-normal"> {{ $t('checkout.optional') }}</span>
                   </label>
                   <input
                     v-model="checkoutForm.customer_email"
@@ -335,12 +336,12 @@ const { locale, t } = useI18n();
 
 const SHOW_CHECKOUT_COUPONS = false;
 
-/** Matches DB: customer_name / customer_email VARCHAR(255), customer_phone VARCHAR(50); notes is TEXT (reasonable UI cap). */
+/** Public checkout field limits (enforced on API too). */
 const CHECKOUT_MAX_LENGTH = {
-  fullName: 255,
-  phone: 50,
-  email: 255,
-  specialInstructions: 2000
+  fullName: 15,
+  phone: 15,
+  email: 50,
+  specialInstructions: 200
 };
 
 const route = useRoute();

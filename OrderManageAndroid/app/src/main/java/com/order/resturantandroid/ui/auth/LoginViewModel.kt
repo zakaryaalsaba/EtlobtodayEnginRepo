@@ -22,6 +22,9 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                 onSuccess = { authResponse ->
                     // Save session
                     sessionManager.saveAuthToken(authResponse.token)
+                    authResponse.refreshToken?.takeIf { it.isNotBlank() }?.let {
+                        sessionManager.saveRefreshToken(it)
+                    }
                     sessionManager.saveAdminInfo(
                         authResponse.admin.id,
                         authResponse.admin.websiteId,

@@ -106,14 +106,16 @@
 
                                 <TextView
                                     android:id="@+id/tvOrderNumber"
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="@dimen/spacing_4"
                                     android:textStyle="bold"
-                                    android:textSize="24sp"
+                                    android:textSize="14sp"
                                     android:textColor="@color/text_primary"
-                                    android:letterSpacing="0.02"
-                                    tools:text="ORD-123456" />
+                                    android:letterSpacing="0.01"
+                                    android:maxLines="1"
+                                    android:ellipsize="end"
+                                    tools:text="ORD-ML3YKT3S-BY3V" />
                             </LinearLayout>
                         </LinearLayout>
 

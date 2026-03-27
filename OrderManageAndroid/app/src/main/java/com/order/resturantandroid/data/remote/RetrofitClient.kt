@@ -1,5 +1,6 @@
 package com.order.resturantandroid.data.remote
 
+import android.content.Context
 import com.order.resturantandroid.BuildConfig
 import android.util.Log
 import okhttp3.Call
@@ -16,6 +17,60 @@ import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
     private const val TAG = "RetrofitClient"
+
+    @Volatile
+    private var apiServiceInstance: ApiService? = null
+
+    /**
+     * Must be called from [com.order.resturantandroid.OrderManagerApplication.onCreate] before any API usage.
+     */
+    fun init(context: Context) {
+        if (apiServiceInstance != null) return
+        synchronized(this) {
+            if (apiServiceInstance != null) return
+            val appContext = context.applicationContext
+            val okHttpClient = buildOkHttpClient(appContext)
+            val retrofit = Retrofit.Builder()
+                .baseUrl(BuildConfig.API_BASE_URL)
+                .client(okHttpClient)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+            apiServiceInstance = retrofit.create(ApiService::class.java)
+            Log.d(TAG, "API_BASE_URL = ${BuildConfig.API_BASE_URL}")
+        }
+    }
+
+    val apiService: ApiService
+        get() = apiServiceInstance
+            ?: error("RetrofitClient.init(context) was not called from Application.onCreate")
+
+    private fun buildOkHttpClient(appContext: Context): OkHttpClient {
+        val loggingInterceptor = HttpLoggingInterceptor().apply {
+            level = if (BuildConfig.DEBUG) {
+                HttpLoggingInterceptor.Level.BODY
+            } else {
+                HttpLoggingInterceptor.Level.NONE
+            }
+        }
+
+        return OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .eventListenerFactory { LoggingEventListener() }
+            .authenticator(TokenAuthenticator(appContext))
+            .addInterceptor { chain ->
+                val request = chain.request()
+                try {
+                    chain.proceed(request)
+                } catch (e: Exception) {
+                    Log.e(TAG, "Request failed: ${request.method} ${request.url} msg=${e.message}", e)
+                    throw e
+                }
+            }
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .build()
+    }
 
     private class LoggingEventListener : EventListener() {
         override fun callStart(call: Call) {
@@ -48,42 +103,4 @@ object RetrofitClient {
             Log.d(TAG, "HTTP response headers: ${response.code} ${call.request().url}")
         }
     }
-
-    private val loggingInterceptor = HttpLoggingInterceptor().apply {
-        level = if (BuildConfig.DEBUG) {
-            HttpLoggingInterceptor.Level.BODY
-        } else {
-            HttpLoggingInterceptor.Level.NONE
-        }
-    }
-    
-    private val okHttpClient = OkHttpClient.Builder()
-        .addInterceptor(loggingInterceptor)
-        .eventListenerFactory { LoggingEventListener() }
-        .addInterceptor { chain ->
-            val request = chain.request()
-            try {
-                chain.proceed(request)
-            } catch (e: Exception) {
-                Log.e(TAG, "Request failed: ${request.method} ${request.url} msg=${e.message}", e)
-                throw e
-            }
-        }
-        .connectTimeout(30, TimeUnit.SECONDS)
-        .readTimeout(30, TimeUnit.SECONDS)
-        .writeTimeout(30, TimeUnit.SECONDS)
-        .build()
-    
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(BuildConfig.API_BASE_URL)
-        .client(okHttpClient)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-    
-    val apiService: ApiService = retrofit.create(ApiService::class.java)
-
-    init {
-        Log.d(TAG, "API_BASE_URL = ${BuildConfig.API_BASE_URL}")
-    }
 }
-

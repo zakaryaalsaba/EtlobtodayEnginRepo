@@ -9,6 +9,7 @@ class SessionManager(context: Context) {
     companion object {
         private const val PREFS_NAME = "restaurant_prefs"
         private const val KEY_AUTH_TOKEN = "auth_token"
+        private const val KEY_REFRESH_TOKEN = "refresh_token"
         private const val KEY_ADMIN_ID = "admin_id"
         private const val KEY_WEBSITE_ID = "website_id"
         private const val KEY_ADMIN_EMAIL = "admin_email"
@@ -20,9 +21,17 @@ class SessionManager(context: Context) {
     fun saveAuthToken(token: String) {
         prefs.edit().putString(KEY_AUTH_TOKEN, token).apply()
     }
+
+    fun saveRefreshToken(refreshToken: String) {
+        prefs.edit().putString(KEY_REFRESH_TOKEN, refreshToken).apply()
+    }
     
     fun getAuthToken(): String? {
         return prefs.getString(KEY_AUTH_TOKEN, null)
+    }
+
+    fun getRefreshToken(): String? {
+        return prefs.getString(KEY_REFRESH_TOKEN, null)
     }
     
     fun saveAdminInfo(adminId: Int, websiteId: Int, email: String, name: String?, restaurantName: String) {

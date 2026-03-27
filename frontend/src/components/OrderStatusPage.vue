@@ -47,6 +47,33 @@
         {{ $t('orderStatus.liveFeedEnded') }}
       </div>
 
+      <div
+        v-if="canUseNotifications && notificationPermission === 'default'"
+        class="mb-3 sm:mb-4 rounded-lg border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs sm:text-sm text-indigo-900 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2"
+        :class="$i18n.locale === 'ar' ? 'sm:flex-row-reverse' : ''"
+      >
+        <span class="leading-snug">{{ $t('orderStatus.notifyPrompt') }}</span>
+        <button
+          type="button"
+          @click="enableNotifications"
+          class="shrink-0 px-3 py-1.5 rounded-lg bg-indigo-600 text-white font-semibold text-xs sm:text-sm hover:bg-indigo-700"
+        >
+          {{ $t('orderStatus.notifyEnable') }}
+        </button>
+      </div>
+      <div
+        v-else-if="canUseNotifications && notificationPermission === 'granted'"
+        class="mb-3 sm:mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs sm:text-sm text-emerald-900"
+      >
+        {{ $t('orderStatus.notifyEnabled') }}
+      </div>
+      <div
+        v-else-if="canUseNotifications && notificationPermission === 'denied'"
+        class="mb-3 sm:mb-4 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-xs sm:text-sm text-gray-700"
+      >
+        {{ $t('orderStatus.notifyDenied') }}
+      </div>
+
       <div v-if="order" class="space-y-3 sm:space-y-4">
         <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
           <p class="text-xs sm:text-sm text-blue-800 leading-snug">
@@ -228,7 +255,38 @@ const sawFirebasePayload = ref(false);
 const firebaseConfigured = isFirebaseRealtimeConfigured();
 let firebaseUnsubscribe = null;
 
-const POLL_MS = 5 * 60 * 1000;
+const canUseNotifications = typeof Notification !== 'undefined';
+const notificationPermission = ref(
+  canUseNotifications ? Notification.permission : 'unsupported'
+);
+
+async function enableNotifications() {
+  if (!canUseNotifications) return;
+  try {
+    const p = await Notification.requestPermission();
+    notificationPermission.value = p;
+  } catch (e) {
+    console.warn('Notification.requestPermission failed', e);
+  }
+}
+
+function notifyBrowserOrderStatus(orderNumber, statusKey) {
+  if (!canUseNotifications || Notification.permission !== 'granted') return;
+  if (!orderNumber || !statusKey) return;
+  const statusLabel = formatStatus(statusKey);
+  try {
+    new Notification(t('orderStatus.notificationTitle'), {
+      body: t('orderStatus.notificationBody', { orderNumber, status: statusLabel }),
+      tag: `order-status-${orderNumber}`,
+      renotify: true
+    });
+  } catch (e) {
+    console.warn('Browser notification failed', e);
+  }
+}
+
+/** When Firebase live sync is off, poll often enough for status changes to surface (and optional browser notifications). */
+const POLL_MS = 30 * 1000;
 const STOP_POLL = new Set(['ready', 'completed', 'cancelled']);
 let pollId = null;
 
@@ -540,11 +598,26 @@ watch(
   }
 );
 
+watch(
+  () => order.value?.status,
+  (newStatus, oldStatus) => {
+    if (!newStatus || oldStatus === undefined) return;
+    if (newStatus === oldStatus) return;
+    const num = order.value?.order_number;
+    if (!num) return;
+    notifyBrowserOrderStatus(num, newStatus);
+  }
+);
+
 onMounted(async () => {
   const savedLang = localStorage.getItem('appLanguage') || 'en';
   locale.value = savedLang;
   document.documentElement.setAttribute('lang', savedLang);
   document.documentElement.setAttribute('dir', savedLang === 'ar' ? 'rtl' : 'ltr');
+
+  if (canUseNotifications) {
+    notificationPermission.value = Notification.permission;
+  }
 
   try {
     website.value = await getWebsite(route.params.id);

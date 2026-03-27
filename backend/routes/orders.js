@@ -83,6 +83,33 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
+    const CHECKOUT_LIMITS = { name: 15, phone: 15, email: 50, notes: 200 };
+    const nameTrim = String(customer_name).trim();
+    const phoneTrim = String(customer_phone).trim();
+    const emailTrim = customer_email != null && String(customer_email).trim() !== '' ? String(customer_email).trim() : '';
+    const notesStr = notes != null ? String(notes) : '';
+
+    if (!nameTrim || nameTrim.length > CHECKOUT_LIMITS.name) {
+      return res.status(400).json({
+        error: `Name is required and must be at most ${CHECKOUT_LIMITS.name} characters`
+      });
+    }
+    if (!phoneTrim || phoneTrim.length > CHECKOUT_LIMITS.phone) {
+      return res.status(400).json({
+        error: `Phone is required and must be at most ${CHECKOUT_LIMITS.phone} characters`
+      });
+    }
+    if (emailTrim.length > CHECKOUT_LIMITS.email) {
+      return res.status(400).json({
+        error: `Email must be at most ${CHECKOUT_LIMITS.email} characters`
+      });
+    }
+    if (notesStr.length > CHECKOUT_LIMITS.notes) {
+      return res.status(400).json({
+        error: `Special instructions must be at most ${CHECKOUT_LIMITS.notes} characters`
+      });
+    }
+
     // Calculate total
     let subtotalAmount = 0;
     let totalOriginalAmount = 0; // Sum of (original_price * quantity)
@@ -303,9 +330,9 @@ router.post('/', async (req, res) => {
       website_id,
       customer_id || null,
       orderNumber,
-      customer_name,
-      customer_email || null,
-      customer_phone,
+      nameTrim,
+      emailTrim || null,
+      phoneTrim,
       customer_address || null,
       order_type || 'pickup',
       totalAmount,
@@ -360,7 +387,7 @@ router.post('/', async (req, res) => {
     }
 
     baseFields.push('payment_status', 'notes');
-    baseValues.push(paymentStatus, notes || null);
+    baseValues.push(paymentStatus, notesStr.trim() ? notesStr.trim() : null);
 
     insertQuery = `INSERT INTO orders (${baseFields.join(', ')}) VALUES (${baseFields.map(() => '?').join(', ')})`;
     insertValues = baseValues;
