@@ -69,12 +69,6 @@
           </div>
           <div class="md:hidden flex items-center gap-2">
             <LanguageSwitcher v-if="shouldShowLanguageSwitcher" :available-languages="availableLanguages" />
-            <button
-              @click="$router.push('/')"
-              class="px-4 py-2 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
-            >
-              {{ $t('website.back') }}
-            </button>
           </div>
         </div>
       </nav>
